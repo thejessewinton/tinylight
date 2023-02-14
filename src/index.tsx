@@ -54,13 +54,13 @@ const Nav = ({ children, direction, ...rest }: NavProps) => {
   const { items, currentItem, setCurrentItem, toggleOpen } = useLightboxStore();
 
   const handleNav = () => {
-    if (direction === 'next') {
+    if (direction === 'previous') {
       if (currentItem === 0) {
         toggleOpen();
       }
       setCurrentItem(currentItem - 1);
     }
-    if (direction === 'previous') {
+    if (direction === 'next') {
       if (currentItem >= items.length - 1) {
         toggleOpen();
       } else {
