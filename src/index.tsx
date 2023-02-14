@@ -37,13 +37,32 @@ const getValidChildren = (children: React.ReactNode) => {
   ) as React.ReactElement[];
 };
 
+interface TriggerProps extends React.HTMLAttributes<HTMLButtonElement> {
+  children: React.ReactNode;
+}
+
+const Trigger = ({ children, ...rest }: TriggerProps) => {
+  return (
+    <button onClick={() => useLightboxStore.getState().toggleOpen()} {...rest}>
+      {children}
+    </button>
+  );
+};
+
 // Lightbox items component
 interface ItemsProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
 }
 
 const Items = ({ children, ...rest }: ItemsProps) => {
-  return <div {...rest}>{children}</div>;
+  const { isOpen } = useLightboxStore();
+  const length = getValidChildren(children).length;
+
+  useIsomorphicLayoutEffect(() => {
+    useLightboxStore.getState().setLength(length);
+  }, []);
+
+  return <div {...rest}>{isOpen ? children : null}</div>;
 };
 
 // Lightbox item component
@@ -52,12 +71,6 @@ interface ItemProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const Item = ({ children, ...rest }: ItemProps) => {
-  const length = getValidChildren(children).length;
-
-  useIsomorphicLayoutEffect(() => {
-    useLightboxStore.getState().setLength(length);
-  }, []);
-
   return <div {...rest}>{children}</div>;
 };
 
@@ -69,13 +82,15 @@ interface NavProps extends React.HTMLAttributes<HTMLButtonElement> {
 
 const Nav = ({ children, direction, ...rest }: NavProps) => {
   const { items, currentItem, setCurrentItem, toggleOpen } = useLightboxStore();
+  console.log(currentItem);
 
   const handleNav = () => {
     if (direction === 'previous') {
       if (currentItem === 0) {
         toggleOpen();
+      } else {
+        setCurrentItem(currentItem - 1);
       }
-      setCurrentItem(currentItem - 1);
     }
     if (direction === 'next') {
       if (currentItem >= items.length - 1) {
@@ -102,6 +117,7 @@ export const TinyLight = ({ children, ...rest }: WrapperProps) => {
   return <div {...rest}>{children}</div>;
 };
 
+TinyLight.Trigger = Trigger;
 TinyLight.Items = Items;
 TinyLight.Item = Item;
 TinyLight.Nav = Nav;

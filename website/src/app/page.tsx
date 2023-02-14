@@ -17,6 +17,7 @@ const items = [
 const Index = () => {
   return (
     <main className="min-h-screen bg-neutral-900">
+      <TinyLight.Trigger>Open</TinyLight.Trigger>
       <TinyLight>
         <TinyLight.Items>
           {items.map((item, index) => (
