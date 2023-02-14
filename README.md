@@ -8,7 +8,7 @@ Tinybox comes as a set of component primitives that you can use to build your ow
 
 ## Story
 
-While working on a project I found that there were no good, simple, unopinionated lightbox components for React. So I built Tinybox. It's a work-in-progress, so if you have any suggestions or issues, please open an issue or a PR.
+If you have any suggestions or issues, please open an issue or a PR! I'd love to get feedback from others who are looking to solve the same problem.
 
 ## Roadmap
 
