@@ -14,3 +14,4 @@ If you have any suggestions or issues, please open an issue or a PR! I'd love to
 
 - [ ] Make the primitives headless.
 - [ ] Allow for multiple lightboxes on the same page.
+- [ ] Make all the components fully accessible.
