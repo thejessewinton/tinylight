@@ -1,5 +1,5 @@
 {
-  "name": "tiny-lightbox",
+  "name": "tinylight",
   "license": "MIT",
   "version": "0.0.0",
   "main": "dist/index.js",
@@ -7,8 +7,16 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsup src/index.tsx --format cjs,esm --dts",
+    "dev": "tsup src/index.tsx --watch",
+    "dev:website": "turbo run dev --filter=website...",
     "lint": "tsc"
   },
+  "keywords": [
+    "react",
+    "lightbox",
+    "images",
+    "simple"
+  ],
   "devDependencies": {
     "@changesets/cli": "^2.26.0",
     "@types/react": "^18.0.28",
