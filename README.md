@@ -1,10 +1,10 @@
-# tinybox 🎉
+# tinylightbox 🎉
 
 ## This package is a work in progress!
 ---
-Tinybox is a tiny, fast, and unopinionated lightbox component for React projects.
+tinylightbox is a tiny, fast, and unopinionated lightbox component for React projects.
 
-Tinybox comes as a set of component primitives that you can use to build your own lightbox. It handles the heavy lifting of state managment, so you can focus on user experience.
+tinylightbox comes as a set of component primitives that you can use to build your own lightbox. It handles the heavy lifting of state management, so you can focus on user experience.
 
 ## Story
 

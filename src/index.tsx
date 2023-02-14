@@ -12,6 +12,8 @@ const useIsomorphicLayoutEffect = IS_SERVER
 export interface LightboxState {
   isOpen: boolean;
   items: number[];
+  length: number;
+  setLength: (length: number) => void;
   toggleOpen: () => void;
   currentItem: number;
   setCurrentItem: (index: number) => void;
@@ -21,10 +23,19 @@ export interface LightboxState {
 export const useLightboxStore = create<LightboxState>((set) => ({
   isOpen: false,
   items: [1, 2, 3, 4, 5],
+  length: 0,
+  setLength: (length) => set({ length }),
   toggleOpen: () => set((state) => ({ isOpen: !state.isOpen })),
   currentItem: 0,
   setCurrentItem: (index: number) => set(() => ({ currentItem: index })),
 }));
+
+// Get the valid children from the children prop, ignoring null or falsy values
+const getValidChildren = (children: React.ReactNode) => {
+  return React.Children.toArray(children).filter((child) =>
+    React.isValidElement(child)
+  ) as React.ReactElement[];
+};
 
 // Lightbox wrapper component
 interface WrapperProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -35,12 +46,26 @@ const Wrapper = ({ children, ...rest }: WrapperProps) => {
   return <div {...rest}>{children}</div>;
 };
 
+interface ItemsProps extends React.HTMLAttributes<HTMLDivElement> {
+  children: React.ReactNode;
+}
+
+const Items = ({ children, ...rest }: ItemsProps) => {
+  return <div {...rest}>{children}</div>;
+};
+
 // Lightbox item component
 interface ItemProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
 }
 
 const Item = ({ children, ...rest }: ItemProps) => {
+  const length = getValidChildren(children).length;
+
+  useIsomorphicLayoutEffect(() => {
+    useLightboxStore.getState().setLength(length);
+  }, []);
+
   return <div {...rest}>{children}</div>;
 };
 
@@ -82,5 +107,6 @@ export const Tinybox = ({ children }: { children: React.ReactNode }) => {
 };
 
 // Export the sub-components as static properties
+Tinybox.Items = Items;
 Tinybox.Item = Item;
 Tinybox.Navigation = Nav;
