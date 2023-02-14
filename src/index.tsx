@@ -37,15 +37,7 @@ const getValidChildren = (children: React.ReactNode) => {
   ) as React.ReactElement[];
 };
 
-// Lightbox wrapper component
-interface WrapperProps extends React.HTMLAttributes<HTMLDivElement> {
-  children: React.ReactNode;
-}
-
-const Wrapper = ({ children, ...rest }: WrapperProps) => {
-  return <div {...rest}>{children}</div>;
-};
-
+// Lightbox items component
 interface ItemsProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
 }
@@ -102,11 +94,14 @@ const Nav = ({ children, direction, ...rest }: NavProps) => {
 };
 
 // The whole shebang
-export const Tinybox = ({ children }: { children: React.ReactNode }) => {
-  return <Wrapper>{children}</Wrapper>;
+interface WrapperProps extends React.HTMLAttributes<HTMLDivElement> {
+  children: React.ReactNode;
+}
+
+export const TinyLight = ({ children, ...rest }: WrapperProps) => {
+  return <div {...rest}>{children}</div>;
 };
 
-// Export the sub-components as static properties
-Tinybox.Items = Items;
-Tinybox.Item = Item;
-Tinybox.Navigation = Nav;
+TinyLight.Items = Items;
+TinyLight.Item = Item;
+TinyLight.Nav = Nav;
