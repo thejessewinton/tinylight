@@ -60,8 +60,12 @@ const Overlay = ({ children, style, ...rest }: OverlayProps) => {
 interface ItemsProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 const Items = ({ children, ...rest }: ItemsProps) => {
-  const { isOpen } = useLightboxStore();
-  return <div {...rest}>{isOpen ? getValidChildren(children) : null}</div>;
+  const { isOpen, currentItem } = useLightboxStore();
+  return (
+    <div {...rest}>
+      {isOpen ? getValidChildren(children)[currentItem] : null}
+    </div>
+  );
 };
 
 // Lightbox item component
