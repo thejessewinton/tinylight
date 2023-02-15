@@ -21,10 +21,14 @@ const Demo = () => {
         <Lightbox.Trigger>Open</Lightbox.Trigger>
 
         <Lightbox.Items>
-          {items.map((item, i) => (
-            <Lightbox.Item key={i}>
-              <Image src={item.src} alt={item.alt} height={600} width={800} />
-            </Lightbox.Item>
+          {items.map((item) => (
+            <Image
+              key={item.src}
+              src={item.src}
+              alt={item.alt}
+              height={600}
+              width={800}
+            />
           ))}
         </Lightbox.Items>
         <div className="">

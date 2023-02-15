@@ -1,8 +1,7 @@
 "use client";
 
 import React from "react";
-import { create } from "zustand";
-import { clsx } from "clsx";
+import { Provider, useLightboxContext } from "./provider";
 
 const IS_SERVER = typeof window === "undefined";
 const useIsomorphicLayoutEffect = IS_SERVER
@@ -16,35 +15,11 @@ const getValidChildren = (children: React.ReactNode) => {
   ) as React.ReactElement[];
 };
 
-// Create a default state for the lightbox
-export interface LightboxState {
-  isOpen: boolean;
-  items: number[];
-  length: number;
-  setLength: (length: number) => void;
-  toggleOpen: () => void;
-  currentItem: number;
-  setCurrentItem: (index: number) => void;
-}
-
-// create a Zustand store, declared as a React hook
-export const useLightboxStore = create<LightboxState>((set) => ({
-  isOpen: false,
-  items: [1, 2, 3, 4, 5],
-  length: 0,
-  setLength: (length) => set({ length }),
-  toggleOpen: () => set((state) => ({ isOpen: !state.isOpen })),
-  currentItem: 0,
-  setCurrentItem: (index: number) => set(() => ({ currentItem: index })),
-}));
-
 interface TriggerProps extends React.HTMLAttributes<HTMLButtonElement> {}
 
 const Trigger = ({ children, onClick, ...rest }: TriggerProps) => {
-  const { toggleOpen } = useLightboxStore();
-
   return (
-    <button onClick={toggleOpen} {...rest}>
+    <button onClick={() => console.log("clicked")} {...rest}>
       {children}
     </button>
   );
@@ -60,19 +35,13 @@ const Overlay = ({ children, style, ...rest }: OverlayProps) => {
 interface ItemsProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 const Items = ({ children, ...rest }: ItemsProps) => {
-  const { isOpen, currentItem } = useLightboxStore();
   return (
     <div {...rest}>
-      {isOpen ? getValidChildren(children)[currentItem] : null}
+      {getValidChildren(children).map((child, index) => {
+        return <div key={child.key}>{child}</div>;
+      })}
     </div>
   );
-};
-
-// Lightbox item component
-interface ItemProps extends React.HTMLAttributes<HTMLDivElement> {}
-
-const Item = ({ children, ...rest }: ItemProps) => {
-  return <div {...rest}>{children}</div>;
 };
 
 // Lightbox navigation component
@@ -81,27 +50,29 @@ interface NavProps extends React.HTMLAttributes<HTMLButtonElement> {
 }
 
 const Nav = ({ children, direction, ...rest }: NavProps) => {
-  const { items, currentItem, setCurrentItem, toggleOpen } = useLightboxStore();
-
-  const handleNav = () => {
-    if (direction === "previous") {
-      if (currentItem === 0) {
-        toggleOpen();
-      } else {
-        setCurrentItem(currentItem - 1);
-      }
-    }
-    if (direction === "next") {
-      if (currentItem >= items.length - 1) {
-        toggleOpen();
-      } else {
-        setCurrentItem(currentItem + 1);
-      }
-    }
-  };
+  // const handleNav = () => {
+  //   if (direction === "previous") {
+  //     if (currentItem === 0) {
+  //       toggleOpen();
+  //       setCurrentItem(items.length - 1);
+  //     } else {
+  //       setCurrentItem(currentItem - 1);
+  //     }
+  //   }
+  //   if (direction === "next") {
+  //     if (currentItem >= items.length - 1) {
+  //       toggleOpen();
+  //       setCurrentItem(items.length - 1);
+  //     } else {
+  //       setCurrentItem(currentItem + 1);
+  //     }
+  //   }
+  // };
+  const context = useLightboxContext();
+  console.log(context.state);
 
   return (
-    <button onClick={handleNav} {...rest}>
+    <button onClick={() => console.log("nav handler")} {...rest}>
       {children}
     </button>
   );
@@ -111,26 +82,14 @@ const Nav = ({ children, direction, ...rest }: NavProps) => {
 interface WrapperProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export const Lightbox = ({ children, ...rest }: WrapperProps) => {
-  const { toggleOpen } = useLightboxStore();
-
-  useIsomorphicLayoutEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        toggleOpen();
-      }
-    };
-
-    window.addEventListener("keydown", handleEscape);
-
-    return () => {
-      window.removeEventListener("keydown", handleEscape);
-    };
-  }, []);
-  return <div {...rest}>{children}</div>;
+  return (
+    <Provider>
+      <div {...rest}>{children}</div>
+    </Provider>
+  );
 };
 
 Lightbox.Trigger = Trigger;
 Lightbox.Overlay = Overlay;
 Lightbox.Items = Items;
-Lightbox.Item = Item;
 Lightbox.Nav = Nav;

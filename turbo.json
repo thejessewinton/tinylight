@@ -9,5 +9,6 @@
       "cache": false
     },
     "clean": {}
-  }
+  },
+  "globalEnv": ["NODE_ENV", "NEXT_PUBLIC_URL"]
 }

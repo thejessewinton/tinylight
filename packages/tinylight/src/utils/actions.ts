@@ -1,0 +1,4 @@
+export const ACTIONS = {
+  TOGGLE_OPEN: "TOGGLE_OPEN",
+  SET_ACTIVE_ITEM: "SET_ACTIVE_ITEM",
+} as const;
