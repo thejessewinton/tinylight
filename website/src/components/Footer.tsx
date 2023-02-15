@@ -3,7 +3,7 @@ import Link from "next/link";
 const items = [
   {
     label: "GitHub",
-    link: "https://github.com/thejessewinton/tinybox",
+    link: "https://github.com/thejessewinton/tinylight",
   },
   {
     label: "About",
