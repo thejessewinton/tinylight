@@ -2,7 +2,10 @@
   "scripts": {
     "build": "turbo run build --parallel",
     "dev": "turbo run dev --parallel --no-cache --continue",
-    "publish": "turbo run publish --parallel"
+    "clean": "turbo run clean && rm -rf node_modules",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "version-packages": "changeset version",
+    "publish-packages": "changeset publish"
   },
   "devDependencies": {
     "@changesets/cli": "^2.26.0",
