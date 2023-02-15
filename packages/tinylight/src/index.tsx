@@ -1,12 +1,20 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { create } from 'zustand';
+import React from "react";
+import { create } from "zustand";
+import { clsx } from "clsx";
 
-const IS_SERVER = typeof window === 'undefined';
+const IS_SERVER = typeof window === "undefined";
 const useIsomorphicLayoutEffect = IS_SERVER
   ? React.useEffect
   : React.useLayoutEffect;
+
+// Get the valid children from the children prop, ignoring null or falsy values
+const getValidChildren = (children: React.ReactNode) => {
+  return React.Children.toArray(children).filter((child) =>
+    React.isValidElement(child)
+  ) as React.ReactElement[];
+};
 
 // Create a default state for the lightbox
 export interface LightboxState {
@@ -30,44 +38,38 @@ export const useLightboxStore = create<LightboxState>((set) => ({
   setCurrentItem: (index: number) => set(() => ({ currentItem: index })),
 }));
 
-// Get the valid children from the children prop, ignoring null or falsy values
-const getValidChildren = (children: React.ReactNode) => {
-  return React.Children.toArray(children).filter((child) =>
-    React.isValidElement(child)
-  ) as React.ReactElement[];
-};
-
-interface TriggerProps extends React.HTMLAttributes<HTMLButtonElement> {
-  children: React.ReactNode;
-}
+interface TriggerProps extends React.HTMLAttributes<HTMLButtonElement> {}
 
 const Trigger = ({ children, onClick, ...rest }: TriggerProps) => {
+  const { toggleOpen } = useLightboxStore();
+
   return (
-    <button
-      onClick={() => {
-        useLightboxStore.getState().toggleOpen();
-        onClick ? onClick : null;
-      }}
-      {...rest}
-    >
+    <button onClick={toggleOpen} {...rest}>
       {children}
     </button>
   );
 };
 
+interface OverlayProps extends React.HTMLAttributes<HTMLDivElement> {}
+
+const Overlay = ({ children, style, ...rest }: OverlayProps) => {
+  return <div {...rest}>{children}</div>;
+};
+
 // Lightbox items component
-interface ItemsProps extends React.HTMLAttributes<HTMLDivElement> {
-  children: React.ReactNode;
-}
+interface ItemsProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 const Items = ({ children, ...rest }: ItemsProps) => {
-  return <div {...rest}></div>;
+  const { isOpen, currentItem } = useLightboxStore();
+  return (
+    <div {...rest}>
+      {isOpen ? getValidChildren(children)[currentItem] : null}
+    </div>
+  );
 };
 
 // Lightbox item component
-interface ItemProps extends React.HTMLAttributes<HTMLDivElement> {
-  children: React.ReactNode;
-}
+interface ItemProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 const Item = ({ children, ...rest }: ItemProps) => {
   return <div {...rest}>{children}</div>;
@@ -75,22 +77,21 @@ const Item = ({ children, ...rest }: ItemProps) => {
 
 // Lightbox navigation component
 interface NavProps extends React.HTMLAttributes<HTMLButtonElement> {
-  children: React.ReactNode;
-  direction: 'next' | 'previous';
+  direction: "next" | "previous";
 }
 
 const Nav = ({ children, direction, ...rest }: NavProps) => {
   const { items, currentItem, setCurrentItem, toggleOpen } = useLightboxStore();
 
   const handleNav = () => {
-    if (direction === 'previous') {
+    if (direction === "previous") {
       if (currentItem === 0) {
         toggleOpen();
       } else {
         setCurrentItem(currentItem - 1);
       }
     }
-    if (direction === 'next') {
+    if (direction === "next") {
       if (currentItem >= items.length - 1) {
         toggleOpen();
       } else {
@@ -107,15 +108,29 @@ const Nav = ({ children, direction, ...rest }: NavProps) => {
 };
 
 // The whole shebang
-interface WrapperProps extends React.HTMLAttributes<HTMLDivElement> {
-  children: React.ReactNode;
-}
+interface WrapperProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-export const TinyLight = ({ children, ...rest }: WrapperProps) => {
+export const Lightbox = ({ children, ...rest }: WrapperProps) => {
+  const { toggleOpen } = useLightboxStore();
+
+  useIsomorphicLayoutEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        toggleOpen();
+      }
+    };
+
+    window.addEventListener("keydown", handleEscape);
+
+    return () => {
+      window.removeEventListener("keydown", handleEscape);
+    };
+  }, []);
   return <div {...rest}>{children}</div>;
 };
 
-TinyLight.Trigger = Trigger;
-TinyLight.Items = Items;
-TinyLight.Item = Item;
-TinyLight.Nav = Nav;
+Lightbox.Trigger = Trigger;
+Lightbox.Overlay = Overlay;
+Lightbox.Items = Items;
+Lightbox.Item = Item;
+Lightbox.Nav = Nav;
