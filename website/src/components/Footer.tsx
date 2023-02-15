@@ -23,7 +23,7 @@ export const Footer = () => {
           ))}
         </nav>
 
-        <em>{new Date().getFullYear()}</em>
+        <em className="font-serif">{new Date().getFullYear()}</em>
       </div>
     </footer>
   );
