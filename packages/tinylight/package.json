@@ -1,0 +1,35 @@
+{
+  "name": "tinylight",
+  "license": "MIT",
+  "version": "0.0.0",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsup src/index.tsx --format cjs,esm --dts",
+    "dev": "tsup src/index.tsx --watch",
+    "lint": "tsc"
+  },
+  "files": [
+    "dist/**"
+  ],
+  "keywords": [
+    "react",
+    "lightbox",
+    "images",
+    "simple"
+  ],
+  "devDependencies": {
+    "@changesets/cli": "^2.26.0",
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.10",
+    "tsup": "^6.6.3",
+    "typescript": "^4.9.5"
+  },
+  "dependencies": {
+    "clsx": "^1.2.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "zustand": "^4.3.3"
+  }
+}
