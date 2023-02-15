@@ -16,6 +16,9 @@ export type ReducerPayload = {
   [ACTIONS.TOGGLE_OPEN]: {
     open: boolean;
   };
+  [ACTIONS.SET_ITEMS_COUNT]: {
+    length: number;
+  };
   [ACTIONS.SET_ACTIVE_ITEM]: {
     index: number;
   };

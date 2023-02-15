@@ -4,6 +4,7 @@ import type { ReducerActions } from "./utils/types";
 
 const initialState = {
   open: false,
+  itemsCount: 0,
   activeItem: 0,
 };
 
@@ -26,6 +27,11 @@ const reducer = (state: typeof initialState, action: ReducerActions) => {
       return {
         ...state,
         activeItem: action.payload.index,
+      };
+    case ACTIONS.SET_ITEMS_COUNT:
+      return {
+        ...state,
+        itemsCount: action.payload.length,
       };
     case ACTIONS.RESET_STATE:
       return {

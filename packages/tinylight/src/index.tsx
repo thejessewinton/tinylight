@@ -4,6 +4,11 @@ import React from "react";
 import { Provider, useLightboxContext } from "./provider";
 import { ACTIONS } from "./utils/actions";
 
+const IS_SERVER = typeof window === "undefined";
+const useIsomorphicLayoutEffect = IS_SERVER
+  ? React.useLayoutEffect
+  : React.useEffect;
+
 const getValidChildren = (children: React.ReactNode) => {
   return React.Children.toArray(children).filter((child) =>
     React.isValidElement(child)
@@ -37,14 +42,50 @@ const Overlay = ({ children, ...rest }: OverlayProps) => {
   return <div {...rest}>{children}</div>;
 };
 
+interface ItemProps extends React.HTMLAttributes<HTMLDivElement> {
+  index: number;
+}
+
+const Item = ({ children, index, style, ...rest }: ItemProps) => {
+  const { state } = useLightboxContext();
+  return (
+    <div
+      style={{
+        display: state.activeItem === index ? "block" : "none",
+        ...style,
+      }}
+      {...rest}
+    >
+      {children}
+    </div>
+  );
+};
+
 // Lightbox items component
 type ItemsProps = React.HTMLAttributes<HTMLDivElement>;
 
 const Items = ({ children, ...rest }: ItemsProps) => {
+  const items = getValidChildren(children);
+  const { state, dispatch } = useLightboxContext();
+  console.log(state);
+
+  useIsomorphicLayoutEffect(() => {
+    dispatch({
+      type: ACTIONS.SET_ITEMS_COUNT,
+      payload: {
+        length: items.length,
+      },
+    });
+  }, [dispatch, items.length]);
+
   return (
     <div {...rest}>
-      {getValidChildren(children).map((child) => {
-        return <div key={child.key}>{child}</div>;
+      {items.map((child, index) => {
+        return (
+          <Item index={index} key={child.key}>
+            {child}
+          </Item>
+        );
       })}
     </div>
   );
@@ -73,7 +114,7 @@ const Nav = ({ children, direction, ...rest }: NavProps) => {
       }
     }
     if (direction === "next") {
-      if (state.activeItem >= 1) {
+      if (state.activeItem >= state.itemsCount) {
         dispatch({
           type: ACTIONS.RESET_STATE,
         });
@@ -87,13 +128,25 @@ const Nav = ({ children, direction, ...rest }: NavProps) => {
       }
     }
   };
-  const context = useLightboxContext();
-  console.log(context.state);
-
   return (
     <button onClick={handleNav} {...rest}>
       {children}
     </button>
+  );
+};
+
+interface PaginationProps extends React.HTMLAttributes<HTMLDivElement> {
+  children: React.ReactElement;
+}
+
+const Pagination = ({ children, ...rest }: PaginationProps) => {
+  const { state } = useLightboxContext();
+  return (
+    <div {...rest}>
+      {React.Children.map(children, (child) =>
+        React.cloneElement(child, { activeItem: state.activeItem })
+      )}
+    </div>
   );
 };
 
@@ -112,3 +165,4 @@ Lightbox.Trigger = Trigger;
 Lightbox.Overlay = Overlay;
 Lightbox.Items = Items;
 Lightbox.Nav = Nav;
+Lightbox.Pagination = Pagination;

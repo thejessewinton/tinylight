@@ -9,6 +9,14 @@ const items = [
     alt: "Image 1",
   },
   {
+    src: "https://source.unsplash.com/random/800x500",
+    alt: "Image 2",
+  },
+  {
+    src: "https://source.unsplash.com/random/800x700",
+    alt: "Image 2",
+  },
+  {
     src: "https://source.unsplash.com/random/800x400",
     alt: "Image 2",
   },
@@ -34,6 +42,7 @@ const Demo = () => {
           <Lightbox.Nav direction="previous">Previous</Lightbox.Nav>
           <Lightbox.Nav direction="next">Next</Lightbox.Nav>
         </div>
+        <Lightbox.Pagination></Lightbox.Pagination>
       </Lightbox>
     </>
   );
