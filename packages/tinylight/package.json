@@ -1,15 +1,14 @@
 {
   "name": "tinylight",
   "license": "MIT",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsup src/index.tsx --format cjs,esm --dts",
     "dev": "tsup src/index.tsx --watch",
-    "lint": "tsc",
-    "publish": "npm publish"
+    "lint": "tsc"
   },
   "files": [
     "dist/**"
@@ -32,5 +31,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "zustand": "^4.3.3"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
