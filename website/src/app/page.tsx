@@ -1,9 +1,4 @@
-"use client";
-
-import { TinyLight, useLightboxStore } from "tinylight";
-
 const Index = () => {
-  const { isOpen } = useLightboxStore();
   return (
     <>
       <h1 className="text-center text-lg text-neutral-200">

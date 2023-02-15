@@ -8,6 +8,13 @@ const useIsomorphicLayoutEffect = IS_SERVER
   ? React.useEffect
   : React.useLayoutEffect;
 
+// Get the valid children from the children prop, ignoring null or falsy values
+const getValidChildren = (children: React.ReactNode) => {
+  return React.Children.toArray(children).filter((child) =>
+    React.isValidElement(child)
+  ) as React.ReactElement[];
+};
+
 // Create a default state for the lightbox
 export interface LightboxState {
   isOpen: boolean;
@@ -30,28 +37,42 @@ export const useLightboxStore = create<LightboxState>((set) => ({
   setCurrentItem: (index: number) => set(() => ({ currentItem: index })),
 }));
 
-// Get the valid children from the children prop, ignoring null or falsy values
-const getValidChildren = (children: React.ReactNode) => {
-  return React.Children.toArray(children).filter((child) =>
-    React.isValidElement(child)
-  ) as React.ReactElement[];
-};
-
 interface TriggerProps extends React.HTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
 }
 
 const Trigger = ({ children, onClick, ...rest }: TriggerProps) => {
+  const { toggleOpen } = useLightboxStore();
+
   return (
-    <button
-      onClick={() => {
-        useLightboxStore.getState().toggleOpen();
-        onClick ? onClick : null;
-      }}
-      {...rest}
-    >
+    <button onClick={toggleOpen} {...rest}>
       {children}
     </button>
+  );
+};
+
+interface OverlayProps extends React.HTMLAttributes<HTMLDivElement> {
+  children: React.ReactNode;
+  style?: React.CSSProperties;
+}
+
+const Overlay = ({ children, style, ...rest }: OverlayProps) => {
+  return (
+    <div
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100vh',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        ...style,
+      }}
+      {...rest}
+    />
   );
 };
 
@@ -61,7 +82,8 @@ interface ItemsProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const Items = ({ children, ...rest }: ItemsProps) => {
-  return <div {...rest}></div>;
+  const { isOpen } = useLightboxStore();
+  return <div {...rest}>{isOpen ? children : null}</div>;
 };
 
 // Lightbox item component
@@ -116,6 +138,7 @@ export const TinyLight = ({ children, ...rest }: WrapperProps) => {
 };
 
 TinyLight.Trigger = Trigger;
+TinyLight.Overlay = Overlay;
 TinyLight.Items = Items;
 TinyLight.Item = Item;
 TinyLight.Nav = Nav;
