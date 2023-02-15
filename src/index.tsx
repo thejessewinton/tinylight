@@ -41,9 +41,15 @@ interface TriggerProps extends React.HTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
 }
 
-const Trigger = ({ children, ...rest }: TriggerProps) => {
+const Trigger = ({ children, onClick, ...rest }: TriggerProps) => {
   return (
-    <button onClick={() => useLightboxStore.getState().toggleOpen()} {...rest}>
+    <button
+      onClick={() => {
+        useLightboxStore.getState().toggleOpen();
+        onClick ? onClick : null;
+      }}
+      {...rest}
+    >
       {children}
     </button>
   );
@@ -55,14 +61,7 @@ interface ItemsProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const Items = ({ children, ...rest }: ItemsProps) => {
-  const { isOpen } = useLightboxStore();
-  const length = getValidChildren(children).length;
-
-  useIsomorphicLayoutEffect(() => {
-    useLightboxStore.getState().setLength(length);
-  }, []);
-
-  return <div {...rest}>{isOpen ? children : null}</div>;
+  return <div {...rest}></div>;
 };
 
 // Lightbox item component
@@ -82,7 +81,6 @@ interface NavProps extends React.HTMLAttributes<HTMLButtonElement> {
 
 const Nav = ({ children, direction, ...rest }: NavProps) => {
   const { items, currentItem, setCurrentItem, toggleOpen } = useLightboxStore();
-  console.log(currentItem);
 
   const handleNav = () => {
     if (direction === 'previous') {
