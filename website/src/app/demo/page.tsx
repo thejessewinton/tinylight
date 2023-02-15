@@ -19,7 +19,6 @@ const Demo = () => {
     <>
       <Lightbox>
         <Lightbox.Trigger>Open</Lightbox.Trigger>
-
         <Lightbox.Items>
           {items.map((item) => (
             <Image

@@ -20,7 +20,16 @@ const reducer = (state: typeof initialState, action: ReducerActions) => {
     case ACTIONS.TOGGLE_OPEN:
       return {
         ...state,
-        open: !state.open,
+        open: action.payload.open,
+      };
+    case ACTIONS.SET_ACTIVE_ITEM:
+      return {
+        ...state,
+        activeItem: action.payload.index,
+      };
+    case ACTIONS.RESET_STATE:
+      return {
+        ...initialState,
       };
     default:
       return state;

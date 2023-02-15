@@ -1,6 +1,6 @@
-import { ACTIONS } from "./actions";
+import type { ACTIONS } from "./actions";
 
-export type ActionMap<M extends { [index: string]: any }> = {
+export type ActionMap<M extends { [index: string]: unknown }> = {
   [Key in keyof M]: M[Key] extends undefined
     ? {
         type: Key;
@@ -12,13 +12,12 @@ export type ActionMap<M extends { [index: string]: any }> = {
 };
 
 export type ReducerPayload = {
+  [ACTIONS.RESET_STATE]: undefined;
   [ACTIONS.TOGGLE_OPEN]: {
-    id: number;
-    name: string;
-    price: number;
+    open: boolean;
   };
   [ACTIONS.SET_ACTIVE_ITEM]: {
-    id: number;
+    index: number;
   };
 };
 

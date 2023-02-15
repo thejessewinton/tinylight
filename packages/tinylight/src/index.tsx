@@ -2,42 +2,48 @@
 
 import React from "react";
 import { Provider, useLightboxContext } from "./provider";
+import { ACTIONS } from "./utils/actions";
 
-const IS_SERVER = typeof window === "undefined";
-const useIsomorphicLayoutEffect = IS_SERVER
-  ? React.useEffect
-  : React.useLayoutEffect;
-
-// Get the valid children from the children prop, ignoring null or falsy values
 const getValidChildren = (children: React.ReactNode) => {
   return React.Children.toArray(children).filter((child) =>
     React.isValidElement(child)
   ) as React.ReactElement[];
 };
 
-interface TriggerProps extends React.HTMLAttributes<HTMLButtonElement> {}
+type TriggerProps = React.HTMLAttributes<HTMLButtonElement>;
 
-const Trigger = ({ children, onClick, ...rest }: TriggerProps) => {
+const Trigger = ({ children, ...rest }: TriggerProps) => {
+  const { state, dispatch } = useLightboxContext();
   return (
-    <button onClick={() => console.log("clicked")} {...rest}>
+    <button
+      onClick={() =>
+        dispatch({
+          type: ACTIONS.TOGGLE_OPEN,
+          payload: {
+            open: !state.open,
+          },
+        })
+      }
+      {...rest}
+    >
       {children}
     </button>
   );
 };
 
-interface OverlayProps extends React.HTMLAttributes<HTMLDivElement> {}
+type OverlayProps = React.HTMLAttributes<HTMLDivElement>;
 
-const Overlay = ({ children, style, ...rest }: OverlayProps) => {
+const Overlay = ({ children, ...rest }: OverlayProps) => {
   return <div {...rest}>{children}</div>;
 };
 
 // Lightbox items component
-interface ItemsProps extends React.HTMLAttributes<HTMLDivElement> {}
+type ItemsProps = React.HTMLAttributes<HTMLDivElement>;
 
 const Items = ({ children, ...rest }: ItemsProps) => {
   return (
     <div {...rest}>
-      {getValidChildren(children).map((child, index) => {
+      {getValidChildren(children).map((child) => {
         return <div key={child.key}>{child}</div>;
       })}
     </div>
@@ -50,36 +56,49 @@ interface NavProps extends React.HTMLAttributes<HTMLButtonElement> {
 }
 
 const Nav = ({ children, direction, ...rest }: NavProps) => {
-  // const handleNav = () => {
-  //   if (direction === "previous") {
-  //     if (currentItem === 0) {
-  //       toggleOpen();
-  //       setCurrentItem(items.length - 1);
-  //     } else {
-  //       setCurrentItem(currentItem - 1);
-  //     }
-  //   }
-  //   if (direction === "next") {
-  //     if (currentItem >= items.length - 1) {
-  //       toggleOpen();
-  //       setCurrentItem(items.length - 1);
-  //     } else {
-  //       setCurrentItem(currentItem + 1);
-  //     }
-  //   }
-  // };
+  const { state, dispatch } = useLightboxContext();
+  const handleNav = () => {
+    if (direction === "previous") {
+      if (state.activeItem === 0) {
+        dispatch({
+          type: ACTIONS.RESET_STATE,
+        });
+      } else {
+        dispatch({
+          type: ACTIONS.SET_ACTIVE_ITEM,
+          payload: {
+            index: state.activeItem - 1,
+          },
+        });
+      }
+    }
+    if (direction === "next") {
+      if (state.activeItem >= 1) {
+        dispatch({
+          type: ACTIONS.RESET_STATE,
+        });
+      } else {
+        dispatch({
+          type: ACTIONS.SET_ACTIVE_ITEM,
+          payload: {
+            index: state.activeItem + 1,
+          },
+        });
+      }
+    }
+  };
   const context = useLightboxContext();
   console.log(context.state);
 
   return (
-    <button onClick={() => console.log("nav handler")} {...rest}>
+    <button onClick={handleNav} {...rest}>
       {children}
     </button>
   );
 };
 
 // The whole shebang
-interface WrapperProps extends React.HTMLAttributes<HTMLDivElement> {}
+type WrapperProps = React.HTMLAttributes<HTMLDivElement>;
 
 export const Lightbox = ({ children, ...rest }: WrapperProps) => {
   return (
