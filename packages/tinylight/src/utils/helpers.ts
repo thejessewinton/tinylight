@@ -1,3 +1,5 @@
+import React from "react";
+
 // eslint-disable-next-line @typescript-eslint/ban-types
 export const isFunction = <T extends Function = Function>(
   value: unknown
@@ -8,4 +10,10 @@ export const runIfFunction = <T, U>(
   ...args: U[]
 ) => {
   return isFunction(valueOrFn) ? valueOrFn(...args) : valueOrFn;
+};
+
+export const getValidChildren = (children: React.ReactNode) => {
+  return React.Children.toArray(children).filter((child) =>
+    React.isValidElement(child)
+  ) as React.ReactElement[];
 };

@@ -26,10 +26,13 @@ const Demo = () => {
   return (
     <>
       <Lightbox>
-        <Lightbox.Trigger className="relative">Open</Lightbox.Trigger>
+        <Lightbox.Toggle className="relative">Open</Lightbox.Toggle>
         <Lightbox.Overlay className="z-0 bg-black/50 backdrop-blur" />
-        <Lightbox.Portal className="relative z-10">
-          <Lightbox.Items>
+        <Lightbox.Portal className="z-10">
+          <Lightbox.Toggle className="absolute top-0 right-0 z-10 p-4">
+            Close
+          </Lightbox.Toggle>
+          <Lightbox.Items className="mx-auto w-auto">
             {items.map((item) => (
               <Image
                 key={item.src}
@@ -40,9 +43,13 @@ const Demo = () => {
               />
             ))}
           </Lightbox.Items>
-          <div className="relative z-10">
-            <Lightbox.Nav direction="previous">Previous</Lightbox.Nav>
-            <Lightbox.Nav direction="next">Next</Lightbox.Nav>
+          <div className="absolute z-10 h-full">
+            <Lightbox.Nav direction="previous" className="left-0">
+              Previous
+            </Lightbox.Nav>
+            <Lightbox.Nav direction="next" className="right-0">
+              Next
+            </Lightbox.Nav>
           </div>
           <Lightbox.Pagination>
             {({ activeItem, itemsCount }) => (

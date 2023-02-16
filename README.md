@@ -7,6 +7,7 @@ tinylight is a tiny, ustyled, unopinionated lightbox component for React project
 ## In Progress
 - [x] Basic lightbox functionality
 - [ ] Pagination Components 
+- [ ] Thumbnail Navigation
 
 ## Roadmap
 

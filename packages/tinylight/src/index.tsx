@@ -1,9 +1,10 @@
 "use client";
 
 import React from "react";
+import { createPortal } from "react-dom";
 import { Provider, useLightboxContext } from "./provider";
 import { ACTIONS } from "./utils/actions";
-import { runIfFunction } from "./utils/helpers";
+import { getValidChildren, runIfFunction } from "./utils/helpers";
 import type { MaybeRenderProp } from "./utils/types";
 
 const IS_SERVER = typeof window === "undefined";
@@ -11,15 +12,9 @@ const useIsomorphicLayoutEffect = IS_SERVER
   ? React.useLayoutEffect
   : React.useEffect;
 
-const getValidChildren = (children: React.ReactNode) => {
-  return React.Children.toArray(children).filter((child) =>
-    React.isValidElement(child)
-  ) as React.ReactElement[];
-};
+type ToggleProps = React.HTMLAttributes<HTMLButtonElement>;
 
-type TriggerProps = React.HTMLAttributes<HTMLButtonElement>;
-
-const Trigger = ({ children, ...rest }: TriggerProps) => {
+const Toggle = ({ children, ...rest }: ToggleProps) => {
   const { state, dispatch } = useLightboxContext();
   return (
     <button
@@ -65,7 +60,7 @@ const Overlay = (props: OverlayProps) => {
 // Lightbox items component
 type PortalProps = React.HTMLAttributes<HTMLDivElement>;
 
-const Portal = ({ children, ...rest }: PortalProps) => {
+const Portal = ({ children, style, ...rest }: PortalProps) => {
   const { state, dispatch } = useLightboxContext();
 
   useIsomorphicLayoutEffect(() => {
@@ -77,7 +72,6 @@ const Portal = ({ children, ...rest }: PortalProps) => {
   }, [state.open]);
 
   useIsomorphicLayoutEffect(() => {
-    // close lightbox on escape key press
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         dispatch({
@@ -96,7 +90,56 @@ const Portal = ({ children, ...rest }: PortalProps) => {
     };
   }, []);
 
-  return <>{state.open ? <div {...rest}>{children}</div> : null}</>;
+  return (
+    <>
+      {state.open
+        ? createPortal(
+            <div style={{ position: "absolute", ...style }} {...rest}>
+              {children}
+            </div>,
+            document.body
+          )
+        : null}
+    </>
+  );
+};
+
+type ThumbProps = React.HTMLAttributes<HTMLDivElement>;
+
+const Thumbs = ({ children, ...rest }: ThumbProps) => {
+  const items = getValidChildren(children);
+  const { dispatch } = useLightboxContext();
+
+  useIsomorphicLayoutEffect(() => {
+    dispatch({
+      type: ACTIONS.SET_ITEMS_COUNT,
+      payload: {
+        length: items.length,
+      },
+    });
+  }, [dispatch, items.length]);
+
+  return (
+    <div {...rest}>
+      {items.map((child, index) => {
+        return (
+          <button
+            key={child.key}
+            onClick={() =>
+              dispatch({
+                type: ACTIONS.SET_ACTIVE_ITEM,
+                payload: {
+                  index,
+                },
+              })
+            }
+          >
+            {child}
+          </button>
+        );
+      })}
+    </div>
+  );
 };
 
 // Lightbox items component
@@ -177,7 +220,8 @@ const Nav = ({ children, direction, ...rest }: NavProps) => {
   );
 };
 
-interface PaginationProps {
+interface PaginationProps
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
   children: MaybeRenderProp<{
     activeItem: number;
     itemsCount: number;
@@ -203,7 +247,7 @@ export const Lightbox = ({ children, ...rest }: WrapperProps) => {
   return <Provider {...rest}>{children}</Provider>;
 };
 
-Lightbox.Trigger = Trigger;
+Lightbox.Toggle = Toggle;
 Lightbox.Overlay = Overlay;
 Lightbox.Portal = Portal;
 Lightbox.Items = Items;
