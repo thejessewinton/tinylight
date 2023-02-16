@@ -4,4 +4,4 @@
 
 ### Major Changes
 
-- Initial release 🎉
+- Add README to published package
