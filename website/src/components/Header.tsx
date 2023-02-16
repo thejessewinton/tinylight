@@ -1,5 +1,4 @@
 import Link from "next/link";
-import packageJson from "../../package.json";
 
 export const Header = () => {
   return (
@@ -7,7 +6,7 @@ export const Header = () => {
       <em className="flex items-center justify-center gap-4 space-x-2 py-8 font-serif text-lg">
         tinylight
         <span className="rounded-md border-b border-neutral-500 bg-neutral-300 px-1 py-0.5 text-center font-sans text-xs font-medium not-italic text-neutral-900">
-          {packageJson.version}
+          0.0.1
         </span>
       </em>
 
