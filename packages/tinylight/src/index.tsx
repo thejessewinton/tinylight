@@ -1,78 +1,179 @@
 "use client";
 
 import React from "react";
-import { create } from "zustand";
-import { clsx } from "clsx";
+import { createPortal } from "react-dom";
+import { Provider, useLightboxContext } from "./provider";
+import { ACTIONS } from "./utils/actions";
+import { getValidChildren, runIfFunction } from "./utils/helpers";
+import type { MaybeRenderProp } from "./utils/types";
 
 const IS_SERVER = typeof window === "undefined";
 const useIsomorphicLayoutEffect = IS_SERVER
-  ? React.useEffect
-  : React.useLayoutEffect;
+  ? React.useLayoutEffect
+  : React.useEffect;
 
-// Get the valid children from the children prop, ignoring null or falsy values
-const getValidChildren = (children: React.ReactNode) => {
-  return React.Children.toArray(children).filter((child) =>
-    React.isValidElement(child)
-  ) as React.ReactElement[];
-};
+type ToggleProps = React.HTMLAttributes<HTMLButtonElement>;
 
-// Create a default state for the lightbox
-export interface LightboxState {
-  isOpen: boolean;
-  items: number[];
-  length: number;
-  setLength: (length: number) => void;
-  toggleOpen: () => void;
-  currentItem: number;
-  setCurrentItem: (index: number) => void;
-}
-
-// create a Zustand store, declared as a React hook
-export const useLightboxStore = create<LightboxState>((set) => ({
-  isOpen: false,
-  items: [1, 2, 3, 4, 5],
-  length: 0,
-  setLength: (length) => set({ length }),
-  toggleOpen: () => set((state) => ({ isOpen: !state.isOpen })),
-  currentItem: 0,
-  setCurrentItem: (index: number) => set(() => ({ currentItem: index })),
-}));
-
-interface TriggerProps extends React.HTMLAttributes<HTMLButtonElement> {}
-
-const Trigger = ({ children, onClick, ...rest }: TriggerProps) => {
-  const { toggleOpen } = useLightboxStore();
-
+const Toggle = ({ children, ...rest }: ToggleProps) => {
+  const { state, dispatch } = useLightboxContext();
   return (
-    <button onClick={toggleOpen} {...rest}>
+    <button
+      onClick={() =>
+        dispatch({
+          type: ACTIONS.TOGGLE_OPEN,
+          payload: {
+            open: !state.open,
+          },
+        })
+      }
+      {...rest}
+    >
       {children}
     </button>
   );
 };
 
-interface OverlayProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface OverlayProps extends React.HTMLAttributes<HTMLDivElement> {
+  children?: never;
+}
 
-const Overlay = ({ children, style, ...rest }: OverlayProps) => {
-  return <div {...rest}>{children}</div>;
+const Overlay = (props: OverlayProps) => {
+  const { state } = useLightboxContext();
+  return (
+    <>
+      {state.open ? (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+          }}
+          {...props}
+        />
+      ) : null}
+    </>
+  );
 };
 
 // Lightbox items component
-interface ItemsProps extends React.HTMLAttributes<HTMLDivElement> {}
+type PortalProps = React.HTMLAttributes<HTMLDivElement>;
 
-const Items = ({ children, ...rest }: ItemsProps) => {
-  const { isOpen, currentItem } = useLightboxStore();
+const Portal = ({ children, style, ...rest }: PortalProps) => {
+  const { state, dispatch } = useLightboxContext();
+
+  useIsomorphicLayoutEffect(() => {
+    if (state.open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      null;
+    }
+  }, [state.open]);
+
+  useIsomorphicLayoutEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        dispatch({
+          type: ACTIONS.TOGGLE_OPEN,
+          payload: {
+            open: false,
+          },
+        });
+      }
+    };
+
+    document.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, []);
+
+  return (
+    <>
+      {state.open
+        ? createPortal(
+            <div style={{ position: "absolute", ...style }} {...rest}>
+              {children}
+            </div>,
+            document.body
+          )
+        : null}
+    </>
+  );
+};
+
+type ThumbProps = React.HTMLAttributes<HTMLDivElement>;
+
+const Thumbs = ({ children, ...rest }: ThumbProps) => {
+  const items = getValidChildren(children);
+  const { dispatch } = useLightboxContext();
+
+  useIsomorphicLayoutEffect(() => {
+    dispatch({
+      type: ACTIONS.SET_ITEMS_COUNT,
+      payload: {
+        length: items.length,
+      },
+    });
+  }, [dispatch, items.length]);
+
   return (
     <div {...rest}>
-      {isOpen ? getValidChildren(children)[currentItem] : null}
+      {items.map((child, index) => {
+        return (
+          <button
+            key={child.key}
+            onClick={() =>
+              dispatch({
+                type: ACTIONS.SET_ACTIVE_ITEM,
+                payload: {
+                  index,
+                },
+              })
+            }
+          >
+            {child}
+          </button>
+        );
+      })}
     </div>
   );
 };
 
-// Lightbox item component
-interface ItemProps extends React.HTMLAttributes<HTMLDivElement> {}
+// Lightbox items component
+type ItemsProps = React.HTMLAttributes<HTMLDivElement>;
 
-const Item = ({ children, ...rest }: ItemProps) => {
-  return <div {...rest}>{children}</div>;
+const Items = ({ children, ...rest }: ItemsProps) => {
+  const items = getValidChildren(children);
+  const { state, dispatch } = useLightboxContext();
+
+  useIsomorphicLayoutEffect(() => {
+    dispatch({
+      type: ACTIONS.SET_ITEMS_COUNT,
+      payload: {
+        length: items.length,
+      },
+    });
+  }, [dispatch, items.length]);
+
+  return (
+    <div {...rest}>
+      {items.map((child, index) => {
+        return (
+          <div
+            key={child.key}
+            style={{
+              display: state.activeItem === index ? "block" : "none",
+            }}
+          >
+            {child}
+          </div>
+        );
+      })}
+    </div>
+  );
 };
 
 // Lightbox navigation component
@@ -81,25 +182,37 @@ interface NavProps extends React.HTMLAttributes<HTMLButtonElement> {
 }
 
 const Nav = ({ children, direction, ...rest }: NavProps) => {
-  const { items, currentItem, setCurrentItem, toggleOpen } = useLightboxStore();
-
+  const { state, dispatch } = useLightboxContext();
   const handleNav = () => {
     if (direction === "previous") {
-      if (currentItem === 0) {
-        toggleOpen();
+      if (state.activeItem === 0) {
+        dispatch({
+          type: ACTIONS.RESET_STATE,
+        });
       } else {
-        setCurrentItem(currentItem - 1);
+        dispatch({
+          type: ACTIONS.SET_ACTIVE_ITEM,
+          payload: {
+            index: state.activeItem - 1,
+          },
+        });
       }
     }
     if (direction === "next") {
-      if (currentItem >= items.length - 1) {
-        toggleOpen();
+      if (state.activeItem === state.itemsCount - 1) {
+        dispatch({
+          type: ACTIONS.RESET_STATE,
+        });
       } else {
-        setCurrentItem(currentItem + 1);
+        dispatch({
+          type: ACTIONS.SET_ACTIVE_ITEM,
+          payload: {
+            index: state.activeItem + 1,
+          },
+        });
       }
     }
   };
-
   return (
     <button onClick={handleNav} {...rest}>
       {children}
@@ -107,30 +220,36 @@ const Nav = ({ children, direction, ...rest }: NavProps) => {
   );
 };
 
-// The whole shebang
-interface WrapperProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface PaginationProps
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  children: MaybeRenderProp<{
+    activeItem: number;
+    itemsCount: number;
+  }>;
+}
 
-export const Lightbox = ({ children, ...rest }: WrapperProps) => {
-  const { toggleOpen } = useLightboxStore();
-
-  useIsomorphicLayoutEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        toggleOpen();
-      }
-    };
-
-    window.addEventListener("keydown", handleEscape);
-
-    return () => {
-      window.removeEventListener("keydown", handleEscape);
-    };
-  }, []);
-  return <div {...rest}>{children}</div>;
+const Pagination = ({ children }: PaginationProps) => {
+  const { state } = useLightboxContext();
+  return (
+    <>
+      {runIfFunction(children, {
+        activeItem: state.activeItem,
+        itemsCount: state.itemsCount,
+      })}
+    </>
+  );
 };
 
-Lightbox.Trigger = Trigger;
+// The whole shebang
+type WrapperProps = React.HTMLAttributes<HTMLDivElement>;
+
+export const Lightbox = ({ children, ...rest }: WrapperProps) => {
+  return <Provider {...rest}>{children}</Provider>;
+};
+
+Lightbox.Toggle = Toggle;
 Lightbox.Overlay = Overlay;
+Lightbox.Portal = Portal;
 Lightbox.Items = Items;
-Lightbox.Item = Item;
 Lightbox.Nav = Nav;
+Lightbox.Pagination = Pagination;

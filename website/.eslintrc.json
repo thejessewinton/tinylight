@@ -19,6 +19,7 @@
     "react/react-in-jsx-scope": "off",
     "react/jsx-uses-react": "error",
     "react/jsx-uses-vars": "error",
-    "prefer-const": "error"
+    "prefer-const": "error",
+    "@typescript-eslint/consistent-type-imports": "warn"
   }
 }
