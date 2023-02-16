@@ -5,7 +5,7 @@
     "clean": "turbo run clean && rm -rf node_modules",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "version-packages": "changeset version",
-    "publish-packages": "changeset publish"
+    "publish": "turbo run build --filter=website^... && changeset publish"
   },
   "devDependencies": {
     "@changesets/cli": "^2.26.0",
