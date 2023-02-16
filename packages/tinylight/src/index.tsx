@@ -38,29 +38,65 @@ const Trigger = ({ children, ...rest }: TriggerProps) => {
   );
 };
 
-type OverlayProps = React.HTMLAttributes<HTMLDivElement>;
-
-const Overlay = ({ children, ...rest }: OverlayProps) => {
-  return <div {...rest}>{children}</div>;
-};
-
-interface ItemProps extends React.HTMLAttributes<HTMLDivElement> {
-  index: number;
+interface OverlayProps extends React.HTMLAttributes<HTMLDivElement> {
+  children?: never;
 }
 
-const Item = ({ children, index, style, ...rest }: ItemProps) => {
+const Overlay = (props: OverlayProps) => {
   const { state } = useLightboxContext();
   return (
-    <div
-      style={{
-        display: state.activeItem === index ? "block" : "none",
-        ...style,
-      }}
-      {...rest}
-    >
-      {children}
-    </div>
+    <>
+      {state.open ? (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+          }}
+          {...props}
+        />
+      ) : null}
+    </>
   );
+};
+
+// Lightbox items component
+type PortalProps = React.HTMLAttributes<HTMLDivElement>;
+
+const Portal = ({ children, ...rest }: PortalProps) => {
+  const { state, dispatch } = useLightboxContext();
+
+  useIsomorphicLayoutEffect(() => {
+    if (state.open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      null;
+    }
+  }, [state.open]);
+
+  useIsomorphicLayoutEffect(() => {
+    // close lightbox on escape key press
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        dispatch({
+          type: ACTIONS.TOGGLE_OPEN,
+          payload: {
+            open: false,
+          },
+        });
+      }
+    };
+
+    document.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, []);
+
+  return <>{state.open ? <div {...rest}>{children}</div> : null}</>;
 };
 
 // Lightbox items component
@@ -68,7 +104,7 @@ type ItemsProps = React.HTMLAttributes<HTMLDivElement>;
 
 const Items = ({ children, ...rest }: ItemsProps) => {
   const items = getValidChildren(children);
-  const { dispatch } = useLightboxContext();
+  const { state, dispatch } = useLightboxContext();
 
   useIsomorphicLayoutEffect(() => {
     dispatch({
@@ -83,9 +119,14 @@ const Items = ({ children, ...rest }: ItemsProps) => {
     <div {...rest}>
       {items.map((child, index) => {
         return (
-          <Item index={index} key={child.key}>
+          <div
+            key={child.key}
+            style={{
+              display: state.activeItem === index ? "block" : "none",
+            }}
+          >
             {child}
-          </Item>
+          </div>
         );
       })}
     </div>
@@ -115,7 +156,7 @@ const Nav = ({ children, direction, ...rest }: NavProps) => {
       }
     }
     if (direction === "next") {
-      if (state.activeItem >= state.itemsCount) {
+      if (state.activeItem === state.itemsCount - 1) {
         dispatch({
           type: ACTIONS.RESET_STATE,
         });
@@ -159,16 +200,12 @@ const Pagination = ({ children }: PaginationProps) => {
 type WrapperProps = React.HTMLAttributes<HTMLDivElement>;
 
 export const Lightbox = ({ children, ...rest }: WrapperProps) => {
-  return (
-    <Provider>
-      <div {...rest}>{children}</div>
-    </Provider>
-  );
+  return <Provider {...rest}>{children}</Provider>;
 };
 
 Lightbox.Trigger = Trigger;
 Lightbox.Overlay = Overlay;
-Lightbox.Item = Item;
+Lightbox.Portal = Portal;
 Lightbox.Items = Items;
 Lightbox.Nav = Nav;
 Lightbox.Pagination = Pagination;

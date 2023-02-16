@@ -35,7 +35,9 @@ const reducer = (state: typeof initialState, action: ReducerActions) => {
       };
     case ACTIONS.RESET_STATE:
       return {
-        ...initialState,
+        ...state,
+        open: false,
+        activeItem: 0,
       };
     default:
       return state;

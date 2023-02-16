@@ -26,29 +26,32 @@ const Demo = () => {
   return (
     <>
       <Lightbox>
-        <Lightbox.Trigger>Open</Lightbox.Trigger>
-        <Lightbox.Items>
-          {items.map((item, i) => (
-            <Image
-              key={item.src}
-              src={item.src}
-              alt={item.alt}
-              height={600}
-              width={800}
-            />
-          ))}
-        </Lightbox.Items>
-        <div className="">
-          <Lightbox.Nav direction="previous">Previous</Lightbox.Nav>
-          <Lightbox.Nav direction="next">Next</Lightbox.Nav>
-        </div>
-        <Lightbox.Pagination>
-          {({ activeItem, itemsCount }) => (
-            <p>
-              {activeItem + 1} of {itemsCount}
-            </p>
-          )}
-        </Lightbox.Pagination>
+        <Lightbox.Trigger className="relative">Open</Lightbox.Trigger>
+        <Lightbox.Overlay className="z-0 bg-black/50 backdrop-blur" />
+        <Lightbox.Portal className="relative z-10">
+          <Lightbox.Items>
+            {items.map((item) => (
+              <Image
+                key={item.src}
+                src={item.src}
+                alt={item.alt}
+                height={600}
+                width={800}
+              />
+            ))}
+          </Lightbox.Items>
+          <div className="relative z-10">
+            <Lightbox.Nav direction="previous">Previous</Lightbox.Nav>
+            <Lightbox.Nav direction="next">Next</Lightbox.Nav>
+          </div>
+          <Lightbox.Pagination>
+            {({ activeItem, itemsCount }) => (
+              <p>
+                {activeItem + 1} of {itemsCount}
+              </p>
+            )}
+          </Lightbox.Pagination>
+        </Lightbox.Portal>
       </Lightbox>
     </>
   );
