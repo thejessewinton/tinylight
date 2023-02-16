@@ -8,7 +8,7 @@ const initialState = {
   activeItem: 0,
 };
 
-const LightboxContext = React.createContext<{
+export const LightboxContext = React.createContext<{
   state: typeof initialState;
   dispatch: React.Dispatch<ReducerActions>;
 }>({

@@ -26,3 +26,7 @@ export type ReducerPayload = {
 
 export type ReducerActions =
   ActionMap<ReducerPayload>[keyof ActionMap<ReducerPayload>];
+
+export type MaybeRenderProp<P> =
+  | React.ReactNode
+  | ((props: P) => React.ReactNode);

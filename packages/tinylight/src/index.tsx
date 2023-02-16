@@ -3,6 +3,8 @@
 import React from "react";
 import { Provider, useLightboxContext } from "./provider";
 import { ACTIONS } from "./utils/actions";
+import { runIfFunction } from "./utils/helpers";
+import type { MaybeRenderProp } from "./utils/types";
 
 const IS_SERVER = typeof window === "undefined";
 const useIsomorphicLayoutEffect = IS_SERVER
@@ -66,8 +68,7 @@ type ItemsProps = React.HTMLAttributes<HTMLDivElement>;
 
 const Items = ({ children, ...rest }: ItemsProps) => {
   const items = getValidChildren(children);
-  const { state, dispatch } = useLightboxContext();
-  console.log(state);
+  const { dispatch } = useLightboxContext();
 
   useIsomorphicLayoutEffect(() => {
     dispatch({
@@ -135,18 +136,22 @@ const Nav = ({ children, direction, ...rest }: NavProps) => {
   );
 };
 
-interface PaginationProps extends React.HTMLAttributes<HTMLDivElement> {
-  children: React.ReactElement;
+interface PaginationProps {
+  children: MaybeRenderProp<{
+    activeItem: number;
+    itemsCount: number;
+  }>;
 }
 
-const Pagination = ({ children, ...rest }: PaginationProps) => {
+const Pagination = ({ children }: PaginationProps) => {
   const { state } = useLightboxContext();
   return (
-    <div {...rest}>
-      {React.Children.map(children, (child) =>
-        React.cloneElement(child, { activeItem: state.activeItem })
-      )}
-    </div>
+    <>
+      {runIfFunction(children, {
+        activeItem: state.activeItem,
+        itemsCount: state.itemsCount,
+      })}
+    </>
   );
 };
 
@@ -163,6 +168,7 @@ export const Lightbox = ({ children, ...rest }: WrapperProps) => {
 
 Lightbox.Trigger = Trigger;
 Lightbox.Overlay = Overlay;
+Lightbox.Item = Item;
 Lightbox.Items = Items;
 Lightbox.Nav = Nav;
 Lightbox.Pagination = Pagination;

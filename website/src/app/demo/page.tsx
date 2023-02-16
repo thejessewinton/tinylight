@@ -28,7 +28,7 @@ const Demo = () => {
       <Lightbox>
         <Lightbox.Trigger>Open</Lightbox.Trigger>
         <Lightbox.Items>
-          {items.map((item) => (
+          {items.map((item, i) => (
             <Image
               key={item.src}
               src={item.src}
@@ -42,7 +42,13 @@ const Demo = () => {
           <Lightbox.Nav direction="previous">Previous</Lightbox.Nav>
           <Lightbox.Nav direction="next">Next</Lightbox.Nav>
         </div>
-        <Lightbox.Pagination></Lightbox.Pagination>
+        <Lightbox.Pagination>
+          {({ activeItem, itemsCount }) => (
+            <p>
+              {activeItem + 1} of {itemsCount}
+            </p>
+          )}
+        </Lightbox.Pagination>
       </Lightbox>
     </>
   );
