@@ -5,3 +5,7 @@ dist
 .env
 .env.local
 !.env.example
+*.tsbuildinfo
+next-env.d.ts
+.vscode
+.contentlayer

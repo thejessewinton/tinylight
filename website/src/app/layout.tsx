@@ -1,8 +1,6 @@
 import { Inter, Newsreader, IBM_Plex_Mono as Mono } from "@next/font/google";
-import { Header } from "@/components/Header";
 import "@/styles/globals.css";
-import "@/styles/code-blocks.css";
-import { Navigation } from "@/components/Navigation";
+import { Header } from "@/components/Header";
 
 const inter = Inter({ variable: "--font-sans", subsets: ["latin"] });
 const newsreader = Newsreader({ variable: "--font-serif", subsets: ["latin"] });
@@ -27,8 +25,8 @@ export default function RootLayout({
       <body className="flex min-h-screen flex-col scroll-smooth leading-loose antialiased selection:bg-neutral-700 dark:bg-neutral-900 dark:text-neutral-200">
         <Header />
         <main className="mx-auto flex w-full flex-grow">
-          <Navigation />
-          <div className="flex flex-1 flex-col items-center justify-center p-8">
+          {/* <Navigation /> */}
+          <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col p-8">
             {children}
           </div>
         </main>
