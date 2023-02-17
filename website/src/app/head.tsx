@@ -18,7 +18,7 @@ export default function Head() {
       <meta property="twitter:title" content={seo.title} />
       <meta property="og:title" content={seo.title} />
       <meta property="og:url" content={seo.image} />
-      <meta property="og:site_name" content="Ryan Spacone" />
+      <meta property="og:site_name" content={seo.title} />
       <meta property="og:type" content="website" />
       <meta property="og:image" content={seo.image} />
       <meta property="twitter:card" content="summary_large_image" />
