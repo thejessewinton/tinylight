@@ -17,11 +17,11 @@
 }
 
 .prose a {
-  @apply decoration-neutral-400 decoration-[0.1em] underline-offset-2 transition-all dark:decoration-neutral-600;
+  @apply decoration-neutral-600 decoration-[0.1em] underline-offset-2 transition-all;
 }
 
 .prose .anchor:after {
-  @apply text-neutral-300 dark:text-neutral-700;
+  @apply text-neutral-700;
   content: "#";
 }
 
@@ -34,11 +34,11 @@
 }
 
 .prose code {
-  @apply rounded-lg border border-neutral-100 bg-neutral-100 px-1 py-0.5 text-neutral-800 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-200;
+  @apply rounded-lg border  border-neutral-800 bg-neutral-900 px-1 py-0.5 text-neutral-200;
 }
 
 .prose pre code {
-  @apply p-0 text-neutral-800 dark:text-neutral-200;
+  @apply p-0 text-neutral-200;
   border: initial;
 }
 

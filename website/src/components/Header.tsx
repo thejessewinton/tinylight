@@ -54,7 +54,7 @@ export const Header = () => {
       <Link
         href={REPO}
         target="_blank"
-        className="hidden items-center gap-1 rounded-md border-b border-neutral-500 bg-neutral-300 px-2 py-1.5 text-xs font-medium text-neutral-900 md:flex"
+        className="flex items-center gap-1 rounded-md border-b border-neutral-500 bg-neutral-300 px-2 py-1.5 text-xs font-medium text-neutral-900"
       >
         <svg
           viewBox="0 0 24 24"

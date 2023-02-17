@@ -22,7 +22,7 @@ export default function RootLayout({
     >
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <link href="/favicon.ico" rel="shortcut icon" />
-      <body className="flex min-h-screen flex-col scroll-smooth leading-loose antialiased selection:bg-neutral-700 dark:bg-neutral-900 dark:text-neutral-200">
+      <body className="flex min-h-screen flex-col scroll-smooth bg-neutral-900 leading-loose text-neutral-200 antialiased selection:bg-neutral-700">
         <Header />
         <main className="mx-auto flex w-full flex-grow">
           {/* <Navigation /> */}

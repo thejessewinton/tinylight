@@ -21,7 +21,6 @@ const DocPage = ({ params }: DocPageProps) => {
       <div className="mx-auto w-full min-w-0">
         <Mdx code={doc.body.code} />
       </div>
-      <div className="hidden text-sm xl:block"></div>
     </>
   );
 };
