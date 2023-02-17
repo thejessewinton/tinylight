@@ -4,27 +4,8 @@ import Image from "next/image";
 import { useMDXComponent } from "next-contentlayer/hooks";
 
 import { clsx } from "clsx";
-import Link from "next/link";
 
 type ComponentProps = { className?: string };
-
-const CustomLink = (props) => {
-  const href = props.href;
-
-  if (href.startsWith("/")) {
-    return (
-      <Link href={href} {...props}>
-        {props.children}
-      </Link>
-    );
-  }
-
-  if (href.startsWith("#")) {
-    return <a {...props} />;
-  }
-
-  return <a target="_blank" rel="noopener noreferrer" {...props} />;
-};
 
 const components = {
   h1: ({ className, ...props }: ComponentProps) => (
@@ -82,7 +63,7 @@ const components = {
     />
   ),
   a: ({ className, ...props }: ComponentProps) => (
-    <CustomLink
+    <a
       className={clsx(
         "border-b border-dotted border-neutral-200 font-medium",
         className

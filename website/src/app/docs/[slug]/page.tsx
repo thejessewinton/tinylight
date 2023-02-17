@@ -8,7 +8,7 @@ interface DocPageProps {
   };
 }
 
-export default async function DocPage({ params }: DocPageProps) {
+const DocPage = ({ params }: DocPageProps) => {
   const slug = params?.slug || "";
   const doc = allDocs.find((doc) => doc.slugAsParams === slug);
 
@@ -24,4 +24,6 @@ export default async function DocPage({ params }: DocPageProps) {
       <div className="hidden text-sm xl:block"></div>
     </>
   );
-}
+};
+
+export default DocPage;
