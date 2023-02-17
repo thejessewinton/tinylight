@@ -253,4 +253,3 @@ Lightbox.Portal = Portal;
 Lightbox.Items = Items;
 Lightbox.Nav = Nav;
 Lightbox.Pagination = Pagination;
-Lightbox.Thumbs = Thumbs;
