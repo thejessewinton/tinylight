@@ -1,5 +1,6 @@
 "use client";
 
+import { Code } from "@/components/Code";
 import Image from "next/image";
 import { Lightbox } from "tinylight";
 

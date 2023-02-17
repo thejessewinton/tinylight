@@ -1,9 +1,16 @@
-import { Inter, Newsreader } from "@next/font/google";
-import "@/globals.css";
+import { Inter, Newsreader, IBM_Plex_Mono as Mono } from "@next/font/google";
 import { Header } from "@/components/Header";
+import "@/styles/globals.css";
+import "@/styles/code-blocks.css";
+import { Navigation } from "@/components/Navigation";
 
 const inter = Inter({ variable: "--font-sans", subsets: ["latin"] });
 const newsreader = Newsreader({ variable: "--font-serif", subsets: ["latin"] });
+const mono = Mono({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-mono",
+});
 
 export default function RootLayout({
   children,
@@ -11,14 +18,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${newsreader.variable}`}>
+    <html
+      lang="en"
+      className={`${inter.variable} ${newsreader.variable} ${mono.variable}`}
+    >
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <link href="/favicon.ico" rel="shortcut icon" />
       <body className="flex min-h-screen flex-col scroll-smooth leading-loose antialiased selection:bg-neutral-700 dark:bg-neutral-900 dark:text-neutral-200">
         <Header />
         <main className="mx-auto flex w-full flex-grow">
-          {/* <Navigation /> */}
-          <div className="flex flex-1 flex-col items-center justify-center">
+          <Navigation />
+          <div className="flex flex-1 flex-col items-center justify-center p-8">
             {children}
           </div>
         </main>

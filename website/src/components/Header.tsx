@@ -5,7 +5,7 @@ export const Header = () => {
     <header className="mx-auto flex h-14 w-full items-center justify-between border-b border-dotted border-neutral-700 px-5 sm:px-8 lg:h-20">
       <em className="flex items-center justify-center gap-4 space-x-2 py-8 font-serif text-lg">
         tinylight
-        <span className="rounded-md border-b border-neutral-500 bg-neutral-300 px-1 py-0.5 text-center font-sans text-xs font-medium not-italic text-neutral-900">
+        <span className="rounded-md border-b border-neutral-500 bg-neutral-300 px-1 py-0.5 text-center font-sans text-xs font-medium not-italic text-neutral-900 selection:text-white">
           0.0.1
         </span>
       </em>
