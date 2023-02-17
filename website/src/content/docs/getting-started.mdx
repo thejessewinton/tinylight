@@ -1,0 +1,80 @@
+---
+title: Lightbox
+description: Advanced code blocks with highlighting, file names and more.
+---
+
+> **Please note that tinylight is currently in a very early beta stage.** It is not recommended for use in production quite yet, but will be ready within the next few weeks.
+
+# Getting Started
+
+The core principle behind tinylight has take a lot of inspiration from [HeadlessUI](https://headlessui.com) or [Radix](https://radix-ui.com). I'm a big fan of both libraries and I wanted to create something similar for components that are less often considered. Right now, that means lightboxes, but the idea is to expand this to some other components as well. Right now the roadmap includes an oEmbed container for Vimeo and YouTube players, and HTML video and audio components.
+
+---
+
+## Installation
+
+First, install tinylight using your package manager of choice.
+
+```bash title="pnpm (recommended)"
+pnpm install tinylight
+```
+
+```bash title="yarn"
+yarn install tinylight
+```
+
+```bash title="npm"
+npm install tinylight
+```
+
+Then, import it into your component:
+
+```tsx
+import { Lightbox } from "tinylight";
+```
+
+And build away!
+
+---
+
+## Usage
+
+I'm in process of building out more detailed examples, but in the meantime here is a fully-functional, but unstyled, version of the component with all currently stable features.
+
+```tsx title="Lightbox.tsx"
+import { Lightbox } from "tinylight";
+
+<Lightbox>
+  <Lightbox.Toggle>Open</Lightbox.Toggle>
+  <Lightbox.Overlay />
+  <Lightbox.Portal>
+    <Lightbox.Toggle>Close</Lightbox.Toggle>
+    <Lightbox.Items>
+      {items.map((item) => (
+        <img key={item.src} src={item.src} alt={item.alt} />
+      ))}
+    </Lightbox.Items>
+
+    <Lightbox.Nav direction="previous" className="left-0">
+      Previous
+    </Lightbox.Nav>
+    <Lightbox.Nav direction="next" className="right-0">
+      Next
+    </Lightbox.Nav>
+
+    <Lightbox.Pagination>
+      {({ activeItem, itemsCount }) => (
+        <>
+          {activeItem} of {itemsCount}
+        </>
+      )}
+    </Lightbox.Pagination>
+  </Lightbox.Portal>
+</Lightbox>;
+```
+
+---
+
+## Suggestions
+
+If you have something you'd like to see added to the API, please open an issue on the [GitHub repository](https://github.com/thejessewinton/tinylight) and I'll try to get to is ASAP.

@@ -233,7 +233,7 @@ const Pagination = ({ children }: PaginationProps) => {
   return (
     <>
       {runIfFunction(children, {
-        activeItem: state.activeItem,
+        activeItem: state.activeItem + 1,
         itemsCount: state.itemsCount,
       })}
     </>
