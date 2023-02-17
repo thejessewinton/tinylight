@@ -2,11 +2,23 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
-      "contentlayer/generated": ["./.contentlayer/generated"]
-    }
+      "@/*": [
+        "./src/*"
+      ],
+      "contentlayer/generated": [
+        "./.contentlayer/generated"
+      ]
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
-  "exclude": ["build", "node_modules"],
+  "exclude": [
+    "build",
+    "node_modules"
+  ],
   "extends": "tsconfig/nextjs.json",
   "include": [
     "next-env.d.ts",
