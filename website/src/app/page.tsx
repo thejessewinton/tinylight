@@ -3,16 +3,16 @@ import Link from "next/link";
 const Index = () => {
   return (
     <div className="flex h-full flex-col items-center justify-center">
-      <h1 className="text-center font-serif text-6xl font-light italic text-neutral-200">
+      <h1 className="text-center font-serif text-5xl font-light italic text-neutral-200 md:text-6xl">
         tinylight
         <span className="font-sans font-light not-italic"> primitives</span>
       </h1>
-      <p className="mt-4 text-center font-sans text-xl text-neutral-300">
+      <p className="text-medium mt-4 text-center font-sans text-neutral-300">
         Lightweight, unstyled lightbox primitives for React.
       </p>
       <Link
         href="/docs/getting-started"
-        className="mt-16 hidden items-center gap-3 rounded-md border-b border-neutral-500 bg-neutral-300 px-5 py-1.5 font-medium text-neutral-900 md:flex"
+        className="mt-16 flex items-center gap-3 rounded-md border-b border-neutral-500 bg-neutral-300 px-5 py-1.5 font-medium text-neutral-900"
       >
         Get Started
         <svg
