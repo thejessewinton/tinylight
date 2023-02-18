@@ -1,7 +1,6 @@
 import React from "react";
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export const isFunction = <T extends Function = Function>(
+const isFunction = <T extends CallableFunction = CallableFunction>(
   value: unknown
 ): value is T => typeof value === "function";
 
