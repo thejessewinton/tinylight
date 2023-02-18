@@ -66,7 +66,11 @@ const reducer = (state: typeof initialState, action: DispatchActions) => {
   }
 };
 
-export const Provider = ({ children }: React.PropsWithChildren) => {
+interface ProviderProps {
+  children: React.ReactNode;
+}
+
+export const Provider = ({ children }: ProviderProps) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   return (
     <LightboxContext.Provider

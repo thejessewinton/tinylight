@@ -6,14 +6,9 @@ import { getValidChildren, runIfFunction } from "../../utils/helpers";
 import type { MaybeRenderProp } from "../../types";
 import { ACTIONS, Provider, useLightboxContext } from "./provider";
 
-const IS_SERVER = typeof window === "undefined";
-const useIsomorphicLayoutEffect = IS_SERVER
-  ? React.useLayoutEffect
-  : React.useEffect;
-
 type ToggleProps = React.HTMLAttributes<HTMLButtonElement>;
 
-const Toggle = ({ children, ...rest }: ToggleProps) => {
+const Toggle = ({ children, ...props }: ToggleProps) => {
   const { state, dispatch } = useLightboxContext();
   return (
     <button
@@ -25,44 +20,20 @@ const Toggle = ({ children, ...rest }: ToggleProps) => {
           },
         })
       }
-      {...rest}
+      {...props}
     >
       {children}
     </button>
   );
 };
 
-interface OverlayProps extends React.HTMLAttributes<HTMLDivElement> {
-  children?: never;
-}
-
-const Overlay = (props: OverlayProps) => {
-  const { state } = useLightboxContext();
-  return (
-    <>
-      {state.open ? (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-          }}
-          {...props}
-        />
-      ) : null}
-    </>
-  );
-};
-
 // Lightbox items component
 type PortalProps = React.HTMLAttributes<HTMLDivElement>;
 
-const Portal = ({ children, style, ...rest }: PortalProps) => {
+const Portal = ({ children, ...props }: PortalProps) => {
   const { state, dispatch } = useLightboxContext();
 
-  useIsomorphicLayoutEffect(() => {
+  React.useEffect(() => {
     if (state.open) {
       document.body.style.overflow = "hidden";
     } else {
@@ -70,7 +41,7 @@ const Portal = ({ children, style, ...rest }: PortalProps) => {
     }
   }, [state.open]);
 
-  useIsomorphicLayoutEffect(() => {
+  React.useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         dispatch({
@@ -87,17 +58,12 @@ const Portal = ({ children, style, ...rest }: PortalProps) => {
     return () => {
       document.removeEventListener("keydown", handleEscape);
     };
-  }, []);
+  }, [dispatch]);
 
   return (
     <>
       {state.open
-        ? createPortal(
-            <div style={{ position: "absolute", ...style }} {...rest}>
-              {children}
-            </div>,
-            document.body
-          )
+        ? createPortal(<div {...props}>{children}</div>, document.body)
         : null}
     </>
   );
@@ -105,11 +71,11 @@ const Portal = ({ children, style, ...rest }: PortalProps) => {
 
 type ThumbProps = React.HTMLAttributes<HTMLDivElement>;
 
-const Thumbs = ({ children, ...rest }: ThumbProps) => {
+const Thumbs = ({ children, ...props }: ThumbProps) => {
   const items = getValidChildren(children);
   const { dispatch } = useLightboxContext();
 
-  useIsomorphicLayoutEffect(() => {
+  React.useEffect(() => {
     dispatch({
       type: ACTIONS.SET_ITEMS_COUNT,
       payload: {
@@ -119,7 +85,7 @@ const Thumbs = ({ children, ...rest }: ThumbProps) => {
   }, [dispatch, items.length]);
 
   return (
-    <div {...rest}>
+    <div {...props}>
       {items.map((child, index) => {
         return (
           <button
@@ -144,11 +110,11 @@ const Thumbs = ({ children, ...rest }: ThumbProps) => {
 // Lightbox items component
 type ItemsProps = React.HTMLAttributes<HTMLDivElement>;
 
-const Items = ({ children, ...rest }: ItemsProps) => {
+const Items = ({ children, ...props }: ItemsProps) => {
   const items = getValidChildren(children);
   const { state, dispatch } = useLightboxContext();
 
-  useIsomorphicLayoutEffect(() => {
+  React.useEffect(() => {
     dispatch({
       type: ACTIONS.SET_ITEMS_COUNT,
       payload: {
@@ -158,11 +124,12 @@ const Items = ({ children, ...rest }: ItemsProps) => {
   }, [dispatch, items.length]);
 
   return (
-    <div {...rest}>
+    <div {...props}>
       {items.map((child, index) => {
         return (
           <div
             key={child.key}
+            data-active={state.activeItem === index}
             style={{
               display: state.activeItem === index ? "block" : "none",
             }}
@@ -180,7 +147,7 @@ interface NavProps extends React.HTMLAttributes<HTMLButtonElement> {
   direction: "next" | "previous";
 }
 
-const Nav = ({ children, direction, ...rest }: NavProps) => {
+const Nav = ({ children, direction, ...props }: NavProps) => {
   const { state, dispatch } = useLightboxContext();
   const handleNav = () => {
     if (direction === "previous") {
@@ -213,7 +180,7 @@ const Nav = ({ children, direction, ...rest }: NavProps) => {
     }
   };
   return (
-    <button onClick={handleNav} {...rest}>
+    <button onClick={handleNav} {...props}>
       {children}
     </button>
   );
@@ -242,13 +209,15 @@ const Pagination = ({ children }: PaginationProps) => {
 // The whole shebang
 type WrapperProps = React.HTMLAttributes<HTMLDivElement>;
 
-export const Lightbox = ({ children, ...rest }: WrapperProps) => {
-  return <Provider {...rest}>{children}</Provider>;
+const Wrapper = ({ children, ...props }: WrapperProps) => {
+  return <Provider {...props}>{children}</Provider>;
 };
 
-Lightbox.Toggle = Toggle;
-Lightbox.Overlay = Overlay;
-Lightbox.Portal = Portal;
-Lightbox.Items = Items;
-Lightbox.Nav = Nav;
-Lightbox.Pagination = Pagination;
+export const Lightbox = Object.assign(Wrapper, {
+  Toggle,
+  Portal,
+  Thumbs,
+  Items,
+  Nav,
+  Pagination,
+});
