@@ -1,6 +1,13 @@
 import React, { useReducer } from "react";
-import { ACTIONS } from "./utils/actions";
-import type { ReducerActions } from "./utils/types";
+import type { ReducerActions } from "../../types";
+
+export const ACTIONS = {
+  RESET_STATE: "RESET_STATE",
+  TOGGLE_OPEN: "TOGGLE_OPEN",
+  SET_ITEMS_COUNT: "SET_ITEMS_COUNT",
+  SET_ACTIVE_ITEM: "SET_ACTIVE_ITEM",
+  SET_ITEM: "SET_ITEM",
+} as const;
 
 const initialState = {
   open: false,
@@ -8,15 +15,30 @@ const initialState = {
   activeItem: 0,
 };
 
+type ReducerPayload = {
+  [ACTIONS.RESET_STATE]: undefined;
+  [ACTIONS.TOGGLE_OPEN]: {
+    open: boolean;
+  };
+  [ACTIONS.SET_ITEMS_COUNT]: {
+    length: number;
+  };
+  [ACTIONS.SET_ACTIVE_ITEM]: {
+    index: number;
+  };
+};
+
+type DispatchActions = ReducerActions<ReducerPayload>;
+
 export const LightboxContext = React.createContext<{
   state: typeof initialState;
-  dispatch: React.Dispatch<ReducerActions>;
+  dispatch: React.Dispatch<DispatchActions>;
 }>({
   state: initialState,
   dispatch: () => null,
 });
 
-const reducer = (state: typeof initialState, action: ReducerActions) => {
+const reducer = (state: typeof initialState, action: DispatchActions) => {
   switch (action.type) {
     case ACTIONS.TOGGLE_OPEN:
       return {
