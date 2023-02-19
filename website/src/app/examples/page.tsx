@@ -2,6 +2,7 @@
 
 import { Lightbox } from "tinylight";
 import Image from "next/image";
+import { useState } from "react";
 
 const items = [
   {
@@ -19,13 +20,21 @@ const items = [
 ];
 
 const Examples = () => {
+  const [isOpen, setIsOpen] = useState(true);
+
+  function closeModal() {
+    setIsOpen(false);
+  }
+
   return (
-    <Lightbox>
-      <Lightbox.Toggle>Open</Lightbox.Toggle>
-      <Lightbox.Portal className="fixed inset-0 z-10">
+    <>
+      <button onClick={() => setIsOpen(true)}>Open lightbox</button>
+      <Lightbox open={isOpen}>
+        <button onClick={closeModal} className="relative z-20">
+          Close
+        </button>
         <div className="fixed inset-0 bg-black/50 backdrop-blur" />
-        <div className="flex h-full flex-col items-center justify-center">
-          <Lightbox.Toggle>Close</Lightbox.Toggle>
+        <div className="fixed inset-0 flex h-full flex-col items-center justify-center">
           <Lightbox.Items className="relative z-20">
             {items.map((item) => (
               <Image
@@ -40,8 +49,14 @@ const Examples = () => {
 
           <div className="relative z-20 flex flex-col gap-4">
             <nav className="flex w-full justify-between gap-4">
-              <Lightbox.Nav direction="previous">Previous</Lightbox.Nav>
-              <Lightbox.Nav direction="next">Next</Lightbox.Nav>
+              <Lightbox.Nav>
+                {({ toPrev, toNext }) => (
+                  <>
+                    <button onClick={toPrev}>Prev</button>
+                    <button onClick={toNext}>Next</button>
+                  </>
+                )}
+              </Lightbox.Nav>
             </nav>
 
             <Lightbox.Pagination>
@@ -53,8 +68,8 @@ const Examples = () => {
             </Lightbox.Pagination>
           </div>
         </div>
-      </Lightbox.Portal>
-    </Lightbox>
+      </Lightbox>
+    </>
   );
 };
 
