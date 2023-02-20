@@ -20,7 +20,7 @@ const items = [
 ];
 
 const Examples = () => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   function closeModal() {
     setIsOpen(false);

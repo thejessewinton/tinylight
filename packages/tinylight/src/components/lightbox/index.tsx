@@ -5,19 +5,10 @@ import { createPortal } from "react-dom";
 import { getValidChildren, runIfFunction } from "../../utils/helpers";
 import type { MaybeRenderProp } from "../../types";
 import { atom, useAtom } from "jotai";
-import { useHydrateAtoms } from "jotai/utils";
 
 export const lightboxAtom = atom({
-  open: false,
   itemsCount: 0,
   activeItem: 0,
-});
-
-const itemsReadOnlyAtom = atom((get) => {
-  return {
-    itemsCount: get(lightboxAtom).itemsCount,
-    activeItem: get(lightboxAtom).activeItem,
-  };
 });
 
 type ThumbProps = React.HTMLAttributes<HTMLDivElement>;
@@ -47,12 +38,13 @@ type ItemsProps = React.HTMLAttributes<HTMLDivElement>;
 
 const Items = ({ children, ...props }: ItemsProps) => {
   const items = getValidChildren(children);
-  const [state, setState] = useAtom(lightboxAtom);
+  const [state, dispatch] = useAtom(lightboxAtom);
 
-  React.useEffect(() => {
-    console.log("items", items);
-    setState({ ...state, itemsCount: items.length });
-  }, []);
+  // set items count in state
+  React.useMemo(() => {
+    dispatch({ ...state, itemsCount: items.length });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [items.length]);
 
   return (
     <div {...props}>
@@ -102,7 +94,7 @@ interface PaginationProps
 }
 
 const Pagination = ({ children }: PaginationProps) => {
-  const [state] = useAtom(itemsReadOnlyAtom);
+  const [state] = useAtom(lightboxAtom);
 
   if (state.itemsCount === 0) return null;
 
@@ -121,12 +113,18 @@ interface WrapperProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const Wrapper = ({ children, open, ...props }: WrapperProps) => {
-  const [state] = useAtom(lightboxAtom);
-  useHydrateAtoms([[lightboxAtom, { ...state, open }]]);
+  const hasOpen = Object.keys(props).includes("open");
+  if (hasOpen) {
+    throw new Error(`You forgot an \`open\` prop.`);
+  }
+
+  if (typeof open !== "boolean") {
+    throw new Error(`The \`open\` prop must be a boolean value.`);
+  }
 
   return (
     <>
-      {state.open
+      {open
         ? createPortal(<div {...props}>{children}</div>, document.body)
         : null}
     </>
@@ -135,7 +133,7 @@ const Wrapper = ({ children, open, ...props }: WrapperProps) => {
 
 export const Lightbox = Object.assign(Wrapper, {
   Items,
-  Nav,
   Pagination,
+  Nav,
   Thumbs,
 });
