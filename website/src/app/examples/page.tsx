@@ -29,7 +29,7 @@ const Examples = () => {
   return (
     <>
       <button onClick={() => setIsOpen(true)}>Open lightbox</button>
-      <Lightbox open={isOpen}>
+      <Lightbox open={isOpen} loop>
         <button onClick={closeModal} className="relative z-20">
           Close
         </button>
@@ -37,13 +37,19 @@ const Examples = () => {
         <div className="fixed inset-0 flex h-full flex-col items-center justify-center">
           <Lightbox.Items className="relative z-20">
             {items.map((item) => (
-              <Image
-                key={item.src}
-                src={item.src}
-                alt={item.alt}
-                width={800}
-                height={600}
-              />
+              <Lightbox.Item key={item.src}>
+                {({ isActive }) => (
+                  <div>
+                    <Image
+                      key={item.src}
+                      src={item.src}
+                      alt={item.alt}
+                      width={800}
+                      height={600}
+                    />
+                  </div>
+                )}
+              </Lightbox.Item>
             ))}
           </Lightbox.Items>
 
