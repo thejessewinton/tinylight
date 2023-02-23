@@ -91,9 +91,11 @@ type ItemDataRef = MutableRefObject<{
   domRef: MutableRefObject<HTMLElement | null>;
 }>;
 
-/* Shoutout to @headlessui/react for inspiration on the implementation of an item's active state:
- * {@link https://github.com/tailwindlabs/headlessui/blob/d1ca3a9797bce9e8677051ecd73bb34a4f4969aa/packages/%40headlessui-react/src/components/menu/menu.tsx#L607|GitHub}
+/**
+ * Shoutout to headlessui for inspiration on the implementation of an item's active state.
+ * {@link https://github.com/tailwindlabs/headlessui/blob/d1ca3a9797bce9e8677051ecd73bb34a4f4969aa/packages/%40headlessui-react/src/components/menu/menu.tsx#L607|Github}.
  */
+
 export const Item = ({ children, ...props }: ItemProps) => {
   const itemRef = useRef(null);
   const internalId = useId();
