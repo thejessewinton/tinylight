@@ -40,6 +40,7 @@ const Examples = () => {
               <Lightbox.Item key={item.src}>
                 {({ isActive }) => (
                   <div>
+                    {isActive && "Active"}
                     <Image
                       key={item.src}
                       src={item.src}

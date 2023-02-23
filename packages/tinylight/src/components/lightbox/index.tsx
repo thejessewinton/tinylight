@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 "use client";
 
 import {
@@ -7,7 +6,6 @@ import {
   useRef,
   type MutableRefObject,
   useEffect,
-  useState,
 } from "react";
 import { createPortal } from "react-dom";
 import { getValidChildren, runIfFunction } from "../../utils/helpers";
@@ -16,7 +14,7 @@ import { create } from "zustand";
 
 export interface LighboxState {
   items: ItemDataRef[];
-  addItem: (item: ItemDataRef) => void;
+  registerItem: (item: ItemDataRef) => void;
   itemsCount: number;
   setItemsCount: (count: number) => void;
   activeItemIndex: number;
@@ -29,10 +27,7 @@ export interface LighboxState {
 // State
 export const useLightboxStore = create<LighboxState>((set) => ({
   items: [],
-  addItem: (item) => () => {
-    console.log("addItem", item);
-    set((state) => ({ items: [...state.items, item] }));
-  },
+  registerItem: (item) => set((state) => ({ items: [...state.items, item] })),
   itemsCount: 0,
   activeItemIndex: 0,
   loop: false,
@@ -80,31 +75,30 @@ export const Item = ({ children, ...props }: ItemProps) => {
   const itemRef = useRef(null);
   const internalId = useId();
   const { id = `tinylight-lightbox-item-${internalId}` } = props;
-  const addItem = useLightboxStore((state) => state.addItem);
+  const registerItem = useLightboxStore((state) => state.registerItem);
   const items = useLightboxStore((state) => state.items);
-  const [isActive, setIsActive] = useState(false);
+  const activeItem = useLightboxStore((state) => state.activeItemIndex);
 
-  const bag = useRef<ItemDataRef["current"]>({
+  const item = useRef<ItemDataRef["current"]>({
     domRef: itemRef,
   });
 
   useEffect(() => {
-    console.log("adding");
-    addItem(bag);
-    console.log(items);
-  }, [items]);
-
-  useEffect(() => {
-    const item = items.find((item) => item.current.domRef.current?.id === id);
-    if (item) {
-      setIsActive(item.current.domRef.current?.id === id);
-    }
-  }, [items, id]);
+    registerItem(item);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div ref={itemRef} id={id} {...props}>
+      <button
+        onClick={() => {
+          console.log("add"), registerItem(item);
+        }}
+      >
+        Add
+      </button>
       {runIfFunction(children, {
-        isActive,
+        isActive: items[activeItem].current.domRef.current?.id === id,
       })}
     </div>
   );
@@ -113,7 +107,7 @@ export const Item = ({ children, ...props }: ItemProps) => {
 // Lightbox items component
 type ItemsProps = HTMLAttributes<HTMLDivElement>;
 
-const Items = ({ children, ...props }: ItemsProps) => {
+const Items = ({ children, style, ...props }: ItemsProps) => {
   const items = getValidChildren(children);
   const { activeItemIndex } = useLightboxStore((state) => ({
     items: state.items,
@@ -124,7 +118,17 @@ const Items = ({ children, ...props }: ItemsProps) => {
   return (
     <div {...props}>
       {items.map((child, index) => {
-        return <>{child}</>;
+        return (
+          <div
+            key={child.key}
+            style={{
+              display: activeItemIndex === index ? "block" : "none",
+              ...style,
+            }}
+          >
+            {child}
+          </div>
+        );
       })}
     </div>
   );
