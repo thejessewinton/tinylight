@@ -6,6 +6,7 @@ import {
   useRef,
   type MutableRefObject,
   useEffect,
+  useState,
 } from "react";
 import { createPortal } from "react-dom";
 import { getValidChildren, runIfFunction } from "../../utils/helpers";
@@ -78,6 +79,7 @@ export const Item = ({ children, ...props }: ItemProps) => {
   const registerItem = useLightboxStore((state) => state.registerItem);
   const items = useLightboxStore((state) => state.items);
   const activeItem = useLightboxStore((state) => state.activeItemIndex);
+  const [isActive, setIsActive] = useState(false);
 
   const item = useRef<ItemDataRef["current"]>({
     domRef: itemRef,
@@ -88,17 +90,15 @@ export const Item = ({ children, ...props }: ItemProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    if (items.length === 0) return;
+    setIsActive(items[activeItem].current.domRef.current?.id === id);
+  }, [activeItem, id, items]);
+
   return (
     <div ref={itemRef} id={id} {...props}>
-      <button
-        onClick={() => {
-          console.log("add"), registerItem(item);
-        }}
-      >
-        Add
-      </button>
       {runIfFunction(children, {
-        isActive: items[activeItem].current.domRef.current?.id === id,
+        isActive,
       })}
     </div>
   );
@@ -116,14 +116,20 @@ const Items = ({ children, style, ...props }: ItemsProps) => {
   }));
 
   return (
-    <div {...props}>
+    <div
+      style={{
+        display: "flex",
+        ...style,
+      }}
+      {...props}
+    >
       {items.map((child, index) => {
+        const isActive = activeItemIndex === index;
         return (
           <div
             key={child.key}
             style={{
-              display: activeItemIndex === index ? "block" : "none",
-              ...style,
+              transform: `translateX(${isActive ? 0 : 100}%)`,
             }}
           >
             {child}

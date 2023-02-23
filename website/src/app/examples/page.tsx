@@ -39,16 +39,13 @@ const Examples = () => {
             {items.map((item) => (
               <Lightbox.Item key={item.src}>
                 {({ isActive }) => (
-                  <div>
-                    {isActive && "Active"}
-                    <Image
-                      key={item.src}
-                      src={item.src}
-                      alt={item.alt}
-                      width={800}
-                      height={600}
-                    />
-                  </div>
+                  <Image
+                    key={item.src}
+                    src={item.src}
+                    alt={item.alt}
+                    width={800}
+                    height={600}
+                  />
                 )}
               </Lightbox.Item>
             ))}
