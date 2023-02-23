@@ -29,15 +29,15 @@ const Examples = () => {
   return (
     <>
       <button onClick={() => setIsOpen(true)}>Open lightbox</button>
-      <Lightbox open={isOpen} loop>
+      <Lightbox open={isOpen} onClose={closeModal}>
         <button onClick={closeModal} className="relative z-20">
           Close
         </button>
         <div className="fixed inset-0 bg-black/50 backdrop-blur" />
-        <div className="fixed inset-0 flex h-full flex-col items-center justify-center">
-          <Lightbox.Items className="relative z-20">
+        <div className="fixed inset-0 flex h-full flex-col justify-center">
+          <Lightbox.Items className="">
             {items.map((item) => (
-              <Lightbox.Item key={item.src}>
+              <Lightbox.Item key={item.src} className="transition-all">
                 {({ isActive }) => (
                   <Image
                     key={item.src}

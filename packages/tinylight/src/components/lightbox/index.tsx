@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 "use client";
 
 import {
@@ -16,10 +17,8 @@ import { create } from "zustand";
 export interface LighboxState {
   items: ItemDataRef[];
   registerItem: (item: ItemDataRef) => void;
-  itemsCount: number;
-  setItemsCount: (count: number) => void;
   activeItemIndex: number;
-  setactiveItemIndex: (index: number) => void;
+  setActiveItemIndex: (index: number) => void;
   loop: boolean | undefined;
   toPrev: () => void;
   toNext: () => void;
@@ -29,37 +28,57 @@ export interface LighboxState {
 export const useLightboxStore = create<LighboxState>((set) => ({
   items: [],
   registerItem: (item) => set((state) => ({ items: [...state.items, item] })),
-  itemsCount: 0,
   activeItemIndex: 0,
+  setActiveItemIndex: (activeItemIndex: number) => set({ activeItemIndex }),
   loop: false,
-  toPrev: () =>
-    set((state) => ({ activeItemIndex: state.activeItemIndex - 1 })),
-  toNext: () =>
-    set((state) => ({ activeItemIndex: state.activeItemIndex + 1 })),
-  setactiveItemIndex: (activeItemIndex: number) => set({ activeItemIndex }),
-  setItemsCount: (itemsCount: number) => set({ itemsCount }),
+  toPrev: () => {
+    set((state) => {
+      const { items, activeItemIndex, loop } = state;
+      const prevIndex = activeItemIndex - 1;
+
+      if (prevIndex < 0) {
+        if (loop) return { activeItemIndex: items.length - 1 };
+        return { activeItemIndex: 0 };
+      }
+
+      return { activeItemIndex: prevIndex };
+    });
+  },
+  toNext: () => {
+    set((state) => {
+      const { items, activeItemIndex, loop } = state;
+      const nextIndex = activeItemIndex + 1;
+
+      if (nextIndex >= items.length) {
+        if (loop) return { activeItemIndex: 0 };
+        return { activeItemIndex: items.length - 1 };
+      }
+
+      return { activeItemIndex: nextIndex };
+    });
+  },
 }));
 
-type ThumbProps = HTMLAttributes<HTMLDivElement>;
+// type ThumbProps = HTMLAttributes<HTMLDivElement>;
 
-const Thumbs = ({ children, ...props }: ThumbProps) => {
-  const items = getValidChildren(children);
-  const setactiveItemIndex = useLightboxStore(
-    (state) => state.setactiveItemIndex
-  );
+// const Thumbs = ({ children, ...props }: ThumbProps) => {
+//   const items = getValidChildren(children);
+//   const setActiveItemIndex = useLightboxStore(
+//     (state) => state.setActiveItemIndex
+//   );
 
-  return (
-    <div {...props}>
-      {items.map((child, index) => {
-        return (
-          <button key={index} onClick={() => setactiveItemIndex(index)}>
-            {child}
-          </button>
-        );
-      })}
-    </div>
-  );
-};
+//   return (
+//     <div {...props}>
+//       {items.map((child, index) => {
+//         return (
+//           <button key={index} onClick={() => setActiveItemIndex(index)}>
+//             {child}
+//           </button>
+//         );
+//       })}
+//     </div>
+//   );
+// };
 
 interface ItemProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
@@ -72,6 +91,9 @@ type ItemDataRef = MutableRefObject<{
   domRef: MutableRefObject<HTMLElement | null>;
 }>;
 
+/* Shoutout to @headlessui/react for inspiration on the implementation of an item's active state:
+ * {@link https://github.com/tailwindlabs/headlessui/blob/d1ca3a9797bce9e8677051ecd73bb34a4f4969aa/packages/%40headlessui-react/src/components/menu/menu.tsx#L607|GitHub}
+ */
 export const Item = ({ children, ...props }: ItemProps) => {
   const itemRef = useRef(null);
   const internalId = useId();
@@ -107,29 +129,19 @@ export const Item = ({ children, ...props }: ItemProps) => {
 // Lightbox items component
 type ItemsProps = HTMLAttributes<HTMLDivElement>;
 
-const Items = ({ children, style, ...props }: ItemsProps) => {
-  const items = getValidChildren(children);
-  const { activeItemIndex } = useLightboxStore((state) => ({
-    items: state.items,
-    setItemsCount: state.setItemsCount,
-    activeItemIndex: state.activeItemIndex,
-  }));
+const Items = ({ children, ...props }: ItemsProps) => {
+  const defaultItems = getValidChildren(children);
+  const activeItemIndex = useLightboxStore((state) => state.activeItemIndex);
 
   return (
-    <div
-      style={{
-        display: "flex",
-        ...style,
-      }}
-      {...props}
-    >
-      {items.map((child, index) => {
+    <div {...props}>
+      {defaultItems.map((child, index) => {
         const isActive = activeItemIndex === index;
         return (
           <div
             key={child.key}
             style={{
-              transform: `translateX(${isActive ? 0 : 100}%)`,
+              display: isActive ? "block" : "none",
             }}
           >
             {child}
@@ -167,18 +179,18 @@ interface PaginationProps
 }
 
 const Pagination = ({ children }: PaginationProps) => {
-  const { itemsCount, activeItemIndex } = useLightboxStore((state) => ({
-    itemsCount: state.itemsCount,
+  const { items, activeItemIndex } = useLightboxStore((state) => ({
+    items: state.items,
     activeItemIndex: state.activeItemIndex,
   }));
 
-  if (itemsCount === 0) return null;
+  if (items.length === 0) return null;
 
   return (
     <>
       {runIfFunction(children, {
         activeItem: activeItemIndex + 1,
-        itemsCount,
+        itemsCount: items.length,
       })}
     </>
   );
@@ -186,20 +198,34 @@ const Pagination = ({ children }: PaginationProps) => {
 
 interface WrapperProps extends HTMLAttributes<HTMLDivElement> {
   open: boolean;
+  onClose: () => void;
   loop?: boolean;
 }
 
-const Wrapper = ({ children, open, loop, ...props }: WrapperProps) => {
-  const hasOpen = Object.keys(props).includes("open");
-  if (hasOpen) {
-    throw new Error(`You forgot an \`open\` prop.`);
-  }
-
-  if (typeof open !== "boolean") {
-    throw new Error(`The \`open\` prop must be a boolean value.`);
-  }
-
+const Wrapper = ({ children, open, onClose, loop, ...props }: WrapperProps) => {
   useLightboxStore.setState({ loop });
+
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  }, [open]);
+
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+
+    document.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [onClose]);
 
   return (
     <>
@@ -215,5 +241,5 @@ export const Lightbox = Object.assign(Wrapper, {
   Item,
   Pagination,
   Nav,
-  Thumbs,
+  //Thumbs,
 });
