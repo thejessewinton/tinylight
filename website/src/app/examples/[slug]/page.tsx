@@ -3,6 +3,11 @@
 import { Lightbox } from "tinylight";
 import Image from "next/image";
 import { useState } from "react";
+import { clsx } from "clsx";
+import { allExamples } from "contentlayer/generated";
+import { notFound } from "next/navigation";
+import { Metadata } from "next";
+import { Mdx } from "@/components/Mdx";
 
 const items = [
   {
@@ -19,7 +24,20 @@ const items = [
   },
 ];
 
-const Examples = () => {
+interface ExamplesPageProps {
+  params: {
+    slug: string;
+  };
+}
+
+const ExamplesPage = ({ params }: ExamplesPageProps) => {
+  const slug = params?.slug || "";
+  const doc = allExamples.find((doc) => doc.slugAsParams === slug);
+
+  if (!doc) {
+    notFound();
+  }
+
   const [isOpen, setIsOpen] = useState(false);
 
   function closeModal() {
@@ -28,6 +46,7 @@ const Examples = () => {
 
   return (
     <>
+      <Mdx code={doc.body.code} />
       <button onClick={() => setIsOpen(true)}>Open lightbox</button>
       <Lightbox open={isOpen} onClose={closeModal}>
         <button onClick={closeModal} className="relative z-20">
@@ -35,7 +54,7 @@ const Examples = () => {
         </button>
         <div className="fixed inset-0 bg-black/50 backdrop-blur" />
         <div className="fixed inset-0 flex h-full flex-col justify-center">
-          <Lightbox.Items className="">
+          <Lightbox.Items>
             {items.map((item) => (
               <Lightbox.Item key={item.src} className="transition-all">
                 {({ isActive }) => (
@@ -77,4 +96,4 @@ const Examples = () => {
   );
 };
 
-export default Examples;
+export default ExamplesPage;

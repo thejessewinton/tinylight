@@ -1,0 +1,65 @@
+---
+title: Lightbox
+description: Advanced code blocks with highlighting, file names and more.
+---
+
+# Basic Example
+
+Below is a basic example of `tinylight` with all available features and accompanying code. Right now, the example is using tailwind for styling, but you can use whatever you want.
+
+```tsx title="Lightbox.tsx"
+import { useState } from "react";
+import { Lightbox as LighboxPrimitive } from "tinylight";
+
+export const Lightbox = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleOpen = () => setIsOpen(!isOpen);
+
+  return (
+    <>
+      <button onClick={handleOpen}>Open Lightbox</button>
+      <LighboxPrimitive open={isOpen}>
+        <button onClick={handleOpen} className="relative z-20">
+          Close
+        </button>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur" />
+        <div className="fixed inset-0 flex h-full flex-col items-center justify-center">
+          <LighboxPrimitive.Items className="relative z-20">
+            {items.map((item) => (
+              <Image
+                key={item.src}
+                src={item.src}
+                alt={item.alt}
+                width={800}
+                height={600}
+              />
+            ))}
+          </LighboxPrimitive.Items>
+
+          <div className="relative z-20 flex flex-col gap-4">
+            <nav className="flex w-full justify-between gap-4">
+              <LighboxPrimitive.Nav>
+                {({ toPrev, toNext }) => (
+                  <>
+                    <button onClick={toPrev}>Prev</button>
+                    <button onClick={toNext}>Next</button>
+                  </>
+                )}
+              </LighboxPrimitive.Nav>
+            </nav>
+
+            <LighboxPrimitive.Pagination>
+              {({ activeItem, itemsCount }) => (
+                <>
+                  {activeItem} / {itemsCount}
+                </>
+              )}
+            </LighboxPrimitive.Pagination>
+          </div>
+        </div>
+      </LighboxPrimitive>
+    </>
+  );
+};
+```

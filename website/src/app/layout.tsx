@@ -1,4 +1,4 @@
-import { Inter, Newsreader, IBM_Plex_Mono as Mono } from "@next/font/google";
+import { Inter, Newsreader, IBM_Plex_Mono as Mono } from "next/font/google";
 import "@/styles/globals.css";
 import { Header } from "@/components/Header";
 
