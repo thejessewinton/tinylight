@@ -13,6 +13,7 @@ import { getValidChildren, runIfFunction } from "../../utils/helpers";
 import type { MaybeRenderProp } from "../../types";
 import { create } from "zustand";
 import { useIsomorphicEffect } from "../../utils/hooks";
+import { useSwipeable } from "react-swipeable";
 
 interface LighboxState {
   items: ItemDataRef[];
@@ -85,9 +86,18 @@ type ItemsProps = HTMLAttributes<HTMLDivElement>;
 
 const Items = ({ children, ...props }: ItemsProps) => {
   const items = getValidChildren(children);
+  const { toPrev, toNext } = useLightboxStore((state) => ({
+    toPrev: state.toPrev,
+    toNext: state.toNext,
+  }));
+
+  const handlers = useSwipeable({
+    onSwipedRight: toPrev,
+    onSwipedLeft: toNext,
+  });
 
   return (
-    <div {...props}>
+    <div {...handlers} {...props}>
       {items.map((child) => {
         return <>{child}</>;
       })}
@@ -108,7 +118,7 @@ type ItemDataRef = MutableRefObject<{
 
 /**
  * Shoutout to HeadlessUI for inspiration on the implementation of an item's active state.
- * {@link https://github.com/tailwindlabs/headlessui/blob/d1ca3a9797bce9e8677051ecd73bb34a4f4969aa/packages/%40headlessui-react/src/components/menu/menu.tsx#L607|Github}.
+ * {@link https://github.com/tailwindlabs/headlessui/blob/d1ca3a9797bce9e8677051ecd73bb34a4f4969aa/packages/%40headlessui-react/src/components/menu/menu.tsx#L614|Check it out in the repo}.
  */
 
 export const Item = ({ children, ...props }: ItemProps) => {

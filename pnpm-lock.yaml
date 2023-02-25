@@ -5,8 +5,11 @@ importers:
   .:
     specifiers:
       '@changesets/cli': ^2.26.0
+      dotenv-cli: ^7.0.0
       prettier-plugin-tailwindcss: ^0.2.2
       typescript: ^4.9.5
+    dependencies:
+      dotenv-cli: 7.0.0
     devDependencies:
       '@changesets/cli': 2.26.0
       prettier-plugin-tailwindcss: 0.2.3_prettier@2.8.4
@@ -39,6 +42,7 @@ importers:
       eslint-config-custom: workspace:*
       react: ^18.2.0
       react-dom: ^18.2.0
+      react-swipeable: ^7.0.0
       tsconfig: workspace:*
       tsup: ^6.6.3
       typescript: ^4.9.5
@@ -47,6 +51,7 @@ importers:
       clsx: 1.2.1
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
+      react-swipeable: 7.0.0_react@18.2.0
       zustand: 4.3.3_react@18.2.0
     devDependencies:
       '@changesets/cli': 2.26.0
@@ -2112,6 +2117,26 @@ packages:
     engines: {node: '>=6.0.0'}
     dependencies:
       esutils: 2.0.3
+    dev: false
+
+  /dotenv-cli/7.0.0:
+    resolution: {integrity: sha512-XfMzVdpdDTRnlcgvFLg3lSyiLXqFxS4tH7RbK5IxkC4XIUuxPyrGoDufkfLjy/dA28EILzEu+mros6h8aQmyGg==}
+    hasBin: true
+    dependencies:
+      cross-spawn: 7.0.3
+      dotenv: 16.0.3
+      dotenv-expand: 10.0.0
+      minimist: 1.2.8
+    dev: false
+
+  /dotenv-expand/10.0.0:
+    resolution: {integrity: sha512-GopVGCpVS1UKH75VKHGuQFqS1Gusej0z4FyQkPdwjil2gNIv+LNsqBlboOzpJFZKVT95GkCyWJbBSdFEFUWI2A==}
+    engines: {node: '>=12'}
+    dev: false
+
+  /dotenv/16.0.3:
+    resolution: {integrity: sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==}
+    engines: {node: '>=12'}
     dev: false
 
   /electron-to-chromium/1.4.300:
@@ -5015,6 +5040,14 @@ packages:
 
   /react-is/16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
+    dev: false
+
+  /react-swipeable/7.0.0_react@18.2.0:
+    resolution: {integrity: sha512-NI7KGfQ6gwNFN0Hor3vytYW3iRfMMaivGEuxcADOOfBCx/kqwXE8IfHFxEcxSUkxCYf38COLKYd9EMYZghqaUA==}
+    peerDependencies:
+      react: ^16.8.3 || ^17 || ^18
+    dependencies:
+      react: 18.2.0
     dev: false
 
   /react/18.2.0:

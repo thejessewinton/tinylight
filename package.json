@@ -1,7 +1,7 @@
 {
   "scripts": {
-    "build": "turbo run build --parallel",
-    "dev": "turbo run dev --parallel --no-cache --continue",
+    "build": "dotenv -- turbo run build --parallel",
+    "dev": "dotenv -- turbo run dev --parallel --no-cache --continue",
     "start": "turbo run start --parallel --no-cache --continue",
     "clean": "turbo run clean && rm -rf node_modules",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
@@ -13,5 +13,8 @@
     "prettier-plugin-tailwindcss": "^0.2.2",
     "typescript": "^4.9.5"
   },
-  "packageManager": "pnpm@7.15.0"
+  "packageManager": "pnpm@7.15.0",
+  "dependencies": {
+    "dotenv-cli": "^7.0.0"
+  }
 }
