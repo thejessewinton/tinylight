@@ -1,5 +1,11 @@
 # tinylight
 
+## 1.0.1
+
+### Patch Changes
+
+- update to v1
+
 ## 1.0.0
 
 ### Major Changes
