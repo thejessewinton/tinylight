@@ -45,57 +45,59 @@ Note, that the API has changed a bit; you should now manage the open and closed 
 
 ```tsx title="Lightbox.tsx"
 import { useState } from "react";
-import { Lightbox } from "tinylight";
+import { Lightbox as LightboxPrimitive } from "tinylight";
 
-const [isOpen, setIsOpen] = useState(false);
+export const Lightbox = () => {
+  const [isOpen, setIsOpen] = useState(false);
 
-const handleOpen = () => setIsOpen(!isOpen);
+  const handleOpen = () => setIsOpen(!isOpen);
 
-return (
-  <>
-    <button onClick={handleOpen}>Open Lightbox</button>
-    <Lightbox open={isOpen}>
-      <button onClick={handleOpen} className="relative z-20">
-        Close
-      </button>
-      <div className="fixed inset-0 bg-black/50 backdrop-blur" />
-      <div className="fixed inset-0 flex h-full flex-col items-center justify-center">
-        <Lightbox.Items className="relative z-20">
-          {items.map((item) => (
-            <Image
-              key={item.src}
-              src={item.src}
-              alt={item.alt}
-              width={800}
-              height={600}
-            />
-          ))}
-        </Lightbox.Items>
+  return (
+    <>
+      <button onClick={handleOpen}>Open Lightbox</button>
+      <LightboxPrimitive open={isOpen}>
+        <button onClick={handleOpen} className="relative z-20">
+          Close
+        </button>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur" />
+        <div className="fixed inset-0 flex h-full flex-col items-center justify-center">
+          <LightboxPrimitive.Items className="relative z-20">
+            {items.map((item) => (
+              <Image
+                key={item.src}
+                src={item.src}
+                alt={item.alt}
+                width={800}
+                height={600}
+              />
+            ))}
+          </LightboxPrimitive.Items>
 
-        <div className="relative z-20 flex flex-col gap-4">
-          <nav className="flex w-full justify-between gap-4">
-            <Lightbox.Nav>
-              {({ toPrev, toNext }) => (
+          <div className="relative z-20 flex flex-col gap-4">
+            <nav className="flex w-full justify-between gap-4">
+              <LightboxPrimitive.Nav>
+                {({ toPrev, toNext }) => (
+                  <>
+                    <button onClick={toPrev}>Prev</button>
+                    <button onClick={toNext}>Next</button>
+                  </>
+                )}
+              </LightboxPrimitive.Nav>
+            </nav>
+
+            <LightboxPrimitive.Pagination>
+              {({ activeItem, itemsCount }) => (
                 <>
-                  <button onClick={toPrev}>Prev</button>
-                  <button onClick={toNext}>Next</button>
+                  {activeItem} / {itemsCount}
                 </>
               )}
-            </Lightbox.Nav>
-          </nav>
-
-          <Lightbox.Pagination>
-            {({ activeItem, itemsCount }) => (
-              <>
-                {activeItem} / {itemsCount}
-              </>
-            )}
-          </Lightbox.Pagination>
+            </LightboxPrimitive.Pagination>
+          </div>
         </div>
-      </div>
-    </Lightbox>
-  </>
-);
+      </LightboxPrimitive>
+    </>
+  );
+};
 ```
 
 ---

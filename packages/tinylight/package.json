@@ -1,7 +1,7 @@
 {
   "name": "tinylight",
   "license": "MIT",
-  "version": "1.0.0-beta.3",
+  "version": "1.0.0",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -34,9 +34,10 @@
   },
   "dependencies": {
     "clsx": "^1.2.1",
-    "jotai": "^2.0.2",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-swipeable": "^7.0.0",
+    "zustand": "^4.3.3"
   },
   "publishConfig": {
     "access": "public"

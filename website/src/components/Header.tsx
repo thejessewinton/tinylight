@@ -21,7 +21,7 @@ export const Header = () => {
   const [_, path] = useSelectedLayoutSegments();
 
   return (
-    <header className="sticky top-0 z-10 mx-auto flex h-14 w-full items-center justify-between border-b border-dotted border-neutral-700 bg-neutral-900/75 px-8 backdrop-blur-sm sm:px-8 lg:h-20">
+    <header className="sticky top-0 z-0 mx-auto flex h-14 w-full items-center justify-between bg-neutral-900 px-8 sm:px-8 lg:h-20">
       <Link
         href="/"
         className="flex items-center justify-center gap-2 space-x-2 py-8 font-serif text-lg font-light italic"

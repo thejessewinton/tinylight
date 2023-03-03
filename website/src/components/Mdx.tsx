@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { Lightbox } from "tinylight";
 import { useMDXComponent } from "next-contentlayer/hooks";
 
 import { clsx } from "clsx";
@@ -109,6 +110,7 @@ const components = {
   ),
   code: ({ className, ...props }: ComponentProps) => <code {...props} />,
   Image,
+  Lightbox,
 };
 
 interface MdxProps {

@@ -1,30 +1,80 @@
 "use client";
 
-import React from "react";
+import type {
+  PropsWithChildren} from "react";
+import {
+  type HTMLAttributes,
+  type MutableRefObject,
+  useId,
+  useRef,
+  useState,
+  Fragment
+} from "react";
 import { createPortal } from "react-dom";
 import { getValidChildren, runIfFunction } from "../../utils/helpers";
 import type { MaybeRenderProp } from "../../types";
-import { atom, useAtom } from "jotai";
+import { create } from "zustand";
+import { useIsomorphicEffect } from "../../utils/hooks";
+import { useSwipeable } from "react-swipeable";
 
-export const lightboxAtom = atom({
-  itemsCount: 0,
-  activeItem: 0,
-});
+interface LighboxState {
+  items: ItemDataRef[];
+  registerItem: (item: ItemDataRef) => void;
+  activeItemIndex: number;
+  setActiveItemIndex: (index: number) => void;
+  loop: boolean | undefined;
+  toPrev: () => void;
+  toNext: () => void;
+}
 
-type ThumbProps = React.HTMLAttributes<HTMLDivElement>;
+// State
+const useLightboxStore = create<LighboxState>((set) => ({
+  items: [],
+  registerItem: (item) => set((state) => ({ items: [...state.items, item] })),
+  activeItemIndex: 0,
+  setActiveItemIndex: (activeItemIndex: number) => set({ activeItemIndex }),
+  loop: false,
+  toPrev: () => {
+    set((state) => {
+      const { items, activeItemIndex, loop } = state;
+      const prevIndex = activeItemIndex - 1;
+
+      if (prevIndex < 0) {
+        if (loop) return { activeItemIndex: items.length - 1 };
+        return { activeItemIndex: 0 };
+      }
+
+      return { activeItemIndex: prevIndex };
+    });
+  },
+  toNext: () => {
+    set((state) => {
+      const { items, activeItemIndex, loop } = state;
+      const nextIndex = activeItemIndex + 1;
+
+      if (nextIndex >= items.length) {
+        if (loop) return { activeItemIndex: 0 };
+        return { activeItemIndex: items.length - 1 };
+      }
+
+      return { activeItemIndex: nextIndex };
+    });
+  },
+}));
+
+type ThumbProps = HTMLAttributes<HTMLDivElement>;
 
 const Thumbs = ({ children, ...props }: ThumbProps) => {
   const items = getValidChildren(children);
-  const [state, setState] = useAtom(lightboxAtom);
+  const setActiveItemIndex = useLightboxStore(
+    (state) => state.setActiveItemIndex
+  );
 
   return (
     <div {...props}>
       {items.map((child, index) => {
         return (
-          <button
-            key={child.key}
-            onClick={() => setState({ ...state, activeItem: index })}
-          >
+          <button key={index} onClick={() => setActiveItemIndex(index)}>
             {child}
           </button>
         );
@@ -34,38 +84,92 @@ const Thumbs = ({ children, ...props }: ThumbProps) => {
 };
 
 // Lightbox items component
-type ItemsProps = React.HTMLAttributes<HTMLDivElement>;
+type ItemsProps = HTMLAttributes<HTMLDivElement>;
 
 const Items = ({ children, ...props }: ItemsProps) => {
   const items = getValidChildren(children);
-  const [state, dispatch] = useAtom(lightboxAtom);
+  const { toPrev, toNext } = useLightboxStore((state) => ({
+    toPrev: state.toPrev,
+    toNext: state.toNext,
+    activeItemIndex: state.activeItemIndex,
+  }));
 
-  // set items count in state
-  React.useMemo(() => {
-    dispatch({ ...state, itemsCount: items.length });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [items.length]);
+  const handlers = useSwipeable({
+    onSwipedRight: toPrev,
+    onSwipedLeft: toNext,
+  });
 
   return (
-    <div {...props}>
-      {items.map((child, index) => {
-        return (
-          <div
-            key={child.key}
-            style={{
-              display: state.activeItem === index ? "block" : "none",
-            }}
-          >
-            {child}
-          </div>
-        );
+    <div {...handlers} {...props}>
+      {items.map((child) => {
+        return <>{child}</>;
       })}
     </div>
   );
 };
 
-interface NavProps
+interface ItemProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  children: MaybeRenderProp<{
+    isActive: boolean;
+  }>;
+}
+
+type ItemDataRef = MutableRefObject<{
+  domRef: MutableRefObject<HTMLElement | null>;
+}>;
+
+/**
+ * Shoutout to HeadlessUI for inspiration on the implementation of an item's active state.
+ * {@link https://github.com/tailwindlabs/headlessui/blob/d1ca3a9797bce9e8677051ecd73bb34a4f4969aa/packages/%40headlessui-react/src/components/menu/menu.tsx#L614|Check it out in the repo}.
+ */
+
+export const Item = ({ children, style, ...props }: ItemProps) => {
+  const itemRef = useRef(null);
+  const internalId = useId();
+  const { id = `tinylight-lightbox-item-${internalId}` } = props;
+  const { items, registerItem, activeItemIndex } = useLightboxStore(
+    (state) => ({
+      items: state.items,
+      registerItem: state.registerItem,
+      activeItemIndex: state.activeItemIndex,
+    })
+  );
+
+  const [isActive, setIsActive] = useState(false);
+
+  const item = useRef<ItemDataRef["current"]>({
+    domRef: itemRef,
+  });
+
+  useIsomorphicEffect(() => {
+    registerItem(item);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useIsomorphicEffect(() => {
+    if (items.length === 0) return;
+    setIsActive(items[activeItemIndex].current.domRef.current?.id === id);
+  }, [activeItemIndex, id, items]);
+
+  return (
+    <div
+      ref={itemRef}
+      id={id}
+      {...props}
+      style={{
+        ...style,
+        display: isActive ? "block" : "none",
+      }}
+    >
+      {runIfFunction(children, {
+        isActive,
+      })}
+    </div>
+  );
+};
+
+interface NavProps extends Omit<HTMLAttributes<HTMLDivElement>, "children"> {
   children: MaybeRenderProp<{
     toPrev: () => void;
     toNext: () => void;
@@ -73,20 +177,18 @@ interface NavProps
 }
 
 const Nav = ({ children }: NavProps) => {
-  const [state, setState] = useAtom(lightboxAtom);
-
   return (
     <>
       {runIfFunction(children, {
-        toPrev: () => setState({ ...state, activeItem: state.activeItem - 1 }),
-        toNext: () => setState({ ...state, activeItem: state.activeItem + 1 }),
+        toPrev: useLightboxStore((state) => state.toPrev),
+        toNext: useLightboxStore((state) => state.toNext),
       })}
     </>
   );
 };
 
 interface PaginationProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  extends Omit<HTMLAttributes<HTMLDivElement>, "children"> {
   children: MaybeRenderProp<{
     activeItem: number;
     itemsCount: number;
@@ -94,33 +196,59 @@ interface PaginationProps
 }
 
 const Pagination = ({ children }: PaginationProps) => {
-  const [state] = useAtom(lightboxAtom);
+  const { items, activeItemIndex } = useLightboxStore((state) => ({
+    items: state.items,
+    activeItemIndex: state.activeItemIndex,
+  }));
 
-  if (state.itemsCount === 0) return null;
+  if (items.length === 0) return null;
 
   return (
     <>
       {runIfFunction(children, {
-        activeItem: state.activeItem + 1,
-        itemsCount: state.itemsCount,
+        activeItem: activeItemIndex + 1,
+        itemsCount: items.length,
       })}
     </>
   );
 };
 
-interface WrapperProps extends React.HTMLAttributes<HTMLDivElement> {
+interface WrapperProps {
   open: boolean;
+  handleClose: () => void;
+  loop?: boolean;
 }
 
-const Wrapper = ({ children, open, ...props }: WrapperProps) => {
-  const hasOpen = Object.keys(props).includes("open");
-  if (hasOpen) {
-    throw new Error(`You forgot an \`open\` prop.`);
-  }
+const Wrapper = ({
+  children,
+  open,
+  handleClose,
+  loop,
+  ...props
+}: PropsWithChildren<WrapperProps>) => {
+  useLightboxStore.setState({ loop });
 
-  if (typeof open !== "boolean") {
-    throw new Error(`The \`open\` prop must be a boolean value.`);
-  }
+  useIsomorphicEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  }, [open]);
+
+  useIsomorphicEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        handleClose();
+      }
+    };
+
+    document.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [handleClose]);
 
   return (
     <>
@@ -133,6 +261,7 @@ const Wrapper = ({ children, open, ...props }: WrapperProps) => {
 
 export const Lightbox = Object.assign(Wrapper, {
   Items,
+  Item,
   Pagination,
   Nav,
   Thumbs,

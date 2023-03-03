@@ -1,4 +1,11 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "tinylight",
+  description:
+    "🎉 A set of small, unopinionated component primitives for building lightbox components in React.",
+};
 
 const Index = () => {
   return (

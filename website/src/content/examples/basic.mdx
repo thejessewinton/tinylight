@@ -1,36 +1,26 @@
-"use client";
+---
+title: Basic Example
+description: Advanced code blocks with highlighting, file names and more.
+---
 
-import { Lightbox } from "tinylight";
-import Image from "next/image";
+# Basic Example
+
+Below is a basic example of `tinylight` with all available features and accompanying code. Right now, the example is using tailwind for styling, but you can use whatever you want.
+
+```tsx title="Lightbox.tsx"
 import { useState } from "react";
+import { Lightbox as Lightbox } from "tinylight";
 
-const items = [
-  {
-    src: "https://source.unsplash.com/random/1400x599",
-    alt: "Random image 1",
-  },
-  {
-    src: "https://source.unsplash.com/random/1400x600",
-    alt: "Random image 2",
-  },
-  {
-    src: "https://source.unsplash.com/random/1400x601",
-    alt: "Random image 3",
-  },
-];
-
-const Examples = () => {
+export const Lightbox = () => {
   const [isOpen, setIsOpen] = useState(false);
 
-  function closeModal() {
-    setIsOpen(false);
-  }
+  const handleClose = () => setIsOpen(false);
 
   return (
     <>
-      <button onClick={() => setIsOpen(true)}>Open lightbox</button>
-      <Lightbox open={isOpen}>
-        <button onClick={closeModal} className="relative z-20">
+      <button onClick={handleOpen}>Open Lightbox</button>
+      <Lightbox open={isOpen} handleClose={handleClose} loop>
+        <button onClick={handleOpen} className="relative z-20">
           Close
         </button>
         <div className="fixed inset-0 bg-black/50 backdrop-blur" />
@@ -72,5 +62,4 @@ const Examples = () => {
     </>
   );
 };
-
-export default Examples;
+```
