@@ -86,9 +86,10 @@ type ItemsProps = HTMLAttributes<HTMLDivElement>;
 
 const Items = ({ children, ...props }: ItemsProps) => {
   const items = getValidChildren(children);
-  const { toPrev, toNext } = useLightboxStore((state) => ({
+  const { toPrev, toNext, activeItemIndex } = useLightboxStore((state) => ({
     toPrev: state.toPrev,
     toNext: state.toNext,
+    activeItemIndex: state.activeItemIndex,
   }));
 
   const handlers = useSwipeable({
@@ -98,9 +99,7 @@ const Items = ({ children, ...props }: ItemsProps) => {
 
   return (
     <div {...handlers} {...props}>
-      {items.map((child) => {
-        return <>{child}</>;
-      })}
+      {items[activeItemIndex]}
     </div>
   );
 };

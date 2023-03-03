@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     siteName: "tinylight",
     url: process.env.NEXT_PUBLIC_URL,
     type: "website",
-    images: [`/og.jpg`],
+    images: [`${process.env.NEXT_PUBLIC_URL}/og.jpg`],
     description:
       "🎉 A set of small, unopinionated component primitives for building lightbox components in React.",
   },

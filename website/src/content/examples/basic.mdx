@@ -9,7 +9,7 @@ Below is a basic example of `tinylight` with all available features and accompan
 
 ```tsx title="Lightbox.tsx"
 import { useState } from "react";
-import { Lightbox as LighboxPrimitive } from "tinylight";
+import { Lightbox as Lightbox } from "tinylight";
 
 export const Lightbox = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -19,13 +19,13 @@ export const Lightbox = () => {
   return (
     <>
       <button onClick={handleOpen}>Open Lightbox</button>
-      <LighboxPrimitive open={isOpen}>
+      <Lightbox open={isOpen}>
         <button onClick={handleOpen} className="relative z-20">
           Close
         </button>
         <div className="fixed inset-0 bg-black/50 backdrop-blur" />
         <div className="fixed inset-0 flex h-full flex-col items-center justify-center">
-          <LighboxPrimitive.Items className="relative z-20">
+          <Lightbox.Items className="relative z-20">
             {items.map((item) => (
               <Image
                 key={item.src}
@@ -35,30 +35,30 @@ export const Lightbox = () => {
                 height={600}
               />
             ))}
-          </LighboxPrimitive.Items>
+          </Lightbox.Items>
 
           <div className="relative z-20 flex flex-col gap-4">
             <nav className="flex w-full justify-between gap-4">
-              <LighboxPrimitive.Nav>
+              <Lightbox.Nav>
                 {({ toPrev, toNext }) => (
                   <>
                     <button onClick={toPrev}>Prev</button>
                     <button onClick={toNext}>Next</button>
                   </>
                 )}
-              </LighboxPrimitive.Nav>
+              </Lightbox.Nav>
             </nav>
 
-            <LighboxPrimitive.Pagination>
+            <Lightbox.Pagination>
               {({ activeItem, itemsCount }) => (
                 <>
                   {activeItem} / {itemsCount}
                 </>
               )}
-            </LighboxPrimitive.Pagination>
+            </Lightbox.Pagination>
           </div>
         </div>
-      </LighboxPrimitive>
+      </Lightbox>
     </>
   );
 };
