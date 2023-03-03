@@ -1,5 +1,5 @@
 ---
-title: Lightbox
+title: Basic Example
 description: Advanced code blocks with highlighting, file names and more.
 ---
 
@@ -14,12 +14,12 @@ import { Lightbox as Lightbox } from "tinylight";
 export const Lightbox = () => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleOpen = () => setIsOpen(!isOpen);
+  const handleClose = () => setIsOpen(false);
 
   return (
     <>
       <button onClick={handleOpen}>Open Lightbox</button>
-      <Lightbox open={isOpen}>
+      <Lightbox open={isOpen} handleClose={handleClose} loop>
         <button onClick={handleOpen} className="relative z-20">
           Close
         </button>

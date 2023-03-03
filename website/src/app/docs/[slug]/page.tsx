@@ -1,5 +1,6 @@
 import { Mdx } from "@/components/Mdx";
-import { allDocs } from "contentlayer/generated";
+import { allDocs, type Doc } from "contentlayer/generated";
+import { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 interface DocPageProps {
@@ -7,6 +8,15 @@ interface DocPageProps {
     slug: string;
   };
 }
+
+export const generateMetadata = ({ params }: DocPageProps): Metadata => {
+  const doc = allDocs.find((doc) => doc.slugAsParams === params.slug) as Doc;
+
+  return {
+    title: doc.title,
+    description: doc.description,
+  };
+};
 
 const DocPage = ({ params }: DocPageProps) => {
   const slug = params?.slug || "";

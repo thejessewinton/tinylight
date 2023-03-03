@@ -1,12 +1,14 @@
 "use client";
 
+import type {
+  PropsWithChildren} from "react";
 import {
   type HTMLAttributes,
   type MutableRefObject,
   useId,
   useRef,
   useState,
-  Fragment,
+  Fragment
 } from "react";
 import { createPortal } from "react-dom";
 import { getValidChildren, runIfFunction } from "../../utils/helpers";
@@ -86,7 +88,7 @@ type ItemsProps = HTMLAttributes<HTMLDivElement>;
 
 const Items = ({ children, ...props }: ItemsProps) => {
   const items = getValidChildren(children);
-  const { toPrev, toNext, activeItemIndex } = useLightboxStore((state) => ({
+  const { toPrev, toNext } = useLightboxStore((state) => ({
     toPrev: state.toPrev,
     toNext: state.toNext,
     activeItemIndex: state.activeItemIndex,
@@ -99,7 +101,9 @@ const Items = ({ children, ...props }: ItemsProps) => {
 
   return (
     <div {...handlers} {...props}>
-      {items[activeItemIndex]}
+      {items.map((child) => {
+        return <>{child}</>;
+      })}
     </div>
   );
 };
@@ -120,7 +124,7 @@ type ItemDataRef = MutableRefObject<{
  * {@link https://github.com/tailwindlabs/headlessui/blob/d1ca3a9797bce9e8677051ecd73bb34a4f4969aa/packages/%40headlessui-react/src/components/menu/menu.tsx#L614|Check it out in the repo}.
  */
 
-export const Item = ({ children, ...props }: ItemProps) => {
+export const Item = ({ children, style, ...props }: ItemProps) => {
   const itemRef = useRef(null);
   const internalId = useId();
   const { id = `tinylight-lightbox-item-${internalId}` } = props;
@@ -149,7 +153,15 @@ export const Item = ({ children, ...props }: ItemProps) => {
   }, [activeItemIndex, id, items]);
 
   return (
-    <div ref={itemRef} id={id} {...props}>
+    <div
+      ref={itemRef}
+      id={id}
+      {...props}
+      style={{
+        ...style,
+        display: isActive ? "block" : "none",
+      }}
+    >
       {runIfFunction(children, {
         isActive,
       })}
@@ -201,13 +213,19 @@ const Pagination = ({ children }: PaginationProps) => {
   );
 };
 
-interface WrapperProps extends HTMLAttributes<HTMLDivElement> {
+interface WrapperProps {
   open: boolean;
-  onClose: () => void;
+  handleClose: () => void;
   loop?: boolean;
 }
 
-const Wrapper = ({ children, open, onClose, loop, ...props }: WrapperProps) => {
+const Wrapper = ({
+  children,
+  open,
+  handleClose,
+  loop,
+  ...props
+}: PropsWithChildren<WrapperProps>) => {
   useLightboxStore.setState({ loop });
 
   useIsomorphicEffect(() => {
@@ -221,7 +239,7 @@ const Wrapper = ({ children, open, onClose, loop, ...props }: WrapperProps) => {
   useIsomorphicEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        onClose();
+        handleClose();
       }
     };
 
@@ -230,7 +248,7 @@ const Wrapper = ({ children, open, onClose, loop, ...props }: WrapperProps) => {
     return () => {
       document.removeEventListener("keydown", handleEscape);
     };
-  }, [onClose]);
+  }, [handleClose]);
 
   return (
     <>
