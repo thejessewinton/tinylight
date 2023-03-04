@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Lightbox } from "tinylight";
 import Image from "next/image";
+import { clsx } from "clsx";
 
 const items = [
   {
@@ -32,17 +33,24 @@ export const Example = () => {
         </button>
         <div className="fixed inset-0 bg-black/50 backdrop-blur" />
         <div className="fixed inset-0 flex h-full flex-col justify-center">
-          <Lightbox.Items>
+          <Lightbox.Items className="flex items-center justify-center">
             {items.map((item) => (
-              <Lightbox.Item key={item.src} className="transition-all">
+              <Lightbox.Item key={item.src}>
                 {({ isActive }) => (
-                  <Image
+                  <div
                     key={item.src}
-                    src={item.src}
-                    alt={item.alt}
-                    width={800}
-                    height={600}
-                  />
+                    className={clsx(
+                      isActive ? "opacity-100" : "opacity-0",
+                      "transition-opacity duration-1000"
+                    )}
+                  >
+                    <Image
+                      src={item.src}
+                      alt={item.alt}
+                      width={800}
+                      height={600}
+                    />
+                  </div>
                 )}
               </Lightbox.Item>
             ))}

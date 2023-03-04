@@ -1,14 +1,12 @@
 "use client";
 
-import type {
-  PropsWithChildren} from "react";
+import type { ReactNode } from "react";
 import {
   type HTMLAttributes,
   type MutableRefObject,
   useId,
   useRef,
   useState,
-  Fragment
 } from "react";
 import { createPortal } from "react-dom";
 import { getValidChildren, runIfFunction } from "../../utils/helpers";
@@ -88,10 +86,10 @@ type ItemsProps = HTMLAttributes<HTMLDivElement>;
 
 const Items = ({ children, ...props }: ItemsProps) => {
   const items = getValidChildren(children);
+
   const { toPrev, toNext } = useLightboxStore((state) => ({
     toPrev: state.toPrev,
     toNext: state.toNext,
-    activeItemIndex: state.activeItemIndex,
   }));
 
   const handlers = useSwipeable({
@@ -101,8 +99,8 @@ const Items = ({ children, ...props }: ItemsProps) => {
 
   return (
     <div {...handlers} {...props}>
-      {items.map((child) => {
-        return <>{child}</>;
+      {items.map((child, i) => {
+        return <div key={i}>{child}</div>;
       })}
     </div>
   );
@@ -124,8 +122,9 @@ type ItemDataRef = MutableRefObject<{
  * {@link https://github.com/tailwindlabs/headlessui/blob/d1ca3a9797bce9e8677051ecd73bb34a4f4969aa/packages/%40headlessui-react/src/components/menu/menu.tsx#L614|Check it out in the repo}.
  */
 
-export const Item = ({ children, style, ...props }: ItemProps) => {
+export const Item = ({ children, ...props }: ItemProps) => {
   const itemRef = useRef(null);
+  const [isActive, setIsActive] = useState(false);
   const internalId = useId();
   const { id = `tinylight-lightbox-item-${internalId}` } = props;
   const { items, registerItem, activeItemIndex } = useLightboxStore(
@@ -136,15 +135,12 @@ export const Item = ({ children, style, ...props }: ItemProps) => {
     })
   );
 
-  const [isActive, setIsActive] = useState(false);
-
   const item = useRef<ItemDataRef["current"]>({
     domRef: itemRef,
   });
 
   useIsomorphicEffect(() => {
     registerItem(item);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useIsomorphicEffect(() => {
@@ -153,15 +149,7 @@ export const Item = ({ children, style, ...props }: ItemProps) => {
   }, [activeItemIndex, id, items]);
 
   return (
-    <div
-      ref={itemRef}
-      id={id}
-      {...props}
-      style={{
-        ...style,
-        display: isActive ? "block" : "none",
-      }}
-    >
+    <div ref={itemRef} id={id} {...props}>
       {runIfFunction(children, {
         isActive,
       })}
@@ -214,6 +202,7 @@ const Pagination = ({ children }: PaginationProps) => {
 };
 
 interface WrapperProps {
+  children: ReactNode;
   open: boolean;
   handleClose: () => void;
   loop?: boolean;
@@ -225,7 +214,7 @@ const Wrapper = ({
   handleClose,
   loop,
   ...props
-}: PropsWithChildren<WrapperProps>) => {
+}: WrapperProps) => {
   useLightboxStore.setState({ loop });
 
   useIsomorphicEffect(() => {

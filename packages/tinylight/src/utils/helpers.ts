@@ -16,3 +16,10 @@ export const getValidChildren = (children: React.ReactNode) => {
     React.isValidElement(child)
   ) as React.ReactElement[];
 };
+
+export const formatTime = (duration: number) => {
+  const minutes = Math.floor(duration / 60);
+  const seconds = Math.floor(duration % 60);
+
+  return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
+};
