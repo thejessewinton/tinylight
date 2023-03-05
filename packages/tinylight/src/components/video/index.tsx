@@ -1,26 +1,30 @@
-import type { HTMLAttributes, ReactNode } from "react";
+import type { HTMLAttributes, MutableRefObject, ReactNode } from "react";
 import { useRef } from "react";
 import { create } from "zustand";
 import type { MaybeRenderProp } from "../../types";
-import { formatTime, runIfFunction } from "../../utils/helpers";
+import { runIfFunction } from "../../utils/helpers";
 import { useIsomorphicEffect } from "../../utils/hooks";
 
 interface VideoState {
+  ref: MutableRefObject<HTMLVideoElement>["current"] | null;
+  setRef: (ref: MutableRefObject<HTMLVideoElement>["current"] | null) => void;
   isPlaying: boolean;
   togglePlay: () => void;
-  duration: string;
+  duration: number;
   setDuration: (duration: number) => void;
-  progress: string;
+  progress: number;
   setProgress: (progress: number) => void;
 }
 
 const useVideoStore = create<VideoState>((set) => ({
+  ref: null,
+  setRef: (ref) => set({ ref }),
   isPlaying: false,
   togglePlay: () => set((state) => ({ isPlaying: !state.isPlaying })),
-  duration: "",
-  setDuration: (duration) => set({ duration: formatTime(duration) }),
-  progress: "",
-  setProgress: (progress) => set({ progress: formatTime(progress) }),
+  duration: 0,
+  setDuration: (duration) => set({ duration }),
+  progress: 0,
+  setProgress: (progress) => set({ progress }),
 }));
 
 interface ControlsProps
@@ -28,14 +32,17 @@ interface ControlsProps
   children: MaybeRenderProp<{
     isPlaying: boolean;
     togglePlay: () => void;
-    duration: string;
-    progress: string;
+    duration: number;
+    progress: number;
+    rewind: (seconds: number) => void;
+    skip: (seconds: number) => void;
   }>;
 }
 
 const Controls = ({ children, ...props }: ControlsProps) => {
-  const { isPlaying, togglePlay, duration, progress } = useVideoStore(
+  const { isPlaying, togglePlay, duration, progress, ref } = useVideoStore(
     (state) => ({
+      ref: state.ref,
       isPlaying: state.isPlaying,
       togglePlay: state.togglePlay,
       duration: state.duration,
@@ -44,6 +51,16 @@ const Controls = ({ children, ...props }: ControlsProps) => {
     })
   );
 
+  const handleRewind = (seconds: number) => {
+    if (!ref) return;
+    ref.currentTime = ref.currentTime - seconds;
+  };
+
+  const handleSkip = (seconds: number) => {
+    if (!ref) return;
+    ref.currentTime = ref.currentTime + seconds;
+  };
+
   return (
     <div {...props}>
       {runIfFunction(children, {
@@ -51,65 +68,10 @@ const Controls = ({ children, ...props }: ControlsProps) => {
         togglePlay,
         duration,
         progress,
+        rewind: handleRewind,
+        skip: handleSkip,
       })}
     </div>
-  );
-};
-
-type SeekerProps = HTMLAttributes<HTMLButtonElement>;
-
-const Seeker = (props: SeekerProps) => {
-  const buttonRef = useRef<HTMLButtonElement>(null);
-  const isDragging = useRef<boolean>(false);
-  const buttonWidth = useRef<number>(0);
-
-  const { setProgress, duration } = useVideoStore((state) => ({
-    duration: state.duration,
-    setProgress: state.setProgress,
-  }));
-
-  useIsomorphicEffect(() => {
-    buttonWidth.current = buttonRef.current?.offsetWidth ?? 0;
-
-    const handleMouseDown = (event: MouseEvent) => {
-      isDragging.current = true;
-      const buttonPosition = buttonRef.current?.getBoundingClientRect();
-      const buttonOffset = buttonPosition?.left ?? 0;
-      const startPosition = event.clientX;
-      const startOffset = startPosition - buttonOffset;
-
-      const handleMouseMove = (event: MouseEvent) => {
-        if (isDragging.current) {
-          const position = event.clientX - startOffset;
-          const maxPosition = window.innerWidth - buttonWidth.current;
-          const newPosition = Math.min(Math.max(0, position), maxPosition);
-          const progress = newPosition / maxPosition;
-          const time = progress * Number(duration);
-          setProgress(time);
-        }
-      };
-
-      const handleMouseUp = () => {
-        isDragging.current = false;
-        document.removeEventListener("mousemove", handleMouseMove);
-        document.removeEventListener("mouseup", handleMouseUp);
-      };
-
-      document.addEventListener("mousemove", handleMouseMove);
-      document.addEventListener("mouseup", handleMouseUp);
-    };
-
-    buttonRef.current?.addEventListener("mousedown", handleMouseDown);
-
-    return () => {
-      buttonRef.current?.removeEventListener("mousedown", handleMouseDown);
-    };
-  }, [duration]);
-
-  return (
-    <button ref={buttonRef} {...props}>
-      Draggable Seek Button
-    </button>
   );
 };
 
@@ -118,17 +80,22 @@ interface PlayerProps extends HTMLAttributes<HTMLVideoElement> {
   children?: never;
 }
 
-const Player = ({ src, children, ...props }: PlayerProps) => {
+const Player = ({ src, ...props }: PlayerProps) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
-  const { togglePlay, isPlaying, setDuration, setProgress } = useVideoStore(
-    (state) => ({
+  const { togglePlay, isPlaying, setDuration, progress, setProgress, setRef } =
+    useVideoStore((state) => ({
       togglePlay: state.togglePlay,
       isPlaying: state.isPlaying,
       setDuration: state.setDuration,
+      progress: state.progress,
       setProgress: state.setProgress,
-    })
-  );
+      setRef: state.setRef,
+    }));
+
+  useIsomorphicEffect(() => {
+    setRef(videoRef.current);
+  }, []);
 
   useIsomorphicEffect(() => {
     const video = videoRef.current;
@@ -183,11 +150,15 @@ const Player = ({ src, children, ...props }: PlayerProps) => {
     };
   }, []);
 
-  return (
-    <video onClick={togglePlay} src={src} ref={videoRef} {...props}>
-      {children}
-    </video>
-  );
+  useIsomorphicEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    video.currentTime = progress;
+    setProgress(progress);
+  }, [progress]);
+
+  return <video onClick={togglePlay} src={src} ref={videoRef} {...props} />;
 };
 
 interface WrapperProps extends HTMLAttributes<HTMLDivElement> {
@@ -198,4 +169,4 @@ const Wrapper = ({ children, ...props }: WrapperProps) => {
   return <div {...props}>{children}</div>;
 };
 
-export const Video = Object.assign(Wrapper, { Player, Controls, Seeker });
+export const Video = Object.assign(Wrapper, { Player, Controls });
