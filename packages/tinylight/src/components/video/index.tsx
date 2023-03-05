@@ -1,9 +1,15 @@
-import type { HTMLAttributes, MutableRefObject, ReactNode } from "react";
+import type {
+  HTMLAttributes,
+  MutableRefObject,
+  ReactNode,
+  SyntheticEvent,
+  VideoHTMLAttributes,
+} from "react";
 import { useState } from "react";
 import { useRef } from "react";
 import { create } from "zustand";
 import type { MaybeRenderProp } from "../../types";
-import { runIfFunction } from "../../utils/helpers";
+import { runIfFunction, scaleValue } from "../../utils/helpers";
 import { useIsomorphicEffect } from "../../utils/hooks";
 
 interface VideoState {
@@ -13,8 +19,8 @@ interface VideoState {
   togglePlay: () => void;
   duration: number;
   setDuration: (duration: number) => void;
-  progress: number;
-  setProgress: (progress: number) => void;
+  currentTime: number;
+  setCurrentTime: (currentTime: number) => void;
 }
 
 const useVideoStore = create<VideoState>((set) => ({
@@ -24,8 +30,8 @@ const useVideoStore = create<VideoState>((set) => ({
   togglePlay: () => set((state) => ({ isPlaying: !state.isPlaying })),
   duration: 0,
   setDuration: (duration) => set({ duration }),
-  progress: 0,
-  setProgress: (progress) => set({ progress }),
+  currentTime: 0,
+  setCurrentTime: (currentTime) => set({ currentTime }),
 }));
 
 interface ControlsProps
@@ -34,24 +40,27 @@ interface ControlsProps
     isPlaying: boolean;
     togglePlay: () => void;
     duration: number;
-    progress: number;
+    currentTime: number;
     rewind: (seconds: number) => void;
     skip: (seconds: number) => void;
     isMuted: boolean;
     toggleMute: () => void;
+    volume: number;
+    setVolume: (volume: string) => void;
+    handleSeekerClick: (e: React.MouseEvent<HTMLDivElement>) => void;
   }>;
 }
 
 const Controls = ({ children, ...props }: ControlsProps) => {
   const [isMuted, setIsMuted] = useState(false);
-  const { isPlaying, togglePlay, duration, progress, ref } = useVideoStore(
+  const { isPlaying, togglePlay, duration, currentTime, ref } = useVideoStore(
     (state) => ({
       ref: state.ref,
       isPlaying: state.isPlaying,
       togglePlay: state.togglePlay,
       duration: state.duration,
-      progress: state.progress,
-      setProgress: state.setProgress,
+      currentTime: state.currentTime,
+      setCurrentTime: state.setCurrentTime,
     })
   );
 
@@ -71,37 +80,57 @@ const Controls = ({ children, ...props }: ControlsProps) => {
     ref.volume = ref.volume === 1 ? 0 : 1;
   };
 
+  const setVolume = (volume: string) => {
+    if (!ref) return;
+    ref.volume = Number(volume);
+  };
+
+  const handleSeekerClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!ref) return;
+    const seekerOffset = e.currentTarget.getBoundingClientRect();
+    const getSeekTime = scaleValue(
+      seekerOffset.left,
+      seekerOffset.right,
+      0,
+      ref.duration
+    );
+
+    ref.currentTime = getSeekTime(e.clientX);
+  };
+
   return (
     <div {...props}>
       {runIfFunction(children, {
         isPlaying,
         togglePlay,
         duration,
-        progress,
+        currentTime,
         rewind: handleRewind,
         skip: handleSkip,
         isMuted,
         toggleMute,
+        volume: ref?.volume ?? 0,
+        setVolume,
+        handleSeekerClick,
       })}
     </div>
   );
 };
 
-interface PlayerProps extends HTMLAttributes<HTMLVideoElement> {
-  src: string;
+interface PlayerProps extends VideoHTMLAttributes<HTMLVideoElement> {
   children?: never;
 }
 
-const Player = ({ src, ...props }: PlayerProps) => {
+const Player = (props: PlayerProps) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
-  const { togglePlay, isPlaying, setDuration, progress, setProgress, setRef } =
+  const { togglePlay, isPlaying, setCurrentTime, setDuration, setRef } =
     useVideoStore((state) => ({
       togglePlay: state.togglePlay,
       isPlaying: state.isPlaying,
       setDuration: state.setDuration,
-      progress: state.progress,
-      setProgress: state.setProgress,
+      currentTime: state.currentTime,
+      setCurrentTime: state.setCurrentTime,
       setRef: state.setRef,
     }));
 
@@ -111,9 +140,9 @@ const Player = ({ src, ...props }: PlayerProps) => {
 
   useIsomorphicEffect(() => {
     const video = videoRef.current;
-    const handlePlay = async () => {
+    const handlePlay = () => {
       if (!video) return;
-      await video.play();
+      video.play().catch(console.error);
     };
 
     const handlePause = () => {
@@ -122,55 +151,30 @@ const Player = ({ src, ...props }: PlayerProps) => {
     };
 
     if (isPlaying) {
-      handlePlay().catch(console.error);
+      handlePlay();
     } else {
       handlePause();
     }
   }, [isPlaying]);
 
-  // useIsomorphicEffect(() => {
-  //   const video = videoRef.current;
+  const handleLoadMetadata = (event: SyntheticEvent<HTMLVideoElement>) => {
+    const video = event.currentTarget;
+    setDuration(video.duration);
+  };
 
-  //   const handleSetDuration = () => {
-  //     if (!video) return;
-  //     setDuration(video.duration);
-  //   };
+  const handleTimeUpdate = (e: SyntheticEvent<HTMLVideoElement>) => {
+    setCurrentTime(e.currentTarget.currentTime);
+  };
 
-  //   if (!video) return;
-  //   video.addEventListener("setduration", handleSetDuration);
-  //   return () => {
-  //     video.removeEventListener("setduration", handleSetDuration);
-  //   };
-  // }, []);
-
-  // useIsomorphicEffect(() => {
-  //   const video = videoRef.current;
-
-  //   const handleSetProgress = () => {
-  //     if (!video) return;
-  //     setProgress(video.currentTime);
-  //   };
-
-  //   if (!video) return;
-
-  //   const setter = setTimeout(() => {
-  //     video.addEventListener("timeupdate", handleSetProgress);
-  //   }, 1000);
-
-  //   return () => {
-  //     clearTimeout(setter);
-  //   };
-  // }, []);
-
-  // useIsomorphicEffect(() => {
-  //   const video = videoRef.current;
-  //   if (!video) return;
-
-  //   video.currentTime = progress;
-  //   setProgress(progress);
-  // }, [progress]);
-
-  return <video onClick={togglePlay} src={src} ref={videoRef} {...props} />;
+  return (
+    <video
+      onClick={togglePlay}
+      onTimeUpdate={handleTimeUpdate}
+      onLoadedMetadata={handleLoadMetadata}
+      ref={videoRef}
+      {...props}
+    />
+  );
 };
 
 interface WrapperProps extends HTMLAttributes<HTMLDivElement> {

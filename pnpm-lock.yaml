@@ -43,6 +43,7 @@ importers:
       react: ^18.2.0
       react-dom: ^18.2.0
       react-swipeable: ^7.0.0
+      remeda: ^1.8.1
       tsconfig: workspace:*
       tsup: ^6.6.3
       typescript: ^4.9.5
@@ -52,6 +53,7 @@ importers:
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       react-swipeable: 7.0.0_react@18.2.0
+      remeda: 1.8.1
       zustand: 4.3.3_react@18.2.0
     devDependencies:
       '@changesets/cli': 2.26.0
@@ -5231,6 +5233,10 @@ packages:
       '@types/mdast': 3.0.10
       mdast-util-to-hast: 12.3.0
       unified: 10.1.2
+    dev: false
+
+  /remeda/1.8.1:
+    resolution: {integrity: sha512-X7MpoWqenIx9Ts6DJ92mn0ottXvPUXbkeJr7AyGYYFxAkCtjIwgMpLo7mNMpFHyqFnerR4d2HPBVZkL/mSbrGQ==}
     dev: false
 
   /repeat-string/1.6.1:

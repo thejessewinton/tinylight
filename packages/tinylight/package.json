@@ -37,6 +37,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-swipeable": "^7.0.0",
+    "remeda": "^1.8.1",
     "zustand": "^4.3.3"
   },
   "publishConfig": {
