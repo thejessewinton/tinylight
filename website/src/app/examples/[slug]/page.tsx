@@ -32,10 +32,13 @@ const ExamplesPage = ({ params }: ExamplesPageProps) => {
       <Video className="group relative flex items-center justify-center">
         <Video.Player src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" />
         <Video.Controls className="absolute bottom-0 z-10 w-full flex-1 bg-neutral-900 bg-gradient-to-t opacity-0 transition-opacity duration-1000 group-hover:opacity-100">
-          {({ isPlaying, togglePlay, rewind, skip }) => (
+          {({ isPlaying, togglePlay, rewind, skip, toggleMute, isMuted }) => (
             <div className="flex">
               <button onClick={togglePlay}>
                 {isPlaying ? "Pause" : "Play"}
+              </button>
+              <button onClick={toggleMute}>
+                {isMuted ? "Unmute" : "Mute"}
               </button>
               <button onClick={() => rewind(10)}>Rewind 10s</button>
               <button onClick={() => skip(10)}>Skip 10s</button>

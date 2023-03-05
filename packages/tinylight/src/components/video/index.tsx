@@ -1,4 +1,5 @@
 import type { HTMLAttributes, MutableRefObject, ReactNode } from "react";
+import { useState } from "react";
 import { useRef } from "react";
 import { create } from "zustand";
 import type { MaybeRenderProp } from "../../types";
@@ -36,10 +37,13 @@ interface ControlsProps
     progress: number;
     rewind: (seconds: number) => void;
     skip: (seconds: number) => void;
+    isMuted: boolean;
+    toggleMute: () => void;
   }>;
 }
 
 const Controls = ({ children, ...props }: ControlsProps) => {
+  const [isMuted, setIsMuted] = useState(false);
   const { isPlaying, togglePlay, duration, progress, ref } = useVideoStore(
     (state) => ({
       ref: state.ref,
@@ -61,6 +65,12 @@ const Controls = ({ children, ...props }: ControlsProps) => {
     ref.currentTime = ref.currentTime + seconds;
   };
 
+  const toggleMute = () => {
+    if (!ref) return;
+    setIsMuted(!isMuted);
+    ref.volume = ref.volume === 1 ? 0 : 1;
+  };
+
   return (
     <div {...props}>
       {runIfFunction(children, {
@@ -70,6 +80,8 @@ const Controls = ({ children, ...props }: ControlsProps) => {
         progress,
         rewind: handleRewind,
         skip: handleSkip,
+        isMuted,
+        toggleMute,
       })}
     </div>
   );
@@ -116,47 +128,47 @@ const Player = ({ src, ...props }: PlayerProps) => {
     }
   }, [isPlaying]);
 
-  useIsomorphicEffect(() => {
-    const video = videoRef.current;
+  // useIsomorphicEffect(() => {
+  //   const video = videoRef.current;
 
-    const handleSetDuration = () => {
-      if (!video) return;
-      setDuration(video.duration);
-    };
+  //   const handleSetDuration = () => {
+  //     if (!video) return;
+  //     setDuration(video.duration);
+  //   };
 
-    if (!video) return;
-    video.addEventListener("setduration", handleSetDuration);
-    return () => {
-      video.removeEventListener("setduration", handleSetDuration);
-    };
-  }, []);
+  //   if (!video) return;
+  //   video.addEventListener("setduration", handleSetDuration);
+  //   return () => {
+  //     video.removeEventListener("setduration", handleSetDuration);
+  //   };
+  // }, []);
 
-  useIsomorphicEffect(() => {
-    const video = videoRef.current;
+  // useIsomorphicEffect(() => {
+  //   const video = videoRef.current;
 
-    const handleSetProgress = () => {
-      if (!video) return;
-      setProgress(video.currentTime);
-    };
+  //   const handleSetProgress = () => {
+  //     if (!video) return;
+  //     setProgress(video.currentTime);
+  //   };
 
-    if (!video) return;
+  //   if (!video) return;
 
-    const setter = setTimeout(() => {
-      video.addEventListener("timeupdate", handleSetProgress);
-    }, 1000);
+  //   const setter = setTimeout(() => {
+  //     video.addEventListener("timeupdate", handleSetProgress);
+  //   }, 1000);
 
-    return () => {
-      clearTimeout(setter);
-    };
-  }, []);
+  //   return () => {
+  //     clearTimeout(setter);
+  //   };
+  // }, []);
 
-  useIsomorphicEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
+  // useIsomorphicEffect(() => {
+  //   const video = videoRef.current;
+  //   if (!video) return;
 
-    video.currentTime = progress;
-    setProgress(progress);
-  }, [progress]);
+  //   video.currentTime = progress;
+  //   setProgress(progress);
+  // }, [progress]);
 
   return <video onClick={togglePlay} src={src} ref={videoRef} {...props} />;
 };
