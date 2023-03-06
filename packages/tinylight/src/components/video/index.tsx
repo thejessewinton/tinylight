@@ -21,6 +21,10 @@ interface VideoState {
   setDuration: (duration: number) => void;
   currentTime: number;
   setCurrentTime: (currentTime: number) => void;
+  volume: number;
+  setVolume: (newVolume: number) => void;
+  isMuted: boolean;
+  toggleMute: () => void;
 }
 
 const useVideoStore = create<VideoState>((set) => ({
@@ -32,57 +36,60 @@ const useVideoStore = create<VideoState>((set) => ({
   setDuration: (duration) => set({ duration }),
   currentTime: 0,
   setCurrentTime: (currentTime) => set({ currentTime }),
+  volume: 1,
+  setVolume: (newVolume) => set({ volume: newVolume }),
+  isMuted: false,
+  toggleMute: () => set((state) => ({ isMuted: !state.isMuted })),
 }));
+
+interface SeekerFnProps {
+  type: "skip" | "rewind";
+  seconds: number;
+}
+
+interface ControlsFnProps
+  extends Pick<
+    VideoState,
+    | "isPlaying"
+    | "togglePlay"
+    | "duration"
+    | "volume"
+    | "setVolume"
+    | "isMuted"
+    | "toggleMute"
+    | "currentTime"
+  > {
+  seek: (props: SeekerFnProps) => void;
+  handleSeekerClick: (e: React.MouseEvent<HTMLDivElement>) => void;
+}
 
 interface ControlsProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
-  children: MaybeRenderProp<{
-    isPlaying: boolean;
-    togglePlay: () => void;
-    duration: number;
-    currentTime: number;
-    rewind: (seconds: number) => void;
-    skip: (seconds: number) => void;
-    isMuted: boolean;
-    toggleMute: () => void;
-    volume: number;
-    setVolume: (volume: string) => void;
-    handleSeekerClick: (e: React.MouseEvent<HTMLDivElement>) => void;
-  }>;
+  children: MaybeRenderProp<ControlsFnProps>;
 }
 
 const Controls = ({ children, ...props }: ControlsProps) => {
   const [isMuted, setIsMuted] = useState(false);
-  const { isPlaying, togglePlay, duration, currentTime, ref } = useVideoStore(
-    (state) => ({
+  const { ref, isPlaying, togglePlay, duration, currentTime, setVolume } =
+    useVideoStore((state) => ({
       ref: state.ref,
       isPlaying: state.isPlaying,
       togglePlay: state.togglePlay,
       duration: state.duration,
       currentTime: state.currentTime,
-      setCurrentTime: state.setCurrentTime,
-    })
-  );
+      setVolume: state.setVolume,
+    }));
 
-  const handleRewind = (seconds: number) => {
+  const handleSeek = ({ type, seconds }: SeekerFnProps) => {
+    const value = type === "skip" ? seconds : -seconds;
     if (!ref) return;
-    ref.currentTime = ref.currentTime - seconds;
-  };
-
-  const handleSkip = (seconds: number) => {
-    if (!ref) return;
-    ref.currentTime = ref.currentTime + seconds;
+    ref.currentTime = ref.currentTime + value;
   };
 
   const toggleMute = () => {
     if (!ref) return;
     setIsMuted(!isMuted);
     ref.volume = ref.volume === 1 ? 0 : 1;
-  };
-
-  const setVolume = (volume: string) => {
-    if (!ref) return;
-    ref.volume = Number(volume);
   };
 
   const handleSeekerClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -105,8 +112,7 @@ const Controls = ({ children, ...props }: ControlsProps) => {
         togglePlay,
         duration,
         currentTime,
-        rewind: handleRewind,
-        skip: handleSkip,
+        seek: handleSeek,
         isMuted,
         toggleMute,
         volume: ref?.volume ?? 0,
@@ -140,6 +146,12 @@ const Player = (props: PlayerProps) => {
 
   useIsomorphicEffect(() => {
     const video = videoRef.current;
+    if (!video) return;
+    setDuration(video.duration);
+  }, []);
+
+  useIsomorphicEffect(() => {
+    const video = videoRef.current;
     const handlePlay = () => {
       if (!video) return;
       video.play().catch(console.error);
@@ -157,11 +169,6 @@ const Player = (props: PlayerProps) => {
     }
   }, [isPlaying]);
 
-  const handleLoadMetadata = (event: SyntheticEvent<HTMLVideoElement>) => {
-    const video = event.currentTarget;
-    setDuration(video.duration);
-  };
-
   const handleTimeUpdate = (e: SyntheticEvent<HTMLVideoElement>) => {
     setCurrentTime(e.currentTarget.currentTime);
   };
@@ -170,7 +177,6 @@ const Player = (props: PlayerProps) => {
     <video
       onClick={togglePlay}
       onTimeUpdate={handleTimeUpdate}
-      onLoadedMetadata={handleLoadMetadata}
       ref={videoRef}
       {...props}
     />

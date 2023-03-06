@@ -33,28 +33,23 @@ const ExamplesPage = ({ params }: ExamplesPageProps) => {
           poster="https://jessewinton.com/images/og.jpg"
           src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
         />
-        <Video.Controls className="absolute bottom-0 z-10 w-full flex-1 bg-neutral-900 bg-gradient-to-t opacity-0 transition-opacity duration-1000 group-hover:opacity-100">
-          {({
-            isPlaying,
-            togglePlay,
-            setVolume,
-            currentTime,
-            duration,
-            handleSeekerClick,
-          }) => (
-            <div className="flex">
-              <button onClick={togglePlay}>
-                {isPlaying ? "Pause" : "Play"}
-              </button>
-
-              <div onClick={handleSeekerClick} className="bg-white">
+        <Video.Controls className="absolute bottom-0 z-10 w-full flex-1 bg-neutral-900 bg-gradient-to-t transition-opacity duration-1000 ">
+          {({ currentTime, duration, handleSeekerClick }) => {
+            console.log(currentTime, duration);
+            return (
+              <div className="flex">
                 <div
-                  className="h-2 bg-pink-300"
-                  style={{ transform: `scaleX(${currentTime / duration})` }}
-                />
+                  onClick={handleSeekerClick}
+                  className="h-2 w-full bg-white"
+                >
+                  <div
+                    className="h-2 origin-left bg-pink-300"
+                    style={{ transform: `scaleX(${currentTime / duration})` }}
+                  />
+                </div>
               </div>
-            </div>
-          )}
+            );
+          }}
         </Video.Controls>
       </Video>
     </>
