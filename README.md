@@ -6,7 +6,7 @@ tinylight is a tiny, ustyled, unopinionated lightbox component for React project
 
 # What this is
 
-## The core principle behind tinylight has take a lot of inspiration from libraries like [HeadlessUI](https://headlessui.com) or [Radix](https://radix-ui.com). I'm a big fan of both, and I wanted to create something similar for components that I've found are less often considered. Right now, that means lightboxes, but the idea is to expand this to some other components as well, and the roadmap includes an oEmbed container for custom Vimeo and YouTube players, with hooks to customize controls, and HTML video and audio components.
+The core principle behind tinylight has take a lot of inspiration from libraries like [HeadlessUI](https://headlessui.com) or [Radix](https://radix-ui.com). I'm a big fan of both, and I wanted to create something similar for components that I've found are less often considered. Right now, that means lightboxes, but the idea is to expand this to some other components as well, and the roadmap includes an oEmbed container for custom Vimeo and YouTube players, with hooks to customize controls, and HTML video and audio components.
 
 ## Installation
 
@@ -29,8 +29,6 @@ Then, import it into your component:
 ```tsx
 import { Lightbox } from "tinylight";
 ```
-
-## And build away!
 
 ## Usage
 
