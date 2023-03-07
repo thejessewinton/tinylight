@@ -1,11 +1,15 @@
-import { defineDocumentType, makeSource } from "contentlayer/source-files";
+import {
+  ComputedFields,
+  defineDocumentType,
+  makeSource,
+} from "contentlayer/source-files";
 import remarkGfm from "remark-gfm";
 import rehypePrettyCode from "rehype-pretty-code";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
+import mono from "./src/utils/theme.json";
 
-/** @type {import('contentlayer/source-files').ComputedFields} */
-const computedFields = {
+const computedFields: ComputedFields = {
   slug: {
     type: "string",
     resolve: (doc) => `/${doc._raw.flattenedPath}`,
@@ -16,10 +20,10 @@ const computedFields = {
   },
 };
 
-export const Doc = defineDocumentType(() => ({
-  name: "Doc",
-  filePathPattern: `docs/**/*.mdx`,
-  contentType: "mdx",
+const Index = defineDocumentType(() => ({
+  name: "Index",
+  filePathPattern: "index.md",
+  contentType: "markdown",
   fields: {
     title: {
       type: "string",
@@ -28,9 +32,8 @@ export const Doc = defineDocumentType(() => ({
     description: {
       type: "string",
     },
-    published: {
-      type: "boolean",
-      default: true,
+    summary: {
+      type: "string",
     },
   },
   computedFields,
@@ -58,7 +61,7 @@ export const Examples = defineDocumentType(() => ({
 
 export default makeSource({
   contentDirPath: "./src/content",
-  documentTypes: [Doc, Examples],
+  documentTypes: [Index, Examples],
   mdx: {
     remarkPlugins: [remarkGfm],
     rehypePlugins: [
@@ -66,7 +69,7 @@ export default makeSource({
       [
         rehypePrettyCode,
         {
-          theme: "one-dark-pro",
+          theme: mono,
           onVisitLine(node) {
             // Prevent lines from collapsing in `display: grid` mode, and allow empty
             // lines to be copy/pasted

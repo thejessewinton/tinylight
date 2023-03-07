@@ -13,7 +13,7 @@ const items = [
 
 export const Footer = () => {
   return (
-    <footer className="mb-0 mt-auto flex h-14 w-full items-center border-t border-t-neutral-700">
+    <footer className="animate-blur animation-delay-150 mb-0 mt-auto flex h-14 w-full items-center border-t border-t-neutral-700">
       <div className="mx-auto flex w-full max-w-3xl flex-row items-center justify-between gap-4 px-8 text-neutral-400">
         <nav className="flex items-center justify-between gap-6 text-sm">
           {items.map((item) => (
@@ -23,7 +23,7 @@ export const Footer = () => {
           ))}
         </nav>
 
-        <em className="font-serif">{new Date().getFullYear()}</em>
+        <span className="text-sm">{new Date().getFullYear()}</span>
       </div>
     </footer>
   );

@@ -10,67 +10,25 @@ type ComponentProps = { className?: string };
 
 const components = {
   h1: ({ className, ...props }: ComponentProps) => (
-    <h1
-      className={clsx(
-        "mt-2 font-serif text-4xl font-light lowercase italic",
-        className
-      )}
-      {...props}
-    />
+    <h1 className={clsx("mt-2 font-light", className)} {...props} />
   ),
   h2: ({ className, ...props }: ComponentProps) => (
-    <h2
-      className={clsx(
-        "mt-10 font-serif text-3xl font-light lowercase italic",
-        className
-      )}
-      {...props}
-    />
+    <h2 className={clsx("mt-10 font-light", className)} {...props} />
   ),
   h3: ({ className, ...props }: ComponentProps) => (
-    <h3
-      className={clsx(
-        "mt-8 font-serif text-2xl font-light lowercase italic",
-        className
-      )}
-      {...props}
-    />
+    <h3 className={clsx("mt-8 font-light", className)} {...props} />
   ),
   h4: ({ className, ...props }: ComponentProps) => (
-    <h4
-      className={clsx(
-        "mt-8 font-serif text-xl font-light lowercase italic",
-        className
-      )}
-      {...props}
-    />
+    <h4 className={clsx("mt-8 font-light", className)} {...props} />
   ),
   h5: ({ className, ...props }: ComponentProps) => (
-    <h5
-      className={clsx(
-        "mt-8 font-serif text-lg font-light lowercase italic",
-        className
-      )}
-      {...props}
-    />
+    <h5 className={clsx("mt-8 font-light", className)} {...props} />
   ),
   h6: ({ className, ...props }: ComponentProps) => (
-    <h6
-      className={clsx(
-        "mt-8 font-serif text-base font-light lowercase italic",
-        className
-      )}
-      {...props}
-    />
+    <h6 className={clsx("mt-8 text-base font-light", className)} {...props} />
   ),
   a: ({ className, ...props }: ComponentProps) => (
-    <a
-      className={clsx(
-        "border-b border-dotted border-neutral-200 font-medium",
-        className
-      )}
-      {...props}
-    />
+    <a className={clsx("font-light", className)} {...props} />
   ),
   p: ({ className, ...props }: ComponentProps) => (
     <p className={clsx("leading-7", className)} {...props} />
@@ -113,11 +71,11 @@ const components = {
   Lightbox,
 };
 
-interface MdxProps {
+interface MDXProps {
   code: string;
 }
 
-export const Mdx = ({ code }: MdxProps) => {
+export const MDX = ({ code }: MDXProps) => {
   const Component = useMDXComponent(code);
 
   return (
