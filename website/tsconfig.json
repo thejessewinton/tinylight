@@ -20,6 +20,6 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".contentlayer/generated",
-    "contentlayer.config.js"
+    "contentlayer.config.ts"
   ]
 }

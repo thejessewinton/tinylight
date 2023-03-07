@@ -1,5 +1,6 @@
+import { MDX } from "@/components/mdx/MDX";
+import { getIndex } from "@/utils/content";
 import type { Metadata } from "next";
-import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "tinylight",
@@ -8,33 +9,20 @@ export const metadata: Metadata = {
 };
 
 const Index = () => {
+  const data = getIndex();
+
   return (
-    <div className="flex h-full flex-col items-center justify-center">
-      <h1 className="text-center font-serif text-5xl font-light italic text-neutral-200 md:text-6xl">
-        tinylight
-        <span className="font-sans font-light not-italic"> primitives</span>
-      </h1>
-      <p className="text-medium mt-4 text-center font-sans text-neutral-300">
-        Lightweight, unstyled lightbox primitives for React.
-      </p>
-      <Link
-        href="/docs/getting-started"
-        className="mt-16 flex items-center gap-3 rounded-md border-b border-neutral-500 bg-neutral-300 px-5 py-1.5 font-medium text-neutral-900"
-      >
-        Get Started
-        <svg
-          viewBox="0 0 24 24"
-          aria-hidden="true"
-          strokeWidth={1.5}
-          className="h-4 w-4 stroke-neutral-900"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"
-          />
-        </svg>
-      </Link>
+    <div className="flex flex-col gap-2 pb-4">
+      <div className="animate-enter relative z-50">
+        <h1 className="group relative mb-4 inline-block w-full max-w-xs cursor-pointer font-medium">
+          {data.title}
+        </h1>
+
+        <div
+          className="font-light"
+          dangerouslySetInnerHTML={{ __html: data.body.html }}
+        />
+      </div>
     </div>
   );
 };

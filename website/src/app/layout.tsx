@@ -1,7 +1,7 @@
 import { Inter, Newsreader, IBM_Plex_Mono as Mono } from "next/font/google";
 import "@/styles/globals.css";
-import { Header } from "@/components/Header";
 import { type Metadata } from "next";
+import { Footer } from "@/components/footer/Footer";
 
 const inter = Inter({ variable: "--font-sans", subsets: ["latin"] });
 const newsreader = Newsreader({ variable: "--font-serif", subsets: ["latin"] });
@@ -45,16 +45,12 @@ export default function RootLayout({
       lang="en"
       className={`${inter.variable} ${newsreader.variable} ${mono.variable}`}
     >
-      <meta name="viewport" content="width=device-width, initial-scale=1" />
       <link href="/favicon.ico" rel="shortcut icon" />
-      <body className="flex min-h-screen flex-col scroll-smooth bg-neutral-900 leading-loose text-neutral-200 antialiased selection:bg-neutral-700">
-        <Header />
-        <main className="mx-auto flex w-full flex-grow">
-          {/* <Navigation /> */}
-          <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col p-8">
-            {children}
-          </div>
+      <body className="flex min-h-screen flex-col items-center justify-center scroll-smooth font-light leading-loose text-neutral-900 antialiased selection:bg-neutral-800 dark:bg-neutral-900 dark:text-neutral-200">
+        <main className="mx-auto mt-32 flex w-full max-w-3xl flex-grow flex-col items-center justify-center px-8">
+          {children}
         </main>
+        <Footer />
       </body>
     </html>
   );

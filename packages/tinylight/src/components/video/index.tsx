@@ -9,7 +9,7 @@ import { useState } from "react";
 import { useRef } from "react";
 import { create } from "zustand";
 import type { MaybeRenderProp } from "../../types";
-import { runIfFunction, scaleValue } from "../../utils/helpers";
+import { formatTime, runIfFunction, scaleValue } from "../../utils/helpers";
 import { useIsomorphicEffect } from "../../utils/hooks";
 
 interface VideoState {
@@ -25,6 +25,8 @@ interface VideoState {
   setVolume: (newVolume: number) => void;
   isMuted: boolean;
   toggleMute: () => void;
+  skip: (props: SeekProps) => void;
+  seekTo: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
 
 const useVideoStore = create<VideoState>((set) => ({
@@ -40,9 +42,27 @@ const useVideoStore = create<VideoState>((set) => ({
   setVolume: (newVolume) => set({ volume: newVolume }),
   isMuted: false,
   toggleMute: () => set((state) => ({ isMuted: !state.isMuted })),
+  skip: ({ type, seconds }: SeekProps) => {
+    const video = useVideoStore.getState().ref;
+    const value = type === "skip" ? seconds : -seconds;
+    if (!video) return;
+    video.currentTime = video.currentTime + value;
+  },
+  seekTo: (e: React.MouseEvent<HTMLDivElement>) => {
+    const video = useVideoStore.getState().ref;
+    if (!video) return;
+    const seekToerOffset = e.currentTarget.getBoundingClientRect();
+    const getSeekTime = scaleValue(
+      seekToerOffset.left,
+      seekToerOffset.right,
+      0,
+      video.duration
+    );
+    video.currentTime = getSeekTime(e.clientX);
+  },
 }));
 
-interface SeekerFnProps {
+interface SeekProps {
   type: "skip" | "rewind";
   seconds: number;
 }
@@ -52,15 +72,21 @@ interface ControlsFnProps
     VideoState,
     | "isPlaying"
     | "togglePlay"
-    | "duration"
     | "volume"
     | "setVolume"
     | "isMuted"
     | "toggleMute"
-    | "currentTime"
+    | "skip"
+    | "seekTo"
   > {
-  seek: (props: SeekerFnProps) => void;
-  handleSeekerClick: (e: React.MouseEvent<HTMLDivElement>) => void;
+  duration: {
+    formatted: string;
+    raw: number;
+  };
+  currentTime: {
+    formatted: string;
+    raw: number;
+  };
 }
 
 interface ControlsProps
@@ -70,21 +96,25 @@ interface ControlsProps
 
 const Controls = ({ children, ...props }: ControlsProps) => {
   const [isMuted, setIsMuted] = useState(false);
-  const { ref, isPlaying, togglePlay, duration, currentTime, setVolume } =
-    useVideoStore((state) => ({
-      ref: state.ref,
-      isPlaying: state.isPlaying,
-      togglePlay: state.togglePlay,
-      duration: state.duration,
-      currentTime: state.currentTime,
-      setVolume: state.setVolume,
-    }));
-
-  const handleSeek = ({ type, seconds }: SeekerFnProps) => {
-    const value = type === "skip" ? seconds : -seconds;
-    if (!ref) return;
-    ref.currentTime = ref.currentTime + value;
-  };
+  const {
+    ref,
+    skip,
+    seekTo,
+    isPlaying,
+    togglePlay,
+    duration,
+    currentTime,
+    setVolume,
+  } = useVideoStore((state) => ({
+    ref: state.ref,
+    skip: state.skip,
+    isPlaying: state.isPlaying,
+    togglePlay: state.togglePlay,
+    duration: state.duration,
+    currentTime: state.currentTime,
+    setVolume: state.setVolume,
+    seekTo: state.seekTo,
+  }));
 
   const toggleMute = () => {
     if (!ref) return;
@@ -92,32 +122,25 @@ const Controls = ({ children, ...props }: ControlsProps) => {
     ref.volume = ref.volume === 1 ? 0 : 1;
   };
 
-  const handleSeekerClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!ref) return;
-    const seekerOffset = e.currentTarget.getBoundingClientRect();
-    const getSeekTime = scaleValue(
-      seekerOffset.left,
-      seekerOffset.right,
-      0,
-      ref.duration
-    );
-
-    ref.currentTime = getSeekTime(e.clientX);
-  };
-
   return (
     <div {...props}>
       {runIfFunction(children, {
         isPlaying,
         togglePlay,
-        duration,
-        currentTime,
-        seek: handleSeek,
+        duration: {
+          formatted: formatTime(duration),
+          raw: duration,
+        },
+        currentTime: {
+          formatted: formatTime(currentTime),
+          raw: currentTime,
+        },
+        skip,
         isMuted,
         toggleMute,
         volume: ref?.volume ?? 0,
         setVolume,
-        handleSeekerClick,
+        seekTo,
       })}
     </div>
   );
