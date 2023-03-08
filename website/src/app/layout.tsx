@@ -46,8 +46,8 @@ export default function RootLayout({
       className={`${inter.variable} ${newsreader.variable} ${mono.variable}`}
     >
       <link href="/favicon.ico" rel="shortcut icon" />
-      <body className="flex min-h-screen flex-col items-center justify-center scroll-smooth font-light leading-loose text-neutral-900 antialiased selection:bg-neutral-800 dark:bg-neutral-900 dark:text-neutral-200">
-        <main className="mx-auto mt-32 flex w-full max-w-3xl flex-grow flex-col items-center justify-center px-8">
+      <body className="flex min-h-screen flex-col items-center justify-center scroll-smooth font-light leading-loose text-neutral-900 antialiased selection:bg-neutral-600 selection:text-white dark:bg-neutral-900 dark:text-neutral-200">
+        <main className="mx-auto mt-32 w-full max-w-3xl items-center justify-center px-8">
           {children}
         </main>
         <Footer />

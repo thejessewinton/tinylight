@@ -1,34 +1,35 @@
 "use client";
 
 import Image from "next/image";
-import { Lightbox } from "tinylight";
 import { useMDXComponent } from "next-contentlayer/hooks";
 
 import { clsx } from "clsx";
 
 type ComponentProps = { className?: string };
 
+const headingClasses = "font-medium mb-2";
+
 const components = {
   h1: ({ className, ...props }: ComponentProps) => (
-    <h1 className={clsx("mt-2 font-light", className)} {...props} />
+    <h1 className={clsx(headingClasses, className)} {...props} />
   ),
   h2: ({ className, ...props }: ComponentProps) => (
-    <h2 className={clsx("mt-10 font-light", className)} {...props} />
+    <h2 className={clsx(headingClasses, className)} {...props} />
   ),
   h3: ({ className, ...props }: ComponentProps) => (
-    <h3 className={clsx("mt-8 font-light", className)} {...props} />
+    <h3 className={clsx(headingClasses, className)} {...props} />
   ),
   h4: ({ className, ...props }: ComponentProps) => (
-    <h4 className={clsx("mt-8 font-light", className)} {...props} />
+    <h4 className={clsx(headingClasses, className)} {...props} />
   ),
   h5: ({ className, ...props }: ComponentProps) => (
-    <h5 className={clsx("mt-8 font-light", className)} {...props} />
+    <h5 className={clsx(headingClasses, className)} {...props} />
   ),
   h6: ({ className, ...props }: ComponentProps) => (
-    <h6 className={clsx("mt-8 text-base font-light", className)} {...props} />
+    <h6 className={clsx(headingClasses, className)} {...props} />
   ),
   a: ({ className, ...props }: ComponentProps) => (
-    <a className={clsx("font-light", className)} {...props} />
+    <a className={clsx("font-medium", className)} {...props} />
   ),
   p: ({ className, ...props }: ComponentProps) => (
     <p className={clsx("leading-7", className)} {...props} />
@@ -41,12 +42,6 @@ const components = {
   ),
   li: ({ className, ...props }: ComponentProps) => (
     <li className={clsx("mt-2", className)} {...props} />
-  ),
-  hr: ({ className, ...props }: ComponentProps) => (
-    <hr
-      className={clsx("my-8 border-dotted border-neutral-700", className)}
-      {...props}
-    />
   ),
   blockquote: ({ className, ...props }: ComponentProps) => (
     <blockquote
@@ -78,9 +73,5 @@ interface MDXProps {
 export const MDX = ({ code }: MDXProps) => {
   const Component = useMDXComponent(code);
 
-  return (
-    <div className="space-y-8">
-      <Component components={components} />
-    </div>
-  );
+  return <Component components={components} />;
 };

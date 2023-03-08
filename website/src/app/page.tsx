@@ -18,10 +18,9 @@ const Index = () => {
           {data.title}
         </h1>
 
-        <div
-          className="font-light"
-          dangerouslySetInnerHTML={{ __html: data.body.html }}
-        />
+        <div className="font-light">
+          <MDX code={data.body.code} />
+        </div>
       </div>
     </div>
   );
