@@ -22,8 +22,8 @@ const computedFields: ComputedFields = {
 
 const Index = defineDocumentType(() => ({
   name: "Index",
-  filePathPattern: "index.md",
-  contentType: "markdown",
+  filePathPattern: "index.mdx",
+  contentType: "mdx",
   fields: {
     title: {
       type: "string",
@@ -70,6 +70,7 @@ export default makeSource({
         rehypePrettyCode,
         {
           theme: mono,
+
           onVisitLine(node) {
             // Prevent lines from collapsing in `display: grid` mode, and allow empty
             // lines to be copy/pasted
