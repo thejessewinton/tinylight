@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { Lightbox } from "tinylight";
 import { useMDXComponent } from "next-contentlayer/hooks";
 
 import { clsx } from "clsx";
@@ -44,12 +43,6 @@ const components = {
   li: ({ className, ...props }: ComponentProps) => (
     <li className={clsx("mt-2", className)} {...props} />
   ),
-  hr: ({ className, ...props }: ComponentProps) => (
-    <hr
-      className={clsx("my-8 border-dotted border-neutral-700", className)}
-      {...props}
-    />
-  ),
   blockquote: ({ className, ...props }: ComponentProps) => (
     <blockquote
       className={clsx(
@@ -80,7 +73,5 @@ interface MDXProps {
 export const MDX = ({ code }: MDXProps) => {
   const Component = useMDXComponent(code);
 
-  return (
-      <Component components={components} />
-  );
+  return <Component components={components} />;
 };
