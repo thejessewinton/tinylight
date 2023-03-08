@@ -63,7 +63,6 @@ const components = {
   ),
   code: ({ className, ...props }: ComponentProps) => <code {...props} />,
   Image,
-  Lightbox,
 };
 
 interface MDXProps {
