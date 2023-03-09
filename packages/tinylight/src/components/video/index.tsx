@@ -1,7 +1,5 @@
 import type {
-  HTMLAttributes,
   MutableRefObject,
-  ReactNode,
   SyntheticEvent,
   VideoHTMLAttributes,
 } from "react";
@@ -22,7 +20,7 @@ interface VideoState {
   currentTime: number;
   setCurrentTime: (currentTime: number) => void;
   volume: number;
-  setVolume: (newVolume: number) => void;
+  setVolume: (newVolume: string) => void;
   isMuted: boolean;
   toggleMute: () => void;
   skip: (props: SeekProps) => void;
@@ -39,7 +37,7 @@ const useVideoStore = create<VideoState>((set) => ({
   currentTime: 0,
   setCurrentTime: (currentTime) => set({ currentTime }),
   volume: 1,
-  setVolume: (newVolume) => set({ volume: newVolume }),
+  setVolume: (newVolume) => set({ volume: +newVolume }),
   isMuted: false,
   toggleMute: () => set((state) => ({ isMuted: !state.isMuted })),
   skip: ({ type, seconds }: SeekProps) => {
@@ -70,7 +68,6 @@ interface SeekProps {
 interface ControlsFnProps
   extends Pick<
     VideoState,
-    | "isPlaying"
     | "togglePlay"
     | "volume"
     | "setVolume"
@@ -96,25 +93,16 @@ interface ControlsProps
 
 const Controls = ({ children, ...props }: ControlsProps) => {
   const [isMuted, setIsMuted] = useState(false);
-  const {
-    ref,
-    skip,
-    seekTo,
-    isPlaying,
-    togglePlay,
-    duration,
-    currentTime,
-    setVolume,
-  } = useVideoStore((state) => ({
-    ref: state.ref,
-    skip: state.skip,
-    isPlaying: state.isPlaying,
-    togglePlay: state.togglePlay,
-    duration: state.duration,
-    currentTime: state.currentTime,
-    setVolume: state.setVolume,
-    seekTo: state.seekTo,
-  }));
+  const { ref, skip, seekTo, togglePlay, duration, currentTime, setVolume } =
+    useVideoStore((state) => ({
+      ref: state.ref,
+      skip: state.skip,
+      togglePlay: state.togglePlay,
+      duration: state.duration,
+      currentTime: state.currentTime,
+      setVolume: state.setVolume,
+      seekTo: state.seekTo,
+    }));
 
   const toggleMute = () => {
     if (!ref) return;
@@ -125,7 +113,6 @@ const Controls = ({ children, ...props }: ControlsProps) => {
   return (
     <div {...props}>
       {runIfFunction(children, {
-        isPlaying,
         togglePlay,
         duration: {
           formatted: formatTime(duration),
@@ -138,7 +125,7 @@ const Controls = ({ children, ...props }: ControlsProps) => {
         skip,
         isMuted,
         toggleMute,
-        volume: ref?.volume ?? 0,
+        volume: ref?.volume || 0,
         setVolume,
         seekTo,
       })}
@@ -206,12 +193,25 @@ const Player = (props: PlayerProps) => {
   );
 };
 
-interface WrapperProps extends HTMLAttributes<HTMLDivElement> {
-  children: ReactNode;
+interface WrapperProps
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  children: MaybeRenderProp<{
+    isPlaying: boolean;
+  }>;
 }
 
 const Wrapper = ({ children, ...props }: WrapperProps) => {
-  return <div {...props}>{children}</div>;
+  const { isPlaying } = useVideoStore((state) => ({
+    isPlaying: state.isPlaying,
+  }));
+
+  return (
+    <div {...props}>
+      {runIfFunction(children, {
+        isPlaying,
+      })}
+    </div>
+  );
 };
 
 export const Video = Object.assign(Wrapper, { Player, Controls });
