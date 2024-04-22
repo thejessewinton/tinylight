@@ -15,6 +15,7 @@
   },
   "packageManager": "pnpm@7.15.0",
   "dependencies": {
-    "dotenv-cli": "^7.0.0"
+    "dotenv-cli": "^7.0.0",
+    "pnpm": "^9.0.4"
   }
 }
