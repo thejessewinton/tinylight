@@ -4,29 +4,29 @@ import type {
   ReactNode,
   SyntheticEvent,
   VideoHTMLAttributes,
-} from "react";
-import { useState } from "react";
-import { useRef } from "react";
-import { create } from "zustand";
-import type { MaybeRenderProp } from "../../types";
-import { formatTime, runIfFunction, scaleValue } from "../../utils/helpers";
-import { useIsomorphicEffect } from "../../utils/hooks";
+} from 'react'
+import { useState } from 'react'
+import { useRef } from 'react'
+import { create } from 'zustand'
+import type { MaybeRenderProp } from '../../types'
+import { formatTime, runIfFunction, scaleValue } from '../../utils/helpers'
+import { useIsomorphicEffect } from '../../utils/hooks'
 
 interface VideoState {
-  ref: MutableRefObject<HTMLVideoElement>["current"] | null;
-  setRef: (ref: MutableRefObject<HTMLVideoElement>["current"] | null) => void;
-  isPlaying: boolean;
-  togglePlay: () => void;
-  duration: number;
-  setDuration: (duration: number) => void;
-  currentTime: number;
-  setCurrentTime: (currentTime: number) => void;
-  volume: number;
-  setVolume: (newVolume: number) => void;
-  isMuted: boolean;
-  toggleMute: () => void;
-  skip: (props: SeekProps) => void;
-  seekTo: (e: React.MouseEvent<HTMLDivElement>) => void;
+  ref: MutableRefObject<HTMLVideoElement>['current'] | null
+  setRef: (ref: MutableRefObject<HTMLVideoElement>['current'] | null) => void
+  isPlaying: boolean
+  togglePlay: () => void
+  duration: number
+  setDuration: (duration: number) => void
+  currentTime: number
+  setCurrentTime: (currentTime: number) => void
+  volume: number
+  setVolume: (newVolume: number) => void
+  isMuted: boolean
+  toggleMute: () => void
+  skip: (props: SeekProps) => void
+  seekTo: (e: React.MouseEvent<HTMLDivElement>) => void
 }
 
 const useVideoStore = create<VideoState>((set) => ({
@@ -43,59 +43,59 @@ const useVideoStore = create<VideoState>((set) => ({
   isMuted: false,
   toggleMute: () => set((state) => ({ isMuted: !state.isMuted })),
   skip: ({ type, seconds }: SeekProps) => {
-    const video = useVideoStore.getState().ref;
-    const value = type === "skip" ? seconds : -seconds;
-    if (!video) return;
-    video.currentTime = video.currentTime + value;
+    const video = useVideoStore.getState().ref
+    const value = type === 'skip' ? seconds : -seconds
+    if (!video) return
+    video.currentTime = video.currentTime + value
   },
   seekTo: (e: React.MouseEvent<HTMLDivElement>) => {
-    const video = useVideoStore.getState().ref;
-    if (!video) return;
-    const seekToerOffset = e.currentTarget.getBoundingClientRect();
+    const video = useVideoStore.getState().ref
+    if (!video) return
+    const seekToerOffset = e.currentTarget.getBoundingClientRect()
     const getSeekTime = scaleValue(
       seekToerOffset.left,
       seekToerOffset.right,
       0,
-      video.duration
-    );
-    video.currentTime = getSeekTime(e.clientX);
+      video.duration,
+    )
+    video.currentTime = getSeekTime(e.clientX)
   },
-}));
+}))
 
 interface SeekProps {
-  type: "skip" | "rewind";
-  seconds: number;
+  type: 'skip' | 'rewind'
+  seconds: number
 }
 
 interface ControlsFnProps
   extends Pick<
     VideoState,
-    | "isPlaying"
-    | "togglePlay"
-    | "volume"
-    | "setVolume"
-    | "isMuted"
-    | "toggleMute"
-    | "skip"
-    | "seekTo"
+    | 'isPlaying'
+    | 'togglePlay'
+    | 'volume'
+    | 'setVolume'
+    | 'isMuted'
+    | 'toggleMute'
+    | 'skip'
+    | 'seekTo'
   > {
   duration: {
-    formatted: string;
-    raw: number;
-  };
+    formatted: string
+    raw: number
+  }
   currentTime: {
-    formatted: string;
-    raw: number;
-  };
+    formatted: string
+    raw: number
+  }
 }
 
 interface ControlsProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
-  children: MaybeRenderProp<ControlsFnProps>;
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
+  children: MaybeRenderProp<ControlsFnProps>
 }
 
 const Controls = ({ children, ...props }: ControlsProps) => {
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(false)
   const {
     ref,
     skip,
@@ -114,13 +114,13 @@ const Controls = ({ children, ...props }: ControlsProps) => {
     currentTime: state.currentTime,
     setVolume: state.setVolume,
     seekTo: state.seekTo,
-  }));
+  }))
 
   const toggleMute = () => {
-    if (!ref) return;
-    setIsMuted(!isMuted);
-    ref.volume = ref.volume === 1 ? 0 : 1;
-  };
+    if (!ref) return
+    setIsMuted(!isMuted)
+    ref.volume = ref.volume === 1 ? 0 : 1
+  }
 
   return (
     <div {...props}>
@@ -143,15 +143,15 @@ const Controls = ({ children, ...props }: ControlsProps) => {
         seekTo,
       })}
     </div>
-  );
-};
+  )
+}
 
 interface PlayerProps extends VideoHTMLAttributes<HTMLVideoElement> {
-  children?: never;
+  children?: never
 }
 
 const Player = (props: PlayerProps) => {
-  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null)
 
   const { togglePlay, isPlaying, setCurrentTime, setDuration, setRef } =
     useVideoStore((state) => ({
@@ -161,40 +161,40 @@ const Player = (props: PlayerProps) => {
       currentTime: state.currentTime,
       setCurrentTime: state.setCurrentTime,
       setRef: state.setRef,
-    }));
+    }))
 
   useIsomorphicEffect(() => {
-    setRef(videoRef.current);
-  }, []);
+    setRef(videoRef.current)
+  }, [])
 
   useIsomorphicEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-    setDuration(video.duration);
-  }, []);
+    const video = videoRef.current
+    if (!video) return
+    setDuration(video.duration)
+  }, [])
 
   useIsomorphicEffect(() => {
-    const video = videoRef.current;
+    const video = videoRef.current
     const handlePlay = () => {
-      if (!video) return;
-      video.play().catch(console.error);
-    };
+      if (!video) return
+      video.play().catch(console.error)
+    }
 
     const handlePause = () => {
-      if (!video) return;
-      video.pause();
-    };
+      if (!video) return
+      video.pause()
+    }
 
     if (isPlaying) {
-      handlePlay();
+      handlePlay()
     } else {
-      handlePause();
+      handlePause()
     }
-  }, [isPlaying]);
+  }, [isPlaying])
 
   const handleTimeUpdate = (e: SyntheticEvent<HTMLVideoElement>) => {
-    setCurrentTime(e.currentTarget.currentTime);
-  };
+    setCurrentTime(e.currentTarget.currentTime)
+  }
 
   return (
     <video
@@ -203,15 +203,15 @@ const Player = (props: PlayerProps) => {
       ref={videoRef}
       {...props}
     />
-  );
-};
+  )
+}
 
 interface WrapperProps extends HTMLAttributes<HTMLDivElement> {
-  children: ReactNode;
+  children: ReactNode
 }
 
 const Wrapper = ({ children, ...props }: WrapperProps) => {
-  return <div {...props}>{children}</div>;
-};
+  return <div {...props}>{children}</div>
+}
 
-export const Video = Object.assign(Wrapper, { Player, Controls });
+export const Video = Object.assign(Wrapper, { Player, Controls })

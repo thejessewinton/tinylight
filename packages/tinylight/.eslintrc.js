@@ -1,8 +1,8 @@
 module.exports = {
   root: true,
-  extends: ["custom"],
+  extends: ['custom'],
   parserOptions: {
-    project: "./tsconfig.json",
+    project: './tsconfig.json',
   },
-  ignorePatterns: [".eslintrc.js", "dist", "node_modules"],
-};
+  ignorePatterns: ['.eslintrc.js', 'dist', 'node_modules'],
+}

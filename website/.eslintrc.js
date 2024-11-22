@@ -1,11 +1,11 @@
 module.exports = {
   root: true,
-  extends: ["custom"],
+  extends: ['custom'],
   parserOptions: {
-    project: "./tsconfig.json",
+    project: './tsconfig.json',
   },
   rules: {
-    "@typescript-eslint/restrict-template-expressions": "off",
+    '@typescript-eslint/restrict-template-expressions': 'off',
   },
-  ignorePatterns: [".eslintrc.js", "dist", "node_modules", ""],
-};
+  ignorePatterns: ['.eslintrc.js', 'dist', 'node_modules', ''],
+}

@@ -1,13 +1,13 @@
-"use client";
+'use client'
 
-import Image from "next/image";
-import { useMDXComponent } from "next-contentlayer/hooks";
+import { useMDXComponent } from 'next-contentlayer/hooks'
+import Image from 'next/image'
 
-import { clsx } from "clsx";
+import { clsx } from 'clsx'
 
-type ComponentProps = { className?: string };
+type ComponentProps = { className?: string }
 
-const headingClasses = "font-medium mb-2";
+const headingClasses = 'font-medium mb-2'
 
 const components = {
   h1: ({ className, ...props }: ComponentProps) => (
@@ -29,25 +29,25 @@ const components = {
     <h6 className={clsx(headingClasses, className)} {...props} />
   ),
   a: ({ className, ...props }: ComponentProps) => (
-    <a className={clsx("font-medium", className)} {...props} />
+    <a className={clsx('font-medium', className)} {...props} />
   ),
   p: ({ className, ...props }: ComponentProps) => (
-    <p className={clsx("leading-7", className)} {...props} />
+    <p className={clsx('leading-7', className)} {...props} />
   ),
   ul: ({ className, ...props }: ComponentProps) => (
-    <ul className={clsx("my-6 ml-6 list-disc", className)} {...props} />
+    <ul className={clsx('my-6 ml-6 list-disc', className)} {...props} />
   ),
   ol: ({ className, ...props }: ComponentProps) => (
-    <ol className={clsx("my-6 ml-6 list-decimal", className)} {...props} />
+    <ol className={clsx('my-6 ml-6 list-decimal', className)} {...props} />
   ),
   li: ({ className, ...props }: ComponentProps) => (
-    <li className={clsx("mt-2", className)} {...props} />
+    <li className={clsx('mt-2', className)} {...props} />
   ),
   blockquote: ({ className, ...props }: ComponentProps) => (
     <blockquote
       className={clsx(
-        "mt-6 border-l border-dotted border-l-neutral-700 pl-6 text-sm text-neutral-200 [&>*]:text-neutral-300",
-        className
+        'mt-6 border-l border-l-neutral-700 border-dotted pl-6 text-neutral-200 text-sm [&>*]:text-neutral-300',
+        className,
       )}
       {...props}
     />
@@ -55,22 +55,22 @@ const components = {
   pre: ({ className, ...props }: ComponentProps) => (
     <pre
       className={clsx(
-        "mt-6 mb-4 overflow-x-auto rounded-md bg-neutral-800 p-4",
-        className
+        'mt-6 mb-4 overflow-x-auto rounded-md bg-neutral-800 p-4',
+        className,
       )}
       {...props}
     />
   ),
   code: ({ className, ...props }: ComponentProps) => <code {...props} />,
   Image,
-};
+}
 
 interface MDXProps {
-  code: string;
+  code: string
 }
 
 export const MDX = ({ code }: MDXProps) => {
-  const Component = useMDXComponent(code);
+  const Component = useMDXComponent(code)
 
-  return <Component components={components} />;
-};
+  return <Component components={components} />
+}

@@ -10,10 +10,7 @@
     "dev": "tsup src/index.tsx --watch",
     "lint": "tsc"
   },
-  "files": [
-    "dist",
-    "README.md"
-  ],
+  "files": ["dist", "README.md"],
   "keywords": [
     "react",
     "lightbox",
@@ -27,10 +24,9 @@
     "@changesets/cli": "^2.26.0",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.10",
-    "eslint-config-custom": "workspace:*",
     "tsconfig": "workspace:*",
     "tsup": "^6.6.3",
-    "typescript": "^4.9.5"
+    "typescript": "^5.7.2"
   },
   "dependencies": {
     "clsx": "^1.2.1",

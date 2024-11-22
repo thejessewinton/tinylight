@@ -1,28 +1,28 @@
-"use client";
+'use client'
 
-import type { ReactNode } from "react";
+import type { ReactNode } from 'react'
 import {
   type HTMLAttributes,
   type MutableRefObject,
   useId,
   useRef,
   useState,
-} from "react";
-import { createPortal } from "react-dom";
-import { getValidChildren, runIfFunction } from "../../utils/helpers";
-import type { MaybeRenderProp } from "../../types";
-import { create } from "zustand";
-import { useIsomorphicEffect } from "../../utils/hooks";
-import { useSwipeable } from "react-swipeable";
+} from 'react'
+import { createPortal } from 'react-dom'
+import { useSwipeable } from 'react-swipeable'
+import { create } from 'zustand'
+import type { MaybeRenderProp } from '../../types'
+import { getValidChildren, runIfFunction } from '../../utils/helpers'
+import { useIsomorphicEffect } from '../../utils/hooks'
 
 interface LighboxState {
-  items: ItemDataRef[];
-  registerItem: (item: ItemDataRef) => void;
-  activeItemIndex: number;
-  setActiveItemIndex: (index: number) => void;
-  loop: boolean | undefined;
-  toPrev: () => void;
-  toNext: () => void;
+  items: ItemDataRef[]
+  registerItem: (item: ItemDataRef) => void
+  activeItemIndex: number
+  setActiveItemIndex: (index: number) => void
+  loop: boolean | undefined
+  toPrev: () => void
+  toNext: () => void
 }
 
 // State
@@ -34,88 +34,92 @@ const useLightboxStore = create<LighboxState>((set) => ({
   loop: false,
   toPrev: () => {
     set((state) => {
-      const { items, activeItemIndex, loop } = state;
-      const prevIndex = activeItemIndex - 1;
+      const { items, activeItemIndex, loop } = state
+      const prevIndex = activeItemIndex - 1
 
       if (prevIndex < 0) {
-        if (loop) return { activeItemIndex: items.length - 1 };
-        return { activeItemIndex: 0 };
+        if (loop) return { activeItemIndex: items.length - 1 }
+        return { activeItemIndex: 0 }
       }
 
-      return { activeItemIndex: prevIndex };
-    });
+      return { activeItemIndex: prevIndex }
+    })
   },
   toNext: () => {
     set((state) => {
-      const { items, activeItemIndex, loop } = state;
-      const nextIndex = activeItemIndex + 1;
+      const { items, activeItemIndex, loop } = state
+      const nextIndex = activeItemIndex + 1
 
       if (nextIndex >= items.length) {
-        if (loop) return { activeItemIndex: 0 };
-        return { activeItemIndex: items.length - 1 };
+        if (loop) return { activeItemIndex: 0 }
+        return { activeItemIndex: items.length - 1 }
       }
 
-      return { activeItemIndex: nextIndex };
-    });
+      return { activeItemIndex: nextIndex }
+    })
   },
-}));
+}))
 
-type ThumbProps = HTMLAttributes<HTMLDivElement>;
+type ThumbProps = HTMLAttributes<HTMLDivElement>
 
 const Thumbs = ({ children, ...props }: ThumbProps) => {
-  const items = getValidChildren(children);
+  const items = getValidChildren(children)
   const setActiveItemIndex = useLightboxStore(
-    (state) => state.setActiveItemIndex
-  );
+    (state) => state.setActiveItemIndex,
+  )
 
   return (
     <div {...props}>
       {items.map((child, index) => {
         return (
-          <button key={index} onClick={() => setActiveItemIndex(index)}>
+          <button
+            key={child.key}
+            type="button"
+            onClick={() => setActiveItemIndex(index)}
+          >
             {child}
           </button>
-        );
+        )
       })}
     </div>
-  );
-};
+  )
+}
 
 // Lightbox items component
-type ItemsProps = HTMLAttributes<HTMLDivElement>;
+type ItemsProps = HTMLAttributes<HTMLDivElement>
 
 const Items = ({ children, ...props }: ItemsProps) => {
-  const items = getValidChildren(children);
+  const items = getValidChildren(children)
 
   const { toPrev, toNext } = useLightboxStore((state) => ({
     toPrev: state.toPrev,
     toNext: state.toNext,
-  }));
+  }))
 
   const handlers = useSwipeable({
     onSwipedRight: toPrev,
     onSwipedLeft: toNext,
-  });
+  })
 
   return (
     <div {...handlers} {...props}>
-      {items.map((child, i) => {
-        return <div key={i}>{child}</div>;
+      {items.map((child) => {
+        return <div key={child.key}>{child}</div>
       })}
     </div>
-  );
-};
+  )
+}
 
 interface ItemProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
   children: MaybeRenderProp<{
-    isActive: boolean;
-  }>;
+    isActive: boolean
+  }>
 }
 
 type ItemDataRef = MutableRefObject<{
-  domRef: MutableRefObject<HTMLElement | null>;
-}>;
+  domRef: MutableRefObject<HTMLElement | null>
+}>
 
 /**
  * Shoutout to HeadlessUI for inspiration on the implementation of an item's active state.
@@ -123,30 +127,30 @@ type ItemDataRef = MutableRefObject<{
  */
 
 export const Item = ({ children, ...props }: ItemProps) => {
-  const itemRef = useRef(null);
-  const [isActive, setIsActive] = useState(false);
-  const internalId = useId();
-  const { id = `tinylight-lightbox-item-${internalId}` } = props;
+  const itemRef = useRef(null)
+  const [isActive, setIsActive] = useState(false)
+  const internalId = useId()
+  const { id = `tinylight-lightbox-item-${internalId}` } = props
   const { items, registerItem, activeItemIndex } = useLightboxStore(
     (state) => ({
       items: state.items,
       registerItem: state.registerItem,
       activeItemIndex: state.activeItemIndex,
-    })
-  );
+    }),
+  )
 
-  const item = useRef<ItemDataRef["current"]>({
+  const item = useRef<ItemDataRef['current']>({
     domRef: itemRef,
-  });
+  })
 
   useIsomorphicEffect(() => {
-    registerItem(item);
-  }, []);
+    registerItem(item)
+  }, [])
 
   useIsomorphicEffect(() => {
-    if (items.length === 0) return;
-    setIsActive(items[activeItemIndex].current.domRef.current?.id === id);
-  }, [activeItemIndex, id, items]);
+    if (items.length === 0) return
+    setIsActive(items[activeItemIndex].current.domRef.current?.id === id)
+  }, [activeItemIndex, id, items])
 
   return (
     <div ref={itemRef} id={id} {...props}>
@@ -154,14 +158,14 @@ export const Item = ({ children, ...props }: ItemProps) => {
         isActive,
       })}
     </div>
-  );
-};
+  )
+}
 
-interface NavProps extends Omit<HTMLAttributes<HTMLDivElement>, "children"> {
+interface NavProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children'> {
   children: MaybeRenderProp<{
-    toPrev: () => void;
-    toNext: () => void;
-  }>;
+    toPrev: () => void
+    toNext: () => void
+  }>
 }
 
 const Nav = ({ children }: NavProps) => {
@@ -172,24 +176,24 @@ const Nav = ({ children }: NavProps) => {
         toNext: useLightboxStore((state) => state.toNext),
       })}
     </>
-  );
-};
+  )
+}
 
 interface PaginationProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, "children"> {
+  extends Omit<HTMLAttributes<HTMLDivElement>, 'children'> {
   children: MaybeRenderProp<{
-    activeItem: number;
-    itemsCount: number;
-  }>;
+    activeItem: number
+    itemsCount: number
+  }>
 }
 
 const Pagination = ({ children }: PaginationProps) => {
   const { items, activeItemIndex } = useLightboxStore((state) => ({
     items: state.items,
     activeItemIndex: state.activeItemIndex,
-  }));
+  }))
 
-  if (items.length === 0) return null;
+  if (items.length === 0) return null
 
   return (
     <>
@@ -198,14 +202,14 @@ const Pagination = ({ children }: PaginationProps) => {
         itemsCount: items.length,
       })}
     </>
-  );
-};
+  )
+}
 
 interface WrapperProps {
-  children: ReactNode;
-  open: boolean;
-  handleClose: () => void;
-  loop?: boolean;
+  children: ReactNode
+  open: boolean
+  handleClose: () => void
+  loop?: boolean
 }
 
 const Wrapper = ({
@@ -215,29 +219,29 @@ const Wrapper = ({
   loop,
   ...props
 }: WrapperProps) => {
-  useLightboxStore.setState({ loop });
+  useLightboxStore.setState({ loop })
 
   useIsomorphicEffect(() => {
     if (open) {
-      document.body.style.overflow = "hidden";
+      document.body.style.overflow = 'hidden'
     } else {
-      document.body.style.overflow = "auto";
+      document.body.style.overflow = 'auto'
     }
-  }, [open]);
+  }, [open])
 
   useIsomorphicEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        handleClose();
+      if (event.key === 'Escape') {
+        handleClose()
       }
-    };
+    }
 
-    document.addEventListener("keydown", handleEscape);
+    document.addEventListener('keydown', handleEscape)
 
     return () => {
-      document.removeEventListener("keydown", handleEscape);
-    };
-  }, [handleClose]);
+      document.removeEventListener('keydown', handleEscape)
+    }
+  }, [handleClose])
 
   return (
     <>
@@ -245,8 +249,8 @@ const Wrapper = ({
         ? createPortal(<div {...props}>{children}</div>, document.body)
         : null}
     </>
-  );
-};
+  )
+}
 
 export const Lightbox = Object.assign(Wrapper, {
   Items,
@@ -254,4 +258,4 @@ export const Lightbox = Object.assign(Wrapper, {
   Pagination,
   Nav,
   Thumbs,
-});
+})

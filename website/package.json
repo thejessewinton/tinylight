@@ -21,12 +21,11 @@
     "rehype-highlight": "^6.0.0",
     "shiki": "^0.14.1",
     "tinylight": "workspace:*",
-    "typescript": "^4.9.5"
+    "typescript": "^5.7.2"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.9",
     "autoprefixer": "^10.4.13",
-    "eslint-config-custom": "workspace:*",
     "postcss": "^8.4.21",
     "prettier-plugin-tailwindcss": "^0.2.2",
     "rehype-autolink-headings": "^6.1.1",

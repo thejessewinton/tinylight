@@ -1,4 +1,4 @@
-import { withContentlayer } from "next-contentlayer";
+import { withContentlayer } from 'next-contentlayer'
 
 /** @type {import('next').NextConfig} */
 const config = {
@@ -6,8 +6,8 @@ const config = {
     appDir: true,
   },
   images: {
-    domains: ["source.unsplash.com"],
+    domains: ['source.unsplash.com'],
   },
-};
+}
 
-export default withContentlayer(config);
+export default withContentlayer(config)

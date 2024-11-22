@@ -1,66 +1,66 @@
 import {
-  ComputedFields,
+  type ComputedFields,
   defineDocumentType,
   makeSource,
-} from "contentlayer/source-files";
-import remarkGfm from "remark-gfm";
-import rehypePrettyCode from "rehype-pretty-code";
-import rehypeSlug from "rehype-slug";
-import rehypeAutolinkHeadings from "rehype-autolink-headings";
-import mono from "./src/utils/theme.json";
+} from 'contentlayer/source-files'
+import rehypeAutolinkHeadings from 'rehype-autolink-headings'
+import rehypePrettyCode from 'rehype-pretty-code'
+import rehypeSlug from 'rehype-slug'
+import remarkGfm from 'remark-gfm'
+import mono from './src/utils/theme.json'
 
 const computedFields: ComputedFields = {
   slug: {
-    type: "string",
+    type: 'string',
     resolve: (doc) => `/${doc._raw.flattenedPath}`,
   },
   slugAsParams: {
-    type: "string",
-    resolve: (doc) => doc._raw.flattenedPath.split("/").slice(1).join("/"),
+    type: 'string',
+    resolve: (doc) => doc._raw.flattenedPath.split('/').slice(1).join('/'),
   },
-};
+}
 
 const Index = defineDocumentType(() => ({
-  name: "Index",
-  filePathPattern: "index.mdx",
-  contentType: "mdx",
+  name: 'Index',
+  filePathPattern: 'index.mdx',
+  contentType: 'mdx',
   fields: {
     title: {
-      type: "string",
+      type: 'string',
       required: true,
     },
     description: {
-      type: "string",
+      type: 'string',
     },
     summary: {
-      type: "string",
+      type: 'string',
     },
   },
   computedFields,
-}));
+}))
 
 export const Examples = defineDocumentType(() => ({
-  name: "Examples",
+  name: 'Examples',
   filePathPattern: `examples/**/*.mdx`,
-  contentType: "mdx",
+  contentType: 'mdx',
   fields: {
     title: {
-      type: "string",
+      type: 'string',
       required: true,
     },
     description: {
-      type: "string",
+      type: 'string',
     },
     published: {
-      type: "boolean",
+      type: 'boolean',
       default: true,
     },
   },
   computedFields,
-}));
+}))
 
 export default makeSource({
-  contentDirPath: "./src/content",
+  contentDirPath: './src/content',
   documentTypes: [Index, Examples],
   mdx: {
     remarkPlugins: [remarkGfm],
@@ -75,14 +75,14 @@ export default makeSource({
             // Prevent lines from collapsing in `display: grid` mode, and allow empty
             // lines to be copy/pasted
             if (node.children.length === 0) {
-              node.children = [{ type: "text", value: " " }];
+              node.children = [{ type: 'text', value: ' ' }]
             }
           },
           onVisitHighlightedLine(node) {
-            node.properties.className.push("line--highlighted");
+            node.properties.className.push('line--highlighted')
           },
           onVisitHighlightedWord(node) {
-            node.properties.className = ["word--highlighted"];
+            node.properties.className = ['word--highlighted']
           },
         },
       ],
@@ -90,10 +90,10 @@ export default makeSource({
         rehypeAutolinkHeadings,
         {
           properties: {
-            className: ["anchor"],
+            className: ['anchor'],
           },
         },
       ],
     ],
   },
-});
+})
