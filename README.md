@@ -12,7 +12,11 @@ The core principle behind tinylight has take a lot of inspiration from libraries
 
 First, install tinylight using your package manager of choice.
 
-```bash title="pnpm (recommended)"
+```bash title="bun (recommended)"
+bun install tinylight
+```
+
+```bash title="pnpm"
 pnpm install tinylight
 ```
 

@@ -2,20 +2,22 @@
 
 import type { ReactNode } from 'react'
 import {
+  createContext,
   type HTMLAttributes,
   type MutableRefObject,
+  useCallback,
+  useContext,
   useId,
   useRef,
   useState,
 } from 'react'
 import { createPortal } from 'react-dom'
-import { useSwipeable } from 'react-swipeable'
-import { create } from 'zustand'
-import type { MaybeRenderProp } from '../../types'
 import { getValidChildren, runIfFunction } from '../../utils/helpers'
+import type { MaybeRenderProp } from '../../types'
 import { useIsomorphicEffect } from '../../utils/hooks'
+import { useSwipeable } from 'react-swipeable'
 
-interface LighboxState {
+interface LightboxContextValue {
   items: ItemDataRef[]
   registerItem: (item: ItemDataRef) => void
   activeItemIndex: number
@@ -25,56 +27,29 @@ interface LighboxState {
   toNext: () => void
 }
 
-// State
-const useLightboxStore = create<LighboxState>((set) => ({
-  items: [],
-  registerItem: (item) => set((state) => ({ items: [...state.items, item] })),
-  activeItemIndex: 0,
-  setActiveItemIndex: (activeItemIndex: number) => set({ activeItemIndex }),
-  loop: false,
-  toPrev: () => {
-    set((state) => {
-      const { items, activeItemIndex, loop } = state
-      const prevIndex = activeItemIndex - 1
+const LightboxContext = createContext<LightboxContextValue | null>(null)
 
-      if (prevIndex < 0) {
-        if (loop) return { activeItemIndex: items.length - 1 }
-        return { activeItemIndex: 0 }
-      }
-
-      return { activeItemIndex: prevIndex }
-    })
-  },
-  toNext: () => {
-    set((state) => {
-      const { items, activeItemIndex, loop } = state
-      const nextIndex = activeItemIndex + 1
-
-      if (nextIndex >= items.length) {
-        if (loop) return { activeItemIndex: 0 }
-        return { activeItemIndex: items.length - 1 }
-      }
-
-      return { activeItemIndex: nextIndex }
-    })
-  },
-}))
+const useLightbox = () => {
+  const context = useContext(LightboxContext)
+  if (!context) {
+    throw new Error('useLightbox must be used within a LightboxProvider')
+  }
+  return context
+}
 
 type ThumbProps = HTMLAttributes<HTMLDivElement>
 
 const Thumbs = ({ children, ...props }: ThumbProps) => {
   const items = getValidChildren(children)
-  const setActiveItemIndex = useLightboxStore(
-    (state) => state.setActiveItemIndex,
-  )
+  const { setActiveItemIndex } = useLightbox()
 
   return (
     <div {...props}>
       {items.map((child, index) => {
         return (
           <button
-            key={child.key}
             type="button"
+            key={child.key}
             onClick={() => setActiveItemIndex(index)}
           >
             {child}
@@ -91,10 +66,7 @@ type ItemsProps = HTMLAttributes<HTMLDivElement>
 const Items = ({ children, ...props }: ItemsProps) => {
   const items = getValidChildren(children)
 
-  const { toPrev, toNext } = useLightboxStore((state) => ({
-    toPrev: state.toPrev,
-    toNext: state.toNext,
-  }))
+  const { toPrev, toNext } = useLightbox()
 
   const handlers = useSwipeable({
     onSwipedRight: toPrev,
@@ -131,13 +103,7 @@ export const Item = ({ children, ...props }: ItemProps) => {
   const [isActive, setIsActive] = useState(false)
   const internalId = useId()
   const { id = `tinylight-lightbox-item-${internalId}` } = props
-  const { items, registerItem, activeItemIndex } = useLightboxStore(
-    (state) => ({
-      items: state.items,
-      registerItem: state.registerItem,
-      activeItemIndex: state.activeItemIndex,
-    }),
-  )
+  const { items, registerItem, activeItemIndex } = useLightbox()
 
   const item = useRef<ItemDataRef['current']>({
     domRef: itemRef,
@@ -149,7 +115,7 @@ export const Item = ({ children, ...props }: ItemProps) => {
 
   useIsomorphicEffect(() => {
     if (items.length === 0) return
-    setIsActive(items[activeItemIndex].current.domRef.current?.id === id)
+    setIsActive(items[activeItemIndex]?.current.domRef.current?.id === id)
   }, [activeItemIndex, id, items])
 
   return (
@@ -169,11 +135,12 @@ interface NavProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children'> {
 }
 
 const Nav = ({ children }: NavProps) => {
+  const { toPrev, toNext } = useLightbox()
   return (
     <>
       {runIfFunction(children, {
-        toPrev: useLightboxStore((state) => state.toPrev),
-        toNext: useLightboxStore((state) => state.toNext),
+        toPrev,
+        toNext,
       })}
     </>
   )
@@ -188,10 +155,7 @@ interface PaginationProps
 }
 
 const Pagination = ({ children }: PaginationProps) => {
-  const { items, activeItemIndex } = useLightboxStore((state) => ({
-    items: state.items,
-    activeItemIndex: state.activeItemIndex,
-  }))
+  const { items, activeItemIndex } = useLightbox()
 
   if (items.length === 0) return null
 
@@ -219,34 +183,54 @@ const Wrapper = ({
   loop,
   ...props
 }: WrapperProps) => {
-  useLightboxStore.setState({ loop })
+  const [items, setItems] = useState<ItemDataRef[]>([])
+  const [activeItemIndex, setActiveItemIndex] = useState(0)
 
-  useIsomorphicEffect(() => {
-    if (open) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = 'auto'
-    }
-  }, [open])
+  const registerItem = useCallback((item: ItemDataRef) => {
+    setItems((prev) => [...prev, item])
+  }, [])
 
-  useIsomorphicEffect(() => {
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        handleClose()
+  const toPrev = useCallback(() => {
+    setActiveItemIndex((current) => {
+      const prevIndex = current - 1
+      if (prevIndex < 0) {
+        return loop ? items.length - 1 : 0
       }
-    }
+      return prevIndex
+    })
+  }, [items.length, loop])
 
-    document.addEventListener('keydown', handleEscape)
+  const toNext = useCallback(() => {
+    setActiveItemIndex((current) => {
+      const nextIndex = current + 1
+      if (nextIndex >= items.length) {
+        return loop ? 0 : items.length - 1
+      }
+      return nextIndex
+    })
+  }, [items.length, loop])
 
-    return () => {
-      document.removeEventListener('keydown', handleEscape)
-    }
-  }, [handleClose])
+  // ... existing useIsomorphicEffect hooks ...
+
+  const contextValue = {
+    items,
+    registerItem,
+    activeItemIndex,
+    setActiveItemIndex,
+    loop,
+    toPrev,
+    toNext,
+  }
 
   return (
     <>
       {open
-        ? createPortal(<div {...props}>{children}</div>, document.body)
+        ? createPortal(
+            <LightboxContext.Provider value={contextValue}>
+              <div {...props}>{children}</div>
+            </LightboxContext.Provider>,
+            document.body,
+          )
         : null}
     </>
   )

@@ -1,23 +1,20 @@
 {
-  "scripts": {
-    "build": "dotenv -- turbo run build --parallel",
-    "dev": "dotenv -- turbo run dev --parallel --no-cache --continue",
-    "start": "turbo run start --parallel --no-cache --continue",
-    "clean": "turbo run clean && rm -rf node_modules",
-    "lint": "biome check .",
-    "lint:fix": "biome check . --write",
-    "version-packages": "changeset version",
-    "publish-packages": "turbo run build --filter=website^... && changeset publish"
-  },
+  "name": "tinylight",
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
-    "@changesets/cli": "^2.27.10",
-    "prettier-plugin-tailwindcss": "^0.2.8",
-    "typescript": "^5.7.2"
+    "turbo": "^2.3.1",
+    "typescript": "5.5.4"
   },
-  "packageManager": "pnpm@7.15.0",
-  "dependencies": {
-    "dotenv-cli": "^7.4.4",
-    "pnpm": "^9.14.2"
-  }
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "bun@1.1.33",
+  "private": true,
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "biome check .",
+    "lint:fix": "biome check . --write"
+  },
+  "workspaces": ["apps/*", "packages/*"]
 }

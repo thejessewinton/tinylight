@@ -11,7 +11,10 @@ export const useDelayUnmount = (isMounted: boolean, delayTime: number) => {
     if (isMounted && !shouldRender) {
       setShouldRender(true)
     } else if (!isMounted && shouldRender) {
-      timeoutId = setTimeout(() => setShouldRender(false), delayTime)
+      timeoutId = setTimeout(
+        () => setShouldRender(false),
+        delayTime,
+      ) as unknown as number
     }
     return () => clearTimeout(timeoutId)
   }, [isMounted, delayTime, shouldRender])
