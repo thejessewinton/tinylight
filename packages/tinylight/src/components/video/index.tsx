@@ -8,7 +8,7 @@ import type {
 import { useState } from 'react'
 import { useRef } from 'react'
 import { create } from 'zustand'
-import type { MaybeRenderProp } from '../../types'
+import type { MaybeRenderProp } from '../types'
 import { formatTime, runIfFunction, scaleValue } from '../../utils/helpers'
 import { useIsomorphicEffect } from '../../utils/hooks'
 

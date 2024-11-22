@@ -11,11 +11,12 @@ import {
   useRef,
   useState,
 } from 'react'
-import { createPortal } from 'react-dom'
-import { getValidChildren, runIfFunction } from '../../utils/helpers'
-import type { MaybeRenderProp } from '../../types'
-import { useIsomorphicEffect } from '../../utils/hooks'
+import * as Dialog from '@radix-ui/react-dialog'
+
 import { useSwipeable } from 'react-swipeable'
+import type { MaybeRenderProp } from '../../types'
+import { getValidChildren, runIfFunction } from '../../utils/helpers'
+import { useIsomorphicEffect } from '../../utils/hooks'
 
 interface LightboxContextValue {
   items: ItemDataRef[]
@@ -93,11 +94,6 @@ type ItemDataRef = MutableRefObject<{
   domRef: MutableRefObject<HTMLElement | null>
 }>
 
-/**
- * Shoutout to HeadlessUI for inspiration on the implementation of an item's active state.
- * {@link https://github.com/tailwindlabs/headlessui/blob/d1ca3a9797bce9e8677051ecd73bb34a4f4969aa/packages/%40headlessui-react/src/components/menu/menu.tsx#L614|Check it out in the repo}.
- */
-
 export const Item = ({ children, ...props }: ItemProps) => {
   const itemRef = useRef(null)
   const [isActive, setIsActive] = useState(false)
@@ -169,17 +165,15 @@ const Pagination = ({ children }: PaginationProps) => {
   )
 }
 
-interface WrapperProps {
+interface WrapperProps extends Dialog.DialogProps {
   children: ReactNode
-  open: boolean
-  handleClose: () => void
   loop?: boolean
 }
 
-const Wrapper = ({
+const Root = ({
   children,
   open,
-  handleClose,
+  onOpenChange,
   loop,
   ...props
 }: WrapperProps) => {
@@ -210,8 +204,6 @@ const Wrapper = ({
     })
   }, [items.length, loop])
 
-  // ... existing useIsomorphicEffect hooks ...
-
   const contextValue = {
     items,
     registerItem,
@@ -223,20 +215,15 @@ const Wrapper = ({
   }
 
   return (
-    <>
-      {open
-        ? createPortal(
-            <LightboxContext.Provider value={contextValue}>
-              <div {...props}>{children}</div>
-            </LightboxContext.Provider>,
-            document.body,
-          )
-        : null}
-    </>
+    <Dialog.Root open={open} onOpenChange={onOpenChange} {...props}>
+      <LightboxContext.Provider value={contextValue}>
+        {children}
+      </LightboxContext.Provider>
+    </Dialog.Root>
   )
 }
 
-export const Lightbox = Object.assign(Wrapper, {
+export const Lightbox = Object.assign(Root, {
   Items,
   Item,
   Pagination,

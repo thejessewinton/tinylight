@@ -27,7 +27,10 @@
     "typescript": "5.5.4"
   },
   "dependencies": {
+    "@radix-ui/react-dialog": "^1.1.2",
     "react": "19.0.0-rc-5c56b873-20241107",
-    "react-dom": "19.0.0-rc-5c56b873-20241107"
+    "react-dom": "19.0.0-rc-5c56b873-20241107",
+    "remeda": "^2.17.3",
+    "tsup": "^8.3.5"
   }
 }
