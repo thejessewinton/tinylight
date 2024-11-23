@@ -2,7 +2,6 @@ import type {
   HTMLAttributes,
   MutableRefObject,
   ReactNode,
-  SyntheticEvent,
   VideoHTMLAttributes,
   MouseEvent,
 } from 'react';
@@ -20,8 +19,7 @@ import { formatTime, runIfFunction, scaleValue } from '../../utils/helpers';
 import { useIsomorphicEffect } from '../../utils/hooks';
 
 interface VideoState {
-  ref: MutableRefObject<HTMLVideoElement>['current'] | null;
-  setRef: (ref: MutableRefObject<HTMLVideoElement>['current'] | null) => void;
+  ref: MutableRefObject<HTMLVideoElement | null>;
   isPlaying: boolean;
   togglePlay: () => void;
   duration: number;
@@ -38,18 +36,16 @@ interface VideoState {
 
 const VideoContext = createContext<VideoState | null>(null);
 
-export function useVideo() {
+export const useVideo = () => {
   const context = useContext(VideoContext);
   if (!context) {
     throw new Error('useVideo must be used within a VideoProvider');
   }
   return context;
-}
+};
 
 export function VideoProvider({ children }: { children: ReactNode }) {
-  const [ref, setRef] = useState<
-    MutableRefObject<HTMLVideoElement>['current'] | null
-  >(null);
+  const ref = useRef<HTMLVideoElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
@@ -64,34 +60,27 @@ export function VideoProvider({ children }: { children: ReactNode }) {
     setIsMuted((prev) => !prev);
   }, []);
 
-  const skip = useCallback(
-    ({ type, seconds }: SeekProps) => {
-      if (!ref) return;
-      const value = type === 'skip' ? seconds : -seconds;
-      ref.currentTime = ref.currentTime + value;
-    },
-    [ref]
-  );
+  const skip = useCallback(({ type, seconds }: SeekProps) => {
+    if (!ref) return;
+    const value = type === 'skip' ? seconds : -seconds;
+    ref.current!.currentTime = ref.current!.currentTime + value;
+  }, []);
 
-  const seekTo = useCallback(
-    (e: MouseEvent<HTMLDivElement>) => {
-      if (!ref) return;
-      const seekToerOffset = e.currentTarget.getBoundingClientRect();
-      const getSeekTime = scaleValue(
-        seekToerOffset.left,
-        seekToerOffset.right,
-        0,
-        ref.duration
-      );
-      ref.currentTime = getSeekTime(e.clientX);
-    },
-    [ref]
-  );
+  const seekTo = useCallback((e: MouseEvent<HTMLDivElement>) => {
+    if (!ref) return;
+    const seekTargetOffset = e.currentTarget.getBoundingClientRect();
+    const getSeekTime = scaleValue(
+      seekTargetOffset.left,
+      seekTargetOffset.right,
+      0,
+      ref.current!.duration
+    );
+    ref.current!.currentTime = getSeekTime(e.clientX);
+  }, []);
 
   const value = useMemo(
     () => ({
       ref,
-      setRef,
       isPlaying,
       togglePlay,
       duration,
@@ -106,7 +95,6 @@ export function VideoProvider({ children }: { children: ReactNode }) {
       seekTo,
     }),
     [
-      ref,
       isPlaying,
       togglePlay,
       duration,
@@ -172,7 +160,7 @@ const Controls = ({ children, ...props }: ControlsProps) => {
   const toggleMute = () => {
     if (!ref) return;
     setIsMuted(!isMuted);
-    ref.volume = ref.volume === 1 ? 0 : 1;
+    ref.current!.volume = ref.current!.volume === 1 ? 0 : 1;
   };
 
   return (
@@ -191,8 +179,11 @@ const Controls = ({ children, ...props }: ControlsProps) => {
         skip,
         isMuted,
         toggleMute,
-        volume: ref?.volume ?? 0,
-        setVolume,
+        volume: ref?.current?.volume ?? 0,
+        setVolume: (newVolume: number) => {
+          setVolume(newVolume);
+          ref.current!.volume = newVolume;
+        },
         seekTo,
       })}
     </div>
@@ -204,23 +195,19 @@ interface PlayerProps extends VideoHTMLAttributes<HTMLVideoElement> {
 }
 
 const Player = ({ onClick, ...props }: PlayerProps) => {
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-
-  const { togglePlay, isPlaying, setCurrentTime, setDuration, setRef } =
+  const { ref, togglePlay, isPlaying, setCurrentTime, setDuration } =
     useVideo();
 
-  useIsomorphicEffect(() => {
-    setRef(videoRef.current);
-  }, []);
+  console.log({ volume: ref.current?.volume });
 
   useIsomorphicEffect(() => {
-    const video = videoRef.current;
+    const video = ref.current;
     if (!video) return;
     setDuration(video.duration);
   }, []);
 
   useIsomorphicEffect(() => {
-    const video = videoRef.current;
+    const video = ref.current;
     const handlePlay = () => {
       if (!video) return;
       video.play().catch(console.error);
@@ -245,7 +232,7 @@ const Player = ({ onClick, ...props }: PlayerProps) => {
         togglePlay();
       }}
       onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
-      ref={videoRef}
+      ref={ref}
       {...props}
     />
   );
