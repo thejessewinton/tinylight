@@ -47,7 +47,7 @@ const Thumbs = ({ children, ...props }: ThumbProps) => {
   const { setActiveItemIndex } = useLightbox();
 
   return (
-    <>
+    <div data-tinylight-thumbs="">
       {items.map((child, index) => {
         return (
           <Dialog.Trigger
@@ -59,7 +59,7 @@ const Thumbs = ({ children, ...props }: ThumbProps) => {
           </Dialog.Trigger>
         );
       })}
-    </>
+    </div>
   );
 };
 
@@ -110,8 +110,6 @@ export const Item = ({ children, ...props }: ItemProps) => {
     if (items.length === 0) return;
     setIsActive(items[activeItemIndex]?.current.domRef.current?.id === id);
   }, [activeItemIndex, id, items]);
-
-  console.log(isActive, items[activeItemIndex]?.current.domRef.current?.id);
 
   return (
     <div
@@ -176,23 +174,24 @@ const Root = ({ children, loop, ...props }: WrapperProps) => {
   const [items, setItems] = useState<ItemDataRef[]>([]);
   const [activeItemIndex, setActiveItemIndex] = useState(0);
 
+  console.log(activeItemIndex);
+
   const registerItem = useCallback((item: ItemDataRef) => {
     setItems((prev) => [...prev, item]);
   }, []);
 
   const toPrev = useCallback(() => {
     setActiveItemIndex((current) => {
-      const prevIndex = current - 1;
-      if (prevIndex < 0) {
+      const nextIndex = current - 1;
+      if (nextIndex < 0) {
         return loop ? items.length - 1 : 0;
       }
-      return prevIndex;
+      return nextIndex;
     });
   }, [items.length, loop]);
 
   const toNext = useCallback(() => {
     setActiveItemIndex((current) => {
-      console.log(current);
       const nextIndex = current + 1;
       if (nextIndex >= items.length) {
         return loop ? 0 : items.length - 1;

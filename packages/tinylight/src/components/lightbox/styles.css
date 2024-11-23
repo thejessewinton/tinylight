@@ -10,6 +10,11 @@
   display: none;
 }
 
+[data-tinylight-thumbs] {
+  display: flex;
+  flex-wrap: wrap;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;

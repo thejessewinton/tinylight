@@ -15,6 +15,7 @@ export default function Home() {
                 width={1024}
                 height={768}
                 alt="test"
+                priority
               />
             </Lightbox.Item>
             <Lightbox.Item>
@@ -23,32 +24,25 @@ export default function Home() {
                 width={1024}
                 height={768}
                 alt="test"
+                priority
               />
             </Lightbox.Item>
+
+            <Lightbox.Nav>
+              {({ toPrev, toNext }) => (
+                <>
+                  <button onClick={toPrev} type="button">
+                    Previous
+                  </button>
+                  <button onClick={toNext} type="button">
+                    Next
+                  </button>
+                </>
+              )}
+            </Lightbox.Nav>
           </Lightbox.Items>
 
-          <Lightbox.Nav>
-            {({ toPrev, toNext }) => (
-              <>
-                <button onClick={toPrev} type="button">
-                  Previous
-                </button>
-                <button onClick={toNext} type="button">
-                  Next
-                </button>
-              </>
-            )}
-          </Lightbox.Nav>
-
-          <Lightbox.Pagination>
-            {({ activeItem, itemsCount }) => (
-              <div>
-                {activeItem} / {itemsCount}
-              </div>
-            )}
-          </Lightbox.Pagination>
-
-          <Lightbox.Thumbs className="flex">
+          <Lightbox.Thumbs>
             <Image
               src="https://picsum.photos/id/10/100/100"
               width={100}
