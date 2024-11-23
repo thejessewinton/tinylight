@@ -4,11 +4,18 @@ import type {
   ReactNode,
   SyntheticEvent,
   VideoHTMLAttributes,
+  MouseEvent,
 } from 'react'
-import { useState } from 'react'
-import { useRef } from 'react'
-import { create } from 'zustand'
-import type { MaybeRenderProp } from '../types'
+import {
+  useCallback,
+  useMemo,
+  useState,
+  useRef,
+  createContext,
+  useContext,
+} from 'react'
+
+import type { MaybeRenderProp } from '../../types'
 import { formatTime, runIfFunction, scaleValue } from '../../utils/helpers'
 import { useIsomorphicEffect } from '../../utils/hooks'
 
@@ -26,41 +33,94 @@ interface VideoState {
   isMuted: boolean
   toggleMute: () => void
   skip: (props: SeekProps) => void
-  seekTo: (e: React.MouseEvent<HTMLDivElement>) => void
+  seekTo: (e: MouseEvent<HTMLDivElement>) => void
 }
 
-const useVideoStore = create<VideoState>((set) => ({
-  ref: null,
-  setRef: (ref) => set({ ref }),
-  isPlaying: false,
-  togglePlay: () => set((state) => ({ isPlaying: !state.isPlaying })),
-  duration: 0,
-  setDuration: (duration) => set({ duration }),
-  currentTime: 0,
-  setCurrentTime: (currentTime) => set({ currentTime }),
-  volume: 1,
-  setVolume: (newVolume) => set({ volume: newVolume }),
-  isMuted: false,
-  toggleMute: () => set((state) => ({ isMuted: !state.isMuted })),
-  skip: ({ type, seconds }: SeekProps) => {
-    const video = useVideoStore.getState().ref
-    const value = type === 'skip' ? seconds : -seconds
-    if (!video) return
-    video.currentTime = video.currentTime + value
-  },
-  seekTo: (e: React.MouseEvent<HTMLDivElement>) => {
-    const video = useVideoStore.getState().ref
-    if (!video) return
-    const seekToerOffset = e.currentTarget.getBoundingClientRect()
-    const getSeekTime = scaleValue(
-      seekToerOffset.left,
-      seekToerOffset.right,
-      0,
-      video.duration,
-    )
-    video.currentTime = getSeekTime(e.clientX)
-  },
-}))
+const VideoContext = createContext<VideoState | null>(null)
+
+export function useVideo() {
+  const context = useContext(VideoContext)
+  if (!context) {
+    throw new Error('useVideo must be used within a VideoProvider')
+  }
+  return context
+}
+
+export function VideoProvider({ children }: { children: ReactNode }) {
+  const [ref, setRef] = useState<
+    MutableRefObject<HTMLVideoElement>['current'] | null
+  >(null)
+  const [isPlaying, setIsPlaying] = useState(false)
+  const [duration, setDuration] = useState(0)
+  const [currentTime, setCurrentTime] = useState(0)
+  const [volume, setVolume] = useState(1)
+  const [isMuted, setIsMuted] = useState(false)
+
+  const togglePlay = useCallback(() => {
+    setIsPlaying((prev) => !prev)
+  }, [])
+
+  const toggleMute = useCallback(() => {
+    setIsMuted((prev) => !prev)
+  }, [])
+
+  const skip = useCallback(
+    ({ type, seconds }: SeekProps) => {
+      if (!ref) return
+      const value = type === 'skip' ? seconds : -seconds
+      ref.currentTime = ref.currentTime + value
+    },
+    [ref],
+  )
+
+  const seekTo = useCallback(
+    (e: MouseEvent<HTMLDivElement>) => {
+      if (!ref) return
+      const seekToerOffset = e.currentTarget.getBoundingClientRect()
+      const getSeekTime = scaleValue(
+        seekToerOffset.left,
+        seekToerOffset.right,
+        0,
+        ref.duration,
+      )
+      ref.currentTime = getSeekTime(e.clientX)
+    },
+    [ref],
+  )
+
+  const value = useMemo(
+    () => ({
+      ref,
+      setRef,
+      isPlaying,
+      togglePlay,
+      duration,
+      setDuration,
+      currentTime,
+      setCurrentTime,
+      volume,
+      setVolume,
+      isMuted,
+      toggleMute,
+      skip,
+      seekTo,
+    }),
+    [
+      ref,
+      isPlaying,
+      togglePlay,
+      duration,
+      currentTime,
+      volume,
+      isMuted,
+      toggleMute,
+      skip,
+      seekTo,
+    ],
+  )
+
+  return <VideoContext.Provider value={value}>{children}</VideoContext.Provider>
+}
 
 interface SeekProps {
   type: 'skip' | 'rewind'
@@ -90,7 +150,7 @@ interface ControlsFnProps
 }
 
 interface ControlsProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
+  extends Omit<HTMLAttributes<HTMLDivElement>, 'children'> {
   children: MaybeRenderProp<ControlsFnProps>
 }
 
@@ -105,16 +165,7 @@ const Controls = ({ children, ...props }: ControlsProps) => {
     duration,
     currentTime,
     setVolume,
-  } = useVideoStore((state) => ({
-    ref: state.ref,
-    skip: state.skip,
-    isPlaying: state.isPlaying,
-    togglePlay: state.togglePlay,
-    duration: state.duration,
-    currentTime: state.currentTime,
-    setVolume: state.setVolume,
-    seekTo: state.seekTo,
-  }))
+  } = useVideo()
 
   const toggleMute = () => {
     if (!ref) return
@@ -154,14 +205,7 @@ const Player = (props: PlayerProps) => {
   const videoRef = useRef<HTMLVideoElement | null>(null)
 
   const { togglePlay, isPlaying, setCurrentTime, setDuration, setRef } =
-    useVideoStore((state) => ({
-      togglePlay: state.togglePlay,
-      isPlaying: state.isPlaying,
-      setDuration: state.setDuration,
-      currentTime: state.currentTime,
-      setCurrentTime: state.setCurrentTime,
-      setRef: state.setRef,
-    }))
+    useVideo()
 
   useIsomorphicEffect(() => {
     setRef(videoRef.current)

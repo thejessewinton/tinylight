@@ -38,26 +38,26 @@ const useLightbox = () => {
   return context
 }
 
-type ThumbProps = HTMLAttributes<HTMLDivElement>
+interface ThumbProps extends Dialog.DialogTriggerProps {}
 
 const Thumbs = ({ children, ...props }: ThumbProps) => {
   const items = getValidChildren(children)
   const { setActiveItemIndex } = useLightbox()
 
   return (
-    <div {...props}>
+    <>
       {items.map((child, index) => {
         return (
-          <button
-            type="button"
+          <Dialog.Trigger
+            {...props}
             key={child.key}
             onClick={() => setActiveItemIndex(index)}
           >
             {child}
-          </button>
+          </Dialog.Trigger>
         )
       })}
-    </div>
+    </>
   )
 }
 
@@ -83,12 +83,7 @@ const Items = ({ children, ...props }: ItemsProps) => {
   )
 }
 
-interface ItemProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
-  children: MaybeRenderProp<{
-    isActive: boolean
-  }>
-}
+interface ItemProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 type ItemDataRef = MutableRefObject<{
   domRef: MutableRefObject<HTMLElement | null>
@@ -115,30 +110,34 @@ export const Item = ({ children, ...props }: ItemProps) => {
   }, [activeItemIndex, id, items])
 
   return (
-    <div ref={itemRef} id={id} {...props}>
-      {runIfFunction(children, {
-        isActive,
-      })}
+    <div
+      ref={itemRef}
+      id={id}
+      data-state={isActive ? 'active' : 'inactive'}
+      {...props}
+    >
+      {children}
     </div>
   )
 }
 
-interface NavProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children'> {
-  children: MaybeRenderProp<{
-    toPrev: () => void
-    toNext: () => void
-  }>
+interface NavButtonProps extends HTMLAttributes<HTMLButtonElement> {}
+
+const NextButton = ({ children }: NavButtonProps) => {
+  const { toNext } = useLightbox()
+  return (
+    <button onClick={toNext} type="button">
+      {children}
+    </button>
+  )
 }
 
-const Nav = ({ children }: NavProps) => {
-  const { toPrev, toNext } = useLightbox()
+const PrevButton = ({ children }: NavButtonProps) => {
+  const { toPrev } = useLightbox()
   return (
-    <>
-      {runIfFunction(children, {
-        toPrev,
-        toNext,
-      })}
-    </>
+    <button onClick={toPrev} type="button">
+      {children}
+    </button>
   )
 }
 
@@ -170,13 +169,7 @@ interface WrapperProps extends Dialog.DialogProps {
   loop?: boolean
 }
 
-const Root = ({
-  children,
-  open,
-  onOpenChange,
-  loop,
-  ...props
-}: WrapperProps) => {
+const Root = ({ children, loop, ...props }: WrapperProps) => {
   const [items, setItems] = useState<ItemDataRef[]>([])
   const [activeItemIndex, setActiveItemIndex] = useState(0)
 
@@ -215,7 +208,7 @@ const Root = ({
   }
 
   return (
-    <Dialog.Root open={open} onOpenChange={onOpenChange} {...props}>
+    <Dialog.Root {...props}>
       <LightboxContext.Provider value={contextValue}>
         {children}
       </LightboxContext.Provider>
@@ -227,6 +220,7 @@ export const Lightbox = Object.assign(Root, {
   Items,
   Item,
   Pagination,
-  Nav,
+  PrevButton,
+  NextButton,
   Thumbs,
 })
