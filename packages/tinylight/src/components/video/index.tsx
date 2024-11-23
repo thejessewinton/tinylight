@@ -5,7 +5,7 @@ import type {
   SyntheticEvent,
   VideoHTMLAttributes,
   MouseEvent,
-} from 'react'
+} from 'react';
 import {
   useCallback,
   useMemo,
@@ -13,80 +13,80 @@ import {
   useRef,
   createContext,
   useContext,
-} from 'react'
+} from 'react';
 
-import type { MaybeRenderProp } from '../../types'
-import { formatTime, runIfFunction, scaleValue } from '../../utils/helpers'
-import { useIsomorphicEffect } from '../../utils/hooks'
+import type { MaybeRenderProp } from '../../types';
+import { formatTime, runIfFunction, scaleValue } from '../../utils/helpers';
+import { useIsomorphicEffect } from '../../utils/hooks';
 
 interface VideoState {
-  ref: MutableRefObject<HTMLVideoElement>['current'] | null
-  setRef: (ref: MutableRefObject<HTMLVideoElement>['current'] | null) => void
-  isPlaying: boolean
-  togglePlay: () => void
-  duration: number
-  setDuration: (duration: number) => void
-  currentTime: number
-  setCurrentTime: (currentTime: number) => void
-  volume: number
-  setVolume: (newVolume: number) => void
-  isMuted: boolean
-  toggleMute: () => void
-  skip: (props: SeekProps) => void
-  seekTo: (e: MouseEvent<HTMLDivElement>) => void
+  ref: MutableRefObject<HTMLVideoElement>['current'] | null;
+  setRef: (ref: MutableRefObject<HTMLVideoElement>['current'] | null) => void;
+  isPlaying: boolean;
+  togglePlay: () => void;
+  duration: number;
+  setDuration: (duration: number) => void;
+  currentTime: number;
+  setCurrentTime: (currentTime: number) => void;
+  volume: number;
+  setVolume: (newVolume: number) => void;
+  isMuted: boolean;
+  toggleMute: () => void;
+  skip: (props: SeekProps) => void;
+  seekTo: (e: MouseEvent<HTMLDivElement>) => void;
 }
 
-const VideoContext = createContext<VideoState | null>(null)
+const VideoContext = createContext<VideoState | null>(null);
 
 export function useVideo() {
-  const context = useContext(VideoContext)
+  const context = useContext(VideoContext);
   if (!context) {
-    throw new Error('useVideo must be used within a VideoProvider')
+    throw new Error('useVideo must be used within a VideoProvider');
   }
-  return context
+  return context;
 }
 
 export function VideoProvider({ children }: { children: ReactNode }) {
   const [ref, setRef] = useState<
     MutableRefObject<HTMLVideoElement>['current'] | null
-  >(null)
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [duration, setDuration] = useState(0)
-  const [currentTime, setCurrentTime] = useState(0)
-  const [volume, setVolume] = useState(1)
-  const [isMuted, setIsMuted] = useState(false)
+  >(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [duration, setDuration] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [volume, setVolume] = useState(1);
+  const [isMuted, setIsMuted] = useState(false);
 
   const togglePlay = useCallback(() => {
-    setIsPlaying((prev) => !prev)
-  }, [])
+    setIsPlaying((prev) => !prev);
+  }, []);
 
   const toggleMute = useCallback(() => {
-    setIsMuted((prev) => !prev)
-  }, [])
+    setIsMuted((prev) => !prev);
+  }, []);
 
   const skip = useCallback(
     ({ type, seconds }: SeekProps) => {
-      if (!ref) return
-      const value = type === 'skip' ? seconds : -seconds
-      ref.currentTime = ref.currentTime + value
+      if (!ref) return;
+      const value = type === 'skip' ? seconds : -seconds;
+      ref.currentTime = ref.currentTime + value;
     },
-    [ref],
-  )
+    [ref]
+  );
 
   const seekTo = useCallback(
     (e: MouseEvent<HTMLDivElement>) => {
-      if (!ref) return
-      const seekToerOffset = e.currentTarget.getBoundingClientRect()
+      if (!ref) return;
+      const seekToerOffset = e.currentTarget.getBoundingClientRect();
       const getSeekTime = scaleValue(
         seekToerOffset.left,
         seekToerOffset.right,
         0,
-        ref.duration,
-      )
-      ref.currentTime = getSeekTime(e.clientX)
+        ref.duration
+      );
+      ref.currentTime = getSeekTime(e.clientX);
     },
-    [ref],
-  )
+    [ref]
+  );
 
   const value = useMemo(
     () => ({
@@ -116,15 +116,17 @@ export function VideoProvider({ children }: { children: ReactNode }) {
       toggleMute,
       skip,
       seekTo,
-    ],
-  )
+    ]
+  );
 
-  return <VideoContext.Provider value={value}>{children}</VideoContext.Provider>
+  return (
+    <VideoContext.Provider value={value}>{children}</VideoContext.Provider>
+  );
 }
 
 interface SeekProps {
-  type: 'skip' | 'rewind'
-  seconds: number
+  type: 'skip' | 'rewind';
+  seconds: number;
 }
 
 interface ControlsFnProps
@@ -140,22 +142,22 @@ interface ControlsFnProps
     | 'seekTo'
   > {
   duration: {
-    formatted: string
-    raw: number
-  }
+    formatted: string;
+    raw: number;
+  };
   currentTime: {
-    formatted: string
-    raw: number
-  }
+    formatted: string;
+    raw: number;
+  };
 }
 
 interface ControlsProps
   extends Omit<HTMLAttributes<HTMLDivElement>, 'children'> {
-  children: MaybeRenderProp<ControlsFnProps>
+  children: MaybeRenderProp<ControlsFnProps>;
 }
 
 const Controls = ({ children, ...props }: ControlsProps) => {
-  const [isMuted, setIsMuted] = useState(false)
+  const [isMuted, setIsMuted] = useState(false);
   const {
     ref,
     skip,
@@ -165,13 +167,13 @@ const Controls = ({ children, ...props }: ControlsProps) => {
     duration,
     currentTime,
     setVolume,
-  } = useVideo()
+  } = useVideo();
 
   const toggleMute = () => {
-    if (!ref) return
-    setIsMuted(!isMuted)
-    ref.volume = ref.volume === 1 ? 0 : 1
-  }
+    if (!ref) return;
+    setIsMuted(!isMuted);
+    ref.volume = ref.volume === 1 ? 0 : 1;
+  };
 
   return (
     <div {...props}>
@@ -194,68 +196,67 @@ const Controls = ({ children, ...props }: ControlsProps) => {
         seekTo,
       })}
     </div>
-  )
-}
+  );
+};
 
 interface PlayerProps extends VideoHTMLAttributes<HTMLVideoElement> {
-  children?: never
+  children?: never;
 }
 
-const Player = (props: PlayerProps) => {
-  const videoRef = useRef<HTMLVideoElement | null>(null)
+const Player = ({ onClick, ...props }: PlayerProps) => {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
 
   const { togglePlay, isPlaying, setCurrentTime, setDuration, setRef } =
-    useVideo()
+    useVideo();
 
   useIsomorphicEffect(() => {
-    setRef(videoRef.current)
-  }, [])
+    setRef(videoRef.current);
+  }, []);
 
   useIsomorphicEffect(() => {
-    const video = videoRef.current
-    if (!video) return
-    setDuration(video.duration)
-  }, [])
+    const video = videoRef.current;
+    if (!video) return;
+    setDuration(video.duration);
+  }, []);
 
   useIsomorphicEffect(() => {
-    const video = videoRef.current
+    const video = videoRef.current;
     const handlePlay = () => {
-      if (!video) return
-      video.play().catch(console.error)
-    }
+      if (!video) return;
+      video.play().catch(console.error);
+    };
 
     const handlePause = () => {
-      if (!video) return
-      video.pause()
-    }
+      if (!video) return;
+      video.pause();
+    };
 
     if (isPlaying) {
-      handlePlay()
+      handlePlay();
     } else {
-      handlePause()
+      handlePause();
     }
-  }, [isPlaying])
-
-  const handleTimeUpdate = (e: SyntheticEvent<HTMLVideoElement>) => {
-    setCurrentTime(e.currentTarget.currentTime)
-  }
+  }, [isPlaying]);
 
   return (
     <video
-      onClick={togglePlay}
-      onTimeUpdate={handleTimeUpdate}
+      onClick={(e) => {
+        onClick?.(e);
+        togglePlay();
+      }}
+      onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
       ref={videoRef}
       {...props}
     />
-  )
+  );
+};
+
+interface WrapperProps {
+  children: ReactNode;
 }
 
-interface WrapperProps extends HTMLAttributes<HTMLDivElement> {
-  children: ReactNode
-}
+const Root = ({ children }: WrapperProps) => {
+  return <VideoProvider>{children}</VideoProvider>;
+};
 
-const Wrapper = ({ children, ...props }: WrapperProps) => {
-  return <div {...props}>{children}</div>
-}
-
-export const Video = Object.assign(Wrapper, { Player, Controls })
+export const Video = { Root, Player, Controls };
