@@ -5,10 +5,10 @@
     "turbo": "^2.3.1",
     "typescript": "5.5.4"
   },
+  "packageManager": "pnpm@8.15.6",
   "engines": {
     "node": ">=18"
   },
-  "packageManager": "pnpm@9.1.0",
   "private": true,
   "scripts": {
     "build": "turbo build",
@@ -16,5 +16,8 @@
     "lint": "biome check .",
     "lint:fix": "biome check . --write"
   },
-  "workspaces": ["apps/*", "packages/*"]
+  "dependencies": {
+    "react-swipeable": "^7.0.2",
+    "tinylight": "^1.0.1"
+  }
 }
