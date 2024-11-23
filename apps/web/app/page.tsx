@@ -1,7 +1,7 @@
-'use client'
-import styles from './page.module.css'
-import { Lightbox } from 'tinylight'
-import Image from 'next/image'
+'use client';
+import styles from './page.module.css';
+import { Lightbox } from 'tinylight';
+import Image from 'next/image';
 
 export default function Home() {
   return (
@@ -19,13 +19,14 @@ export default function Home() {
             </Lightbox.Item>
             <Lightbox.Item>
               <Image
-                src="https://picsum.photos/id/10/1024/768"
+                src="https://picsum.photos/id/20/1024/768"
                 width={1024}
                 height={768}
                 alt="test"
               />
             </Lightbox.Item>
           </Lightbox.Items>
+
           <Lightbox.Nav>
             {({ toPrev, toNext }) => (
               <>
@@ -47,22 +48,22 @@ export default function Home() {
             )}
           </Lightbox.Pagination>
 
-          <Lightbox.Thumbs>
+          <Lightbox.Thumbs className="flex">
             <Image
-              src="https://picsum.photos/id/10/1024/768"
-              width={1024}
-              height={768}
+              src="https://picsum.photos/id/10/100/100"
+              width={100}
+              height={100}
               alt="test"
             />
             <Image
-              src="https://picsum.photos/id/10/1024/768"
-              width={1024}
-              height={768}
+              src="https://picsum.photos/id/10/100/100"
+              width={100}
+              height={100}
               alt="test"
             />
           </Lightbox.Thumbs>
         </Lightbox.Root>
       </main>
     </div>
-  )
+  );
 }

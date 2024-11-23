@@ -1,4 +1,4 @@
-import { defineConfig } from 'tsup'
+import { defineConfig } from 'tsup';
 
 export default defineConfig({
   minify: true,
@@ -7,9 +7,5 @@ export default defineConfig({
   sourcemap: true,
   dts: true,
   format: ['esm', 'cjs'],
-  esbuildOptions(options) {
-    options.banner = {
-      js: '"use client"',
-    }
-  },
-})
+  injectStyle: true,
+});

@@ -2,7 +2,10 @@
   "name": "tinylight",
   "version": "0.0.0",
   "private": true,
-  "files": ["dist", "README.md"],
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -16,7 +19,7 @@
     "tinylight"
   ],
   "scripts": {
-    "build": "tsup src/index.tsx --format cjs,esm --dts",
+    "build": "tsup src/index.tsx && cp src/lightbox/styles.css dist/lightbox/styles.css",
     "dev": "tsup src/index.tsx --watch",
     "lint": "tsc"
   },
