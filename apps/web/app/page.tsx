@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <div className={styles.page}>
       <main className={styles.main}>
-        <Lightbox>
+        <Lightbox.Root>
           <Lightbox.Items>
             <Lightbox.Item>
               <Image
@@ -26,8 +26,26 @@ export default function Home() {
               />
             </Lightbox.Item>
           </Lightbox.Items>
-          <Lightbox.PrevButton>Prev</Lightbox.PrevButton>
-          <Lightbox.NextButton>Next</Lightbox.NextButton>
+          <Lightbox.Nav>
+            {({ toPrev, toNext }) => (
+              <>
+                <button onClick={toPrev} type="button">
+                  Previous
+                </button>
+                <button onClick={toNext} type="button">
+                  Next
+                </button>
+              </>
+            )}
+          </Lightbox.Nav>
+
+          <Lightbox.Pagination>
+            {({ activeItem, itemsCount }) => (
+              <div>
+                {activeItem} / {itemsCount}
+              </div>
+            )}
+          </Lightbox.Pagination>
 
           <Lightbox.Thumbs>
             <Image
@@ -43,7 +61,7 @@ export default function Home() {
               alt="test"
             />
           </Lightbox.Thumbs>
-        </Lightbox>
+        </Lightbox.Root>
       </main>
     </div>
   )

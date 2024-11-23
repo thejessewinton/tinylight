@@ -1,0 +1,5 @@
+[data-tinylight] {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}

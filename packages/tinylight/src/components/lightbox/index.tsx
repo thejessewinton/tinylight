@@ -12,6 +12,7 @@ import {
   useState,
 } from 'react'
 import * as Dialog from '@radix-ui/react-dialog'
+import './styles.css'
 
 import { useSwipeable } from 'react-swipeable'
 import type { MaybeRenderProp } from '../../types'
@@ -62,9 +63,9 @@ const Thumbs = ({ children, ...props }: ThumbProps) => {
 }
 
 // Lightbox items component
-type ItemsProps = HTMLAttributes<HTMLDivElement>
+type ItemsProps = Dialog.DialogContentProps
 
-const Items = ({ children, ...props }: ItemsProps) => {
+const Items = ({ children, className, ...props }: ItemsProps) => {
   const items = getValidChildren(children)
 
   const { toPrev, toNext } = useLightbox()
@@ -75,11 +76,12 @@ const Items = ({ children, ...props }: ItemsProps) => {
   })
 
   return (
-    <div {...handlers} {...props}>
+    <Dialog.Content data-tinylight="" {...props} {...handlers}>
+      <Dialog.Title>Lightbox</Dialog.Title>
       {items.map((child) => {
         return <div key={child.key}>{child}</div>
       })}
-    </div>
+    </Dialog.Content>
   )
 }
 
@@ -121,23 +123,22 @@ export const Item = ({ children, ...props }: ItemProps) => {
   )
 }
 
-interface NavButtonProps extends HTMLAttributes<HTMLButtonElement> {}
-
-const NextButton = ({ children }: NavButtonProps) => {
-  const { toNext } = useLightbox()
-  return (
-    <button onClick={toNext} type="button">
-      {children}
-    </button>
-  )
+interface NavProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children'> {
+  children: MaybeRenderProp<{
+    toPrev: () => void
+    toNext: () => void
+  }>
 }
 
-const PrevButton = ({ children }: NavButtonProps) => {
-  const { toPrev } = useLightbox()
+const Nav = ({ children }: NavProps) => {
+  const { toPrev, toNext } = useLightbox()
   return (
-    <button onClick={toPrev} type="button">
-      {children}
-    </button>
+    <>
+      {runIfFunction(children, {
+        toPrev,
+        toNext,
+      })}
+    </>
   )
 }
 
@@ -208,19 +209,17 @@ const Root = ({ children, loop, ...props }: WrapperProps) => {
   }
 
   return (
-    <Dialog.Root {...props}>
-      <LightboxContext.Provider value={contextValue}>
-        {children}
-      </LightboxContext.Provider>
-    </Dialog.Root>
+    <LightboxContext.Provider value={contextValue}>
+      <Dialog.Root {...props}>{children}</Dialog.Root>
+    </LightboxContext.Provider>
   )
 }
 
-export const Lightbox = Object.assign(Root, {
+export const Lightbox = {
+  Root,
   Items,
   Item,
   Pagination,
-  PrevButton,
-  NextButton,
+  Nav,
   Thumbs,
-})
+}
