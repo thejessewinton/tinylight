@@ -16,12 +16,10 @@
     "react-dom": "19.0.0-rc-66855b96-20241106"
   },
   "devDependencies": {
-    "@tinylight/typescript-config": "*",
+    "tsconfig": "*",
     "@types/node": "^20",
     "@types/react": "18.3.1",
     "@types/react-dom": "18.3.0",
-    "eslint": "^8",
-    "eslint-config-next": "15.0.3",
     "typescript": "5.5.4"
   }
 }

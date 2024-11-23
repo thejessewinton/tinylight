@@ -18,7 +18,7 @@
     "lint": "tsc"
   },
   "devDependencies": {
-    "@tinylight/typescript-config": "*",
+    "tsconfig": "*",
     "@types/node": "^20.11.24",
     "@types/eslint": "^8.56.5",
     "@types/react": "18.3.0",
