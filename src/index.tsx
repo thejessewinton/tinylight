@@ -18,7 +18,7 @@ interface VideoState {
   volume: number
   setVolume: (newVolume: number) => void
   isMuted: boolean
-  toggleMute: () => void
+  toggleMuted: () => void
   skip: (props: SeekProps) => void
   seekTo: (e: React.MouseEvent<HTMLDivElement>) => void
 }
@@ -41,12 +41,21 @@ export const VideoProvider = ({ children }: { children: React.ReactNode }) => {
   const [volume, setVolume] = React.useState(1)
   const [isMuted, setIsMuted] = React.useState(false)
 
+  const currentVolume = React.useRef(volume)
+
   const togglePlay = React.useCallback(() => {
     setIsPlaying((prev) => !prev)
   }, [])
 
-  const toggleMute = React.useCallback(() => {
+  const toggleMuted = React.useCallback(() => {
+    ref.current.muted = !ref.current.muted
     setIsMuted((prev) => !prev)
+
+    if (ref.current.muted) {
+      ref.current.volume = 0
+    } else {
+      ref.current.volume = currentVolume.current
+    }
   }, [])
 
   const skip = React.useCallback(({ type, seconds }: SeekProps) => {
@@ -79,7 +88,7 @@ export const VideoProvider = ({ children }: { children: React.ReactNode }) => {
       volume,
       setVolume,
       isMuted,
-      toggleMute,
+      toggleMuted,
       skip,
       seekTo,
     }),
@@ -90,7 +99,7 @@ export const VideoProvider = ({ children }: { children: React.ReactNode }) => {
       currentTime,
       volume,
       isMuted,
-      toggleMute,
+      toggleMuted,
       skip,
       seekTo,
     ],
@@ -105,30 +114,15 @@ interface SeekProps {
 }
 
 const Controls = () => {
-  const [isMuted, setIsMuted] = React.useState(false)
   const {
-    ref,
     isPlaying,
+    isMuted,
+    toggleMuted,
     volume,
     setVolume,
     duration,
     currentTime,
-    setCurrentTime,
   } = useVideo()
-  const currentVolume = React.useRef(volume)
-
-  const toggleMute = () => {
-    if (!ref) return
-    setIsMuted(!isMuted)
-    currentVolume.current = ref.current!.volume
-    ref.current!.muted = !ref.current?.muted
-
-    if (ref.current?.muted) {
-      ref.current!.volume = 0
-    } else {
-      ref.current!.volume = currentVolume.current
-    }
-  }
 
   return (
     <div data-tinylight-controls="">
@@ -136,7 +130,7 @@ const Controls = () => {
 
       <Slider.Root
         className="relative flex h-5 w-[200px] touch-none select-none items-center"
-        defaultValue={[50]}
+        defaultValue={[volume]}
         max={100}
         step={1}
         onValueChange={([value]) => {
@@ -161,7 +155,7 @@ const Controls = () => {
         />
       </div>
 
-      <button onClick={toggleMute} type="button" data-tinylight-mute="">
+      <button onClick={toggleMuted} type="button" data-tinylight-mute="">
         {isMuted ? 'Unmute' : 'Mute'}
       </button>
     </div>
@@ -170,7 +164,7 @@ const Controls = () => {
 
 interface PlayerProps extends React.VideoHTMLAttributes<HTMLVideoElement> {}
 
-const Player = ({ onClick, children, ...props }: PlayerProps) => {
+const Player = ({ onClick, children, className, ...props }: PlayerProps) => {
   const { ref, togglePlay, isPlaying, setCurrentTime, setDuration } = useVideo()
 
   useIsomorphicEffect(() => {
@@ -199,7 +193,7 @@ const Player = ({ onClick, children, ...props }: PlayerProps) => {
   }, [isPlaying])
 
   return (
-    <div data-tinylight-player="">
+    <div data-tinylight-player="" className={className}>
       <video
         onClick={(e) => {
           onClick?.(e)
@@ -214,9 +208,9 @@ const Player = ({ onClick, children, ...props }: PlayerProps) => {
   )
 }
 
-interface VideoProps extends PlayerProps {}
+interface TinylightProps extends PlayerProps {}
 
-export const Video = ({ ...props }: VideoProps) => {
+export const Tinylight = ({ ...props }: TinylightProps) => {
   return (
     <VideoProvider>
       <Player {...props}>
