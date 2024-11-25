@@ -1,23 +1,56 @@
 {
   "name": "tinylight",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./dist/styles.css": "./dist/styles.css"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": ["dist"],
+  "keywords": [
+    "react",
+    "lightbox",
+    "images",
+    "simple",
+    "primitives",
+    "tiny",
+    "tinylight"
+  ],
+  "scripts": {
+    "build": "tsup src/index.tsx && cp src/styles.css dist/styles.css",
+    "dev": "tsup src/index.tsx --watch",
+    "dev:website": "turbo run dev --filter=website...",
+    "lint": "tsc",
+    "format": "biome check .",
+    "format:fix": "biome check . --write"
+  },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
+    "@types/eslint": "^8.56.5",
+    "@types/node": "^20.11.24",
+    "@types/react": "18.3.0",
+    "@types/react-dom": "18.3.1",
+    "eslint": "^8.57.0",
+    "tsup": "^8.3.5",
     "turbo": "^2.3.1",
     "typescript": "5.5.4"
   },
-  "packageManager": "pnpm@8.15.6",
-  "engines": {
-    "node": ">=18"
-  },
-  "private": true,
-  "scripts": {
-    "build": "turbo build",
-    "dev": "turbo dev",
-    "lint": "biome check .",
-    "lint:fix": "biome check . --write"
-  },
   "dependencies": {
-    "react-swipeable": "^7.0.2",
-    "tinylight": "^1.0.1"
-  }
+    "@radix-ui/react-dialog": "^1.1.2",
+    "@radix-ui/react-slider": "^1.2.1",
+    "react": "19.0.0-rc-5c56b873-20241107",
+    "react-dom": "19.0.0-rc-5c56b873-20241107",
+    "remeda": "^2.17.3"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0 || ^19.0.0-rc",
+    "react-dom": "^18.0.0 || ^19.0.0 || ^19.0.0-rc"
+  },
+  "packageManager": "pnpm@8.12.1"
 }
