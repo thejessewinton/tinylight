@@ -13,17 +13,10 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": ["dist"],
-  "keywords": [
-    "react",
-    "lightbox",
-    "images",
-    "simple",
-    "primitives",
-    "tiny",
-    "tinylight"
-  ],
+  "keywords": ["react", "video", "video player", "tinylight"],
   "scripts": {
     "build": "tsup src/index.tsx && cp src/styles.css dist/styles.css",
+    "dev:all": "pnpm dev && pnpm dev:website",
     "dev": "tsup src/index.tsx --watch",
     "dev:website": "turbo run dev --filter=website...",
     "lint": "tsc",
