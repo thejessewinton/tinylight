@@ -10,16 +10,22 @@
     position: absolute;
     bottom: 0;
     width: 100%;
-    padding-inline: 1rem;
-    padding-block: 0.5rem;
-    mask-image: linear-gradient(
+    padding: 1rem;
+    background-image: linear-gradient(
       to top,
-      transparent,
-      rgb(0, 0, 0) 25%,
-      rgb(0, 0, 0) 75%,
-      transparent
+      rgba(0, 0, 0, 0.15) 0%,
+      rgba(0, 0, 0, 0)
     );
-    backdrop-filter: blur(6px);
+    animation: fade 300ms ease-in-out;
+
+    [data-tinylight-button] {
+      height: 1rem;
+      width: 1rem;
+      & svg {
+        fill: white;
+        stroke: white;
+      }
+    }
 
     [data-tinylight-duration] {
       background-color: red;
@@ -40,5 +46,18 @@
     [data-tinylight-mute] {
       flex-shrink: 0;
     }
+  }
+}
+
+@keyframes fade {
+  from {
+    mask: linear-gradient(90deg, #000 25%, #000000e6 50%, #00000000) 150% 0 /
+      400% no-repeat;
+    opacity: 0;
+  }
+  to {
+    mask: linear-gradient(90deg, #000 25%, #000000e6 50%, #00000000) 0 / 400%
+      no-repeat;
+    opacity: 1;
   }
 }

@@ -3,8 +3,16 @@
 import * as Slider from '@radix-ui/react-slider'
 import React from 'react'
 import './styles.css'
+import {
+  FullVolumeIcon,
+  MutedIcon,
+  PartialVolumeIcon,
+  PauseIcon,
+  PlayIcon,
+} from './assets'
 
 import { scaleValue } from './helpers'
+import { useIsomorphicEffect } from './hooks'
 
 interface VideoState {
   ref: React.MutableRefObject<HTMLVideoElement | null>
@@ -43,10 +51,18 @@ export const VideoProvider = ({ children }: { children: React.ReactNode }) => {
   const currentVolume = React.useRef(volume)
 
   const togglePlay = React.useCallback(() => {
+    if (!ref.current) return
+    if (isPlaying) {
+      ref.current.pause()
+    } else {
+      ref.current.play()
+    }
     setIsPlaying((prev) => !prev)
-  }, [])
+  }, [isPlaying])
 
   const toggleMuted = React.useCallback(() => {
+    if (!ref.current) return
+
     ref.current.muted = !ref.current.muted
     setIsMuted((prev) => !prev)
 
@@ -115,6 +131,7 @@ interface SeekProps {
 const Controls = () => {
   const {
     isPlaying,
+    togglePlay,
     isMuted,
     toggleMuted,
     volume,
@@ -125,7 +142,14 @@ const Controls = () => {
 
   return (
     <div data-tinylight-controls="">
-      {isPlaying ? 'Playing' : 'Paused'}
+      <button
+        onClick={togglePlay}
+        type="button"
+        data-tinylight-pause=""
+        data-tinylight-button=""
+      >
+        {isPlaying ? PauseIcon : PlayIcon}
+      </button>
 
       <Slider.Root
         className="relative flex h-5 w-[200px] touch-none select-none items-center"
@@ -154,8 +178,13 @@ const Controls = () => {
         />
       </div>
 
-      <button onClick={toggleMuted} type="button" data-tinylight-mute="">
-        {isMuted ? 'Unmute' : 'Mute'}
+      <button
+        onClick={toggleMuted}
+        type="button"
+        data-tinylight-button=""
+        data-tinylight-mute=""
+      >
+        {isMuted ? MutedIcon : volume > 50 ? PartialVolumeIcon : FullVolumeIcon}
       </button>
     </div>
   )
@@ -164,7 +193,13 @@ const Controls = () => {
 interface PlayerProps extends React.VideoHTMLAttributes<HTMLVideoElement> {}
 
 const Player = ({ onClick, children, className, ...props }: PlayerProps) => {
-  const { ref, togglePlay, setCurrentTime } = useVideo()
+  const { ref, togglePlay, setDuration, setCurrentTime } = useVideo()
+
+  useIsomorphicEffect(() => {
+    const video = ref.current
+    if (!video) return
+    setDuration(video.duration)
+  }, [])
 
   return (
     <div data-tinylight-player="" className={className}>
@@ -177,7 +212,7 @@ const Player = ({ onClick, children, className, ...props }: PlayerProps) => {
         ref={ref}
         {...props}
       />
-      {children}
+      <Controls />
     </div>
   )
 }
@@ -187,9 +222,7 @@ interface TinylightProps extends PlayerProps {}
 export const Tinylight = ({ ...props }: TinylightProps) => {
   return (
     <VideoProvider>
-      <Player {...props}>
-        <Controls />
-      </Player>
+      <Player {...props} />
     </VideoProvider>
   )
 }

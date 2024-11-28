@@ -17,7 +17,11 @@
     "tinylight": "workspace:*"
   },
   "devDependencies": {
+    "@content-collections/core": "^0.7.3",
+    "@content-collections/markdown": "^0.1.3",
+    "@content-collections/next": "^0.2.4",
     "@tailwindcss/postcss": "4.0.0-beta.2",
+    "@tailwindcss/typography": "^0.5.15",
     "@types/node": "^20",
     "@types/react": "18.3.1",
     "@types/react-dom": "18.3.0",

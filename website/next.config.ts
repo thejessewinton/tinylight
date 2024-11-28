@@ -1,9 +1,10 @@
+import { withContentCollections } from '@content-collections/next'
 import type { NextConfig } from 'next'
 
-const nextConfig: NextConfig = {
+const config: NextConfig = {
   images: {
     remotePatterns: [{ hostname: 'picsum.photos' }],
   },
 }
 
-export default nextConfig
+export default withContentCollections(config)
