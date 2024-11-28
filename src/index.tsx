@@ -5,7 +5,6 @@ import React from 'react'
 import './styles.css'
 
 import { scaleValue } from './helpers'
-import { useIsomorphicEffect } from './hooks'
 
 interface VideoState {
   ref: React.MutableRefObject<HTMLVideoElement | null>
@@ -165,32 +164,7 @@ const Controls = () => {
 interface PlayerProps extends React.VideoHTMLAttributes<HTMLVideoElement> {}
 
 const Player = ({ onClick, children, className, ...props }: PlayerProps) => {
-  const { ref, togglePlay, isPlaying, setCurrentTime, setDuration } = useVideo()
-
-  useIsomorphicEffect(() => {
-    const video = ref.current
-    if (!video) return
-    setDuration(video.duration)
-  }, [])
-
-  useIsomorphicEffect(() => {
-    const video = ref.current
-    const handlePlay = () => {
-      if (!video) return
-      video.play().catch(console.error)
-    }
-
-    const handlePause = () => {
-      if (!video) return
-      video.pause()
-    }
-
-    if (isPlaying) {
-      handlePlay()
-    } else {
-      handlePause()
-    }
-  }, [isPlaying])
+  const { ref, togglePlay, setCurrentTime } = useVideo()
 
   return (
     <div data-tinylight-player="" className={className}>
