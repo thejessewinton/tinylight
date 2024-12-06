@@ -40,3 +40,6 @@ export const scaleValue = (
     return outputMin + distance * pct
   }
 }
+
+export const useIsomorphicLayoutEffect =
+  typeof window !== 'undefined' ? React.useLayoutEffect : React.useEffect

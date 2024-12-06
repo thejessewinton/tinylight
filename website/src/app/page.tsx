@@ -1,12 +1,14 @@
-import type { Metadata } from 'next'
+'use client'
+import Image from 'next/image'
+import { Lightbox } from 'tinylight'
 import { allIndices } from '~/content-collections'
 
 const index = allIndices[0]!
 
-export const metadata: Metadata = {
-  title: index.title,
-  description: index.description,
-}
+// export const metadata: Metadata = {
+//   title: index.title,
+//   description: index.description,
+// }
 
 export default function Index() {
   return (
@@ -15,6 +17,22 @@ export default function Index() {
         <h1 className="group relative mb-4 inline-block w-full font-medium">
           {index.title}
         </h1>
+
+        <Lightbox.Root>
+          <Lightbox.Triggers>
+            <Lightbox.Trigger>
+              <Image
+                src="https://placehold.co/800x400"
+                width={800}
+                height={400}
+                alt="Placeholder"
+              />
+            </Lightbox.Trigger>
+          </Lightbox.Triggers>
+          <Lightbox.Content title="Lightbox" description="Lightbox desc">
+            <Lightbox.Image>Cool</Lightbox.Image>
+          </Lightbox.Content>
+        </Lightbox.Root>
 
         <div
           className="prose prose-neutral dark:prose-invert max-w-none space-y-4 font-light prose-a:font-italic prose-a:font-serif! prose-a:no-underline"
