@@ -22,7 +22,7 @@ export default function Index() {
           <Lightbox.Triggers>
             <Lightbox.Trigger>
               <Image
-                src="https://placehold.co/800x400"
+                src="https://placehold.co/800x400/png"
                 width={800}
                 height={400}
                 alt="Placeholder"
@@ -30,7 +30,14 @@ export default function Index() {
             </Lightbox.Trigger>
           </Lightbox.Triggers>
           <Lightbox.Content title="Lightbox" description="Lightbox desc">
-            <Lightbox.Image>Cool</Lightbox.Image>
+            <Lightbox.Image>
+              <Image
+                src="https://placehold.co/800x400/png"
+                width={800}
+                height={400}
+                alt="Placeholder"
+              />
+            </Lightbox.Image>
           </Lightbox.Content>
         </Lightbox.Root>
 

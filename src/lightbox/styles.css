@@ -1,179 +1,214 @@
 [data-tinylight-overlay] {
-	position: fixed;
-	inset: 0;
-	display: flex;
-	align-items: center;
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
 
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
 
-	--color-overlay: rgba(0, 0, 0, 1);
-
-	&::after {
-		content: "";
-		position: absolute;
-		inset: 0;
-		background-color: var(--color-overlay);
-		z-index: 1;
-	}
+    background-color: rgba(0, 0, 0, 0.35);
+    z-index: 1;
+  }
 }
 
 [data-tinylight-title],
 [data-tinylight-description] {
-	position: absolute;
-	width: 1px;
-	height: 1px;
-	padding: 0;
-	margin: -1px;
-	overflow: hidden;
-	clip: rect(0, 0, 0, 0);
-	white-space: nowrap;
-	border-width: 0;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }
 
 [data-tinylight-content] {
-	display: flex;
-	flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
-.fui-LightboxContainer {
-	position: relative;
-	display: flex;
-	flex: 1;
-	flex-direction: column;
+[data-tinylight-container] {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
 }
 
 [data-tinylight-items] {
-	z-index: 2;
-	display: flex;
-	align-items: center;
-	gap: 3rem;
-	position: relative;
-	scroll-snap-type: x mandatory;
-	overflow-x: scroll;
-	overflow-y: hidden;
-	overscroll-behavior-x: contain;
-	-webkit-overflow-scrolling: touch;
-	scrollbar-width: none;
-	-ms-overflow-style: none;
-	scroll-behavior: smooth;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+  position: relative;
+  scroll-snap-type: x mandatory;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-behavior: smooth;
 
-	@media screen and (max-width: 768px) {
-		gap: 1rem;
-	}
+  @media screen and (max-width: 768px) {
+    gap: 1rem;
+  }
 
-	&::-webkit-scrollbar {
-		display: none;
-	}
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 [data-tinylight-item] {
-	position: relative;
-	z-index: 1;
-	flex: 0 0 100%;
-	display: flex;
-	scroll-snap-align: start;
-	max-height: 80vh;
-	height: 100%;
-	justify-content: center;
+  position: relative;
+  z-index: 1;
+  flex: 0 0 100%;
+  display: flex;
+  scroll-snap-align: start;
+  max-height: 80vh;
+  height: 100%;
+  justify-content: center;
 
-	& > * {
-		max-width: 100%;
-		height: auto;
-		object-fit: contain;
-	}
+  & > * {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
 
-	&:has([data-tinylight-active]) {
-		scroll-snap-align: center;
-		scroll-snap-stop: always;
-	}
+  &:has([data-tinylight-active]) {
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+  }
 }
 
-.fui-LightboxThumbs {
-	display: flex;
-	flex-wrap: nowrap;
-	z-index: 10;
-	flex: 1;
-	gap: 0.5rem;
-	margin: 0 auto;
-	cursor: pointer;
-	position: relative;
-	bottom: 0;
-	width: 100%;
-	padding: 20px 0px;
-	flex: 0 0 100%;
-	max-width: 90%;
-	scroll-snap-type: x mandatory;
-	overflow-x: scroll;
-	overflow-y: auto;
-	scroll-behavior: smooth;
-	overscroll-behavior-x: contain;
-	-webkit-overflow-scrolling: touch;
-	scrollbar-width: none;
-	-ms-overflow-style: none;
-	scrollbar-width: none;
+[data-tinylight-thumbs] {
+  display: flex;
+  flex-wrap: nowrap;
+  z-index: 10;
+  flex: 1;
+  gap: 0.5rem;
+  margin: 0 auto;
+  cursor: pointer;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  padding: 20px 0px;
+  flex: 0 0 100%;
+  max-width: 90%;
+  scroll-snap-type: x mandatory;
+  overflow-x: scroll;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 
-	@media screen and (min-width: 768px) {
-		max-width: 50%;
-	}
+  @media screen and (min-width: 768px) {
+    max-width: 50%;
+  }
 }
 
-.fui-LightboxTrigger {
-	height: auto;
-padding: 0;
-	& > * {
-		object-fit: cover;
-		height: 100%;
-		width: 100%;
-	}
+[data-tinylight-trigger] {
+  height: auto;
+  padding: 0;
+  & > * {
+    object-fit: cover;
+    height: 100%;
+    width: 100%;
+  }
 }
 
-.fui-LightboxThumb {
-	height: auto;
-	flex: 0 0 100px;
-	aspect-ratio: 3 / 2;
-	padding: 0;
-	cursor: pointer;
-	transition: all ease-in-out 200ms;
-	border-radius: 8px;
-	overflow: hidden;
-	outline-color: transparent;
-	will-change: transform;
+[data-tinylight-thumb] {
+  height: auto;
+  flex: 0 0 100px;
+  aspect-ratio: 3 / 2;
+  padding: 0;
+  cursor: pointer;
+  transition: all ease-in-out 200ms;
+  border-radius: 8px;
+  overflow: hidden;
+  outline-color: transparent;
+  will-change: transform;
 
-	&.fui-LightboxActiveThumb {
-		margin: 0 10px;
-		outline: 1px solid var(--color-focus-root);
-		outline-offset: 2px;
-		transform: scale(1.05);
-	}
+  &:where(:has([data-tinylight-active-item])) {
+    margin: 0 10px;
+    outline: 1px solid white;
+    outline-offset: 2px;
+    transform: scale(1.05);
+  }
 
-	& > * {
-		object-fit: cover;
-		height: 100%;
-		width: 100%;
-	}
+  & > * {
+    object-fit: cover;
+    height: 100%;
+    width: 100%;
+  }
 }
 
-.fui-LightboxClose {
-	position: absolute;
-	z-index: 10;
-	color: #fff;
-	cursor: pointer;
-	right: 12px;
-	top: 12px;
+[data-tinylight-close-button] {
+  position: absolute;
+  z-index: 10;
+  color: #fff;
+  cursor: pointer;
+  right: 12px;
+  top: 12px;
 }
 
-.fui-LightboxPrevButton {
-	left: 0px;
+[data-tinylight-prev-button] {
+  left: 0px;
 }
 
-.fui-LightboxNextButton {
-	right: 0px;
+[data-tinylight-next-button] {
+  right: 0px;
 }
 
-.fui-LightboxNavButton {
-	position: absolute;
-	top: 50%;
-	transform: translateY(-50%);
-	z-index: 100;
-	color: #fff;
-	cursor: pointer;
+[data-tinylight-nav-button] {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 100;
+  color: #fff;
+  cursor: pointer;
+}
+
+@keyframes blur-in {
+  from {
+    filter: blur(3px);
+  }
+  to {
+    filter: blur(0px);
+  }
+}
+
+@keyframes blur-out {
+  from {
+    filter: blur(0px);
+  }
+  to {
+    filter: blur(3px);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-tinylight-overlay] {
+    &::after {
+      backdrop-filter: blur(2px);
+    }
+
+    &:where([data-state="closed"]) {
+      animation: blur-out 400ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    &:where([data-state="open"])::after {
+      animation: blur-in 400ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    &:where([data-state="closed"])::after {
+      animation: blur-out 400ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+  }
 }

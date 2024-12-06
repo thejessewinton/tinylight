@@ -180,7 +180,6 @@ interface LightboxItemsProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 const LightboxItems: React.FC<LightboxItemsProps> = ({
   children,
-  className,
   ...props
 }) => {
   const { setItems, activeItemIndex, setActiveItemIndex } = useLightbox()
@@ -242,13 +241,8 @@ const LightboxItems: React.FC<LightboxItemsProps> = ({
   }, [])
 
   return (
-    <div className="fui-LightboxContainer">
-      <div
-        ref={containerRef}
-        data-tinylight-items=""
-        //className={classNames('fui-LightboxItems', className)}
-        {...props}
-      >
+    <div data-tinylight-container="">
+      <div ref={containerRef} data-tinylight-items="" {...props}>
         {validChildren.map((child, i) => {
           return (
             <div
@@ -282,7 +276,7 @@ const LightboxVideo: React.FC<LightboxVideoProps> = ({
 }) => {
   const videoRef = React.useRef<HTMLVideoElement>(null)
 
-  if (!videoRef.current?.parentNode?.querySelector('.fui-LightboxActiveItem')) {
+  if (!videoRef.current?.parentElement.dataset['tinylight-active-item']) {
     videoRef.current?.pause()
   }
 
@@ -306,11 +300,8 @@ const LightboxPrevButton: React.FC<LightboxPrevButtonProps> = React.forwardRef<
       ref={ref}
       disabled={activeItemIndex === 0}
       aria-label="Previous item"
-      //   className={classNames(
-      //     className,
-      //     'fui-LightboxNavButton',
-      //     'fui-LightboxPrevButton',
-      //   )}
+      data-tinylight-prev-button=""
+      data-tinylight-nav-button=""
       {...props}
     >
       left arrow
@@ -335,11 +326,8 @@ const LightboxNextButton: React.FC<LightboxNextButtonProps> = React.forwardRef<
       ref={ref}
       disabled={activeItemIndex === items.length - 1}
       aria-label="Next item"
-      //   className={classNames(
-      //     className,
-      //     'fui-LightboxNavButton',
-      //     'fui-LightboxNextButton',
-      //   )}
+      data-tinylight-next-button=""
+      data-tinylight-nav-button=""
       {...props}
     >
       right arrow
@@ -374,11 +362,7 @@ const LightboxThumbs: React.FC<LightboxThumbsProps> = ({
   }, [activeItemIndex, items.length])
 
   return (
-    <div
-      //className={classNames('fui-LightboxThumbs', className)}
-      ref={containerRef}
-      {...props}
-    >
+    <div data-tinylight-thumbs="" ref={containerRef} {...props}>
       {items.map((item, index) => {
         const isVideo = item.type === LightboxVideo
         const imgSrc: string = isVideo ? item.props.poster : item.props.src
@@ -387,9 +371,7 @@ const LightboxThumbs: React.FC<LightboxThumbsProps> = ({
             onClick={() => setActiveItemIndex(index)}
             type="button"
             key={item.key}
-            // className={classNames('fui-LightboxThumb', {
-            //   'fui-LightboxActiveThumb': activeItemIndex === index,
-            // })}
+            data-tinylight-thumb=""
           >
             <img src={imgSrc} alt="" className="fui-LightboxThumbImage" />
           </button>
