@@ -5,6 +5,7 @@ import React from 'react'
 import { getValidChildren, useIsomorphicLayoutEffect } from '../helpers'
 
 import './styles.css'
+import type { MaybeRenderProp } from '../types'
 
 interface LightboxContextValue {
   items: React.ReactElement[]
@@ -337,7 +338,14 @@ const LightboxNextButton: React.FC<LightboxNextButtonProps> = React.forwardRef<
 
 LightboxNextButton.displayName = 'LightboxNextButton'
 
-interface LightboxThumbsProps extends React.ComponentPropsWithRef<'div'> {}
+interface LightboxThumbsProps
+  extends Omit<React.ComponentPropsWithRef<'div'>, 'children'> {
+  children: MaybeRenderProp<{
+    items: Array<{
+      src: string
+    }>
+  }>
+}
 
 const LightboxThumbs: React.FC<LightboxThumbsProps> = ({
   className,
