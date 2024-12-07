@@ -1,5 +1,3 @@
-'use client'
-
 import './styles.css'
 
 import * as Slider from '@radix-ui/react-slider'

@@ -1,11 +1,10 @@
-'use client'
-
 import * as DialogPrimitive from '@radix-ui/react-dialog'
+import { Slot } from '@radix-ui/react-slot'
 import React from 'react'
 import { getValidChildren, useIsomorphicLayoutEffect } from '../helpers'
+import { Close, NextArrow, PreviousArrow } from './icons'
 
 import './styles.css'
-import type { MaybeRenderProp } from '../types'
 
 interface LightboxContextValue {
   items: React.ReactElement[]
@@ -29,7 +28,7 @@ const useLightbox = () => {
 interface LightboxRootProps
   extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Root> {}
 
-const LightboxRoot: React.FC<LightboxRootProps> = (props) => {
+const LightboxRoot = (props: LightboxRootProps) => {
   const [items, setItems] = React.useState<React.ReactElement[]>([])
   const [activeItemIndex, setActiveItemIndex] = React.useState(0)
 
@@ -89,9 +88,9 @@ const LightboxRoot: React.FC<LightboxRootProps> = (props) => {
   )
 }
 
-type LightboxTriggersProps = React.ComponentPropsWithRef<'button'>
+interface LightboxTriggersProps extends React.ComponentPropsWithRef<'button'> {}
 
-const LightboxTriggers: React.FC<LightboxTriggersProps> = ({ children }) => {
+const LightboxTriggers = ({ children }: LightboxTriggersProps) => {
   const validChildren = getValidChildren(children)
   const { setActiveItemIndex } = useLightbox()
 
@@ -118,7 +117,7 @@ type LightboxTriggerElement = React.ElementRef<typeof DialogPrimitive.Trigger>
 interface LightboxTriggerProps
   extends Omit<DialogPrimitive.DialogTriggerProps, 'asChild'> {}
 
-const LightboxTrigger: React.FC<LightboxTriggerProps> = React.forwardRef<
+const LightboxTrigger = React.forwardRef<
   LightboxTriggerElement,
   LightboxTriggerProps
 >(({ children, ...props }, forwardedRef) => {
@@ -138,13 +137,12 @@ interface LightboxContentProps
     React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>,
     'asChild'
   > {
-  loop?: boolean
   container?: React.ComponentProps<typeof DialogPrimitive.Portal>['container']
   title: string
   description: string
 }
 
-const LightboxContent: React.FC<LightboxContentProps> = React.forwardRef<
+const LightboxContent = React.forwardRef<
   LightboxContentElement,
   LightboxContentProps
 >(
@@ -179,10 +177,7 @@ LightboxContent.displayName = 'LightboxContent'
 
 interface LightboxItemsProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-const LightboxItems: React.FC<LightboxItemsProps> = ({
-  children,
-  ...props
-}) => {
+const LightboxItems = ({ children, ...props }: LightboxItemsProps) => {
   const { setItems, activeItemIndex, setActiveItemIndex } = useLightbox()
 
   const validChildren = getValidChildren(children)
@@ -242,119 +237,55 @@ const LightboxItems: React.FC<LightboxItemsProps> = ({
   }, [])
 
   return (
-    <div data-tinylight-container="">
-      <div ref={containerRef} data-tinylight-items="" {...props}>
-        {validChildren.map((child, i) => {
-          return (
-            <div
-              data-tinylight-item=""
-              data-tinylight-active-item={activeItemIndex === i}
-              key={child.key}
-            >
-              {React.cloneElement(child, {})}
-            </div>
-          )
-        })}
-      </div>
-      <LightboxClose />
-      <LightboxPrevButton />
-      <LightboxNextButton />
+    <div data-tinylight-items="" {...props}>
+      {validChildren.map((child, i) => {
+        return (
+          <div
+            data-tinylight-item=""
+            data-tinylight-active-item={activeItemIndex === i}
+            key={child.key}
+          >
+            {React.cloneElement(child, {})}
+          </div>
+        )
+      })}
     </div>
   )
 }
 
-type LightboxImageProps = React.ComponentPropsWithoutRef<'div'>
-
-const LightboxImage: React.FC<LightboxImageProps> = (props) => {
-  return <div {...props} />
+interface LightboxImageProps extends React.ComponentPropsWithoutRef<'img'> {
+  asChild?: boolean
 }
 
-type LightboxVideoProps = React.ComponentPropsWithoutRef<'video'>
+const LightboxImage = ({ asChild, ...props }: LightboxImageProps) => {
+  const Component = asChild ? Slot : 'img'
+  return <Component {...props} />
+}
 
-const LightboxVideo: React.FC<LightboxVideoProps> = ({
-  controls = true,
-  ...props
-}) => {
+interface LightboxVideoProps extends React.ComponentPropsWithoutRef<'video'> {
+  asChild?: boolean
+}
+
+const LightboxVideo = ({ asChild, ...props }: LightboxVideoProps) => {
+  const Component = asChild ? Slot : 'video'
   const videoRef = React.useRef<HTMLVideoElement>(null)
 
-  if (!videoRef.current?.parentElement.dataset['tinylight-active-item']) {
+  if (
+    videoRef.current?.parentElement.dataset['tinylight-active-item="false"']
+  ) {
     videoRef.current?.pause()
   }
 
-  return <video controls={controls} {...props} ref={videoRef} />
+  return <Component {...props} ref={videoRef} />
 }
-
-interface LightboxPrevButtonProps
-  extends Omit<React.ComponentPropsWithoutRef<'button'>, 'children'> {
-  children?: never
-}
-
-const LightboxPrevButton: React.FC<LightboxPrevButtonProps> = React.forwardRef<
-  HTMLButtonElement,
-  LightboxPrevButtonProps
->(({ className, ...props }, ref) => {
-  const { toPrev, activeItemIndex } = useLightbox()
-
-  return (
-    <button
-      onClick={toPrev}
-      ref={ref}
-      disabled={activeItemIndex === 0}
-      aria-label="Previous item"
-      data-tinylight-prev-button=""
-      data-tinylight-nav-button=""
-      {...props}
-    >
-      left arrow
-    </button>
-  )
-})
-
-interface LightboxNextButtonProps
-  extends Omit<React.ComponentPropsWithoutRef<'button'>, 'children'> {
-  children?: never
-}
-
-const LightboxNextButton: React.FC<LightboxNextButtonProps> = React.forwardRef<
-  HTMLButtonElement,
-  LightboxNextButtonProps
->(({ className, ...props }, ref) => {
-  const { toNext, activeItemIndex, items } = useLightbox()
-
-  return (
-    <button
-      onClick={toNext}
-      ref={ref}
-      disabled={activeItemIndex === items.length - 1}
-      aria-label="Next item"
-      data-tinylight-next-button=""
-      data-tinylight-nav-button=""
-      {...props}
-    >
-      right arrow
-    </button>
-  )
-})
-
-LightboxNextButton.displayName = 'LightboxNextButton'
 
 interface LightboxThumbsProps
-  extends Omit<React.ComponentPropsWithRef<'div'>, 'children'> {
-  children: MaybeRenderProp<{
-    items: Array<{
-      src: string
-    }>
-  }>
-}
+  extends Omit<React.ComponentPropsWithRef<'div'>, 'children'> {}
 
-const LightboxThumbs: React.FC<LightboxThumbsProps> = ({
-  className,
-  ...props
-}) => {
+const LightboxThumbs = ({ className, ...props }: LightboxThumbsProps) => {
   const { items, activeItemIndex, setActiveItemIndex } = useLightbox()
   const containerRef = React.useRef<HTMLDivElement>(null)
 
-  // Scroll to center the active item
   React.useEffect(() => {
     if (containerRef.current && items.length > 0) {
       const container = containerRef.current
@@ -396,25 +327,77 @@ interface LightboxCloseProps
     'asChild' | 'children'
   > {
   children?: never
+  icon?: React.ReactNode
 }
 
 const LightboxClose = React.forwardRef<
   LightboxCloseElement,
   LightboxCloseProps
->(({ className, ...props }, forwardedRef) => (
-  <DialogPrimitive.Close
-    //className={classNames('fui-LightboxClose', className)}
-    {...props}
-    ref={forwardedRef}
-    asChild
-  >
-    <button type="button" aria-label="Close lightbox">
-      close button
-    </button>
-  </DialogPrimitive.Close>
-))
+>(({ className, icon: Icon, ...props }, forwardedRef) => {
+  return (
+    <DialogPrimitive.Close ref={forwardedRef} {...props}>
+      {Icon ?? <Close />}
+    </DialogPrimitive.Close>
+  )
+})
 
 LightboxClose.displayName = 'LightboxClose'
+
+interface LightboxPrevButtonProps
+  extends Omit<React.ComponentPropsWithoutRef<'button'>, 'children'> {
+  children?: never
+  icon?: React.ReactNode
+}
+
+const LightboxPrevButton = React.forwardRef<
+  HTMLButtonElement,
+  LightboxPrevButtonProps
+>(({ className, icon: Icon, ...props }, forwardedRef) => {
+  const { toPrev, activeItemIndex } = useLightbox()
+
+  return (
+    <button
+      onClick={toPrev}
+      ref={forwardedRef}
+      disabled={activeItemIndex === 0}
+      aria-label="Previous item"
+      data-tinylight-prev-button=""
+      data-tinylight-nav-button=""
+      {...props}
+    >
+      {Icon ?? <PreviousArrow />}
+    </button>
+  )
+})
+
+interface LightboxNextButtonProps
+  extends Omit<React.ComponentPropsWithoutRef<'button'>, 'children'> {
+  children?: never
+  icon?: React.ReactNode
+}
+
+const LightboxNextButton = React.forwardRef<
+  HTMLButtonElement,
+  LightboxNextButtonProps
+>(({ className, icon: Icon, ...props }, forwardedRef) => {
+  const { toNext, activeItemIndex, items } = useLightbox()
+
+  return (
+    <button
+      onClick={toNext}
+      ref={forwardedRef}
+      disabled={activeItemIndex === items.length - 1}
+      aria-label="Next item"
+      data-tinylight-next-button=""
+      data-tinylight-nav-button=""
+      {...props}
+    >
+      {Icon ?? <NextArrow />}
+    </button>
+  )
+})
+
+LightboxNextButton.displayName = 'LightboxNextButton'
 
 export {
   LightboxContent as Content,
@@ -425,6 +408,9 @@ export {
   LightboxTriggers as Triggers,
   LightboxImage as Image,
   LightboxVideo as Video,
+  LightboxClose as Close,
+  LightboxPrevButton as Prev,
+  LightboxNextButton as Next,
 }
 
 export type {
@@ -436,4 +422,6 @@ export type {
   LightboxTriggersProps as TriggersProps,
   LightboxImageProps as ImageProps,
   LightboxVideoProps as VideoProps,
+  LightboxCloseProps as CloseProps,
+  LightboxNextButtonProps as NextButtonProps,
 }

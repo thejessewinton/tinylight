@@ -12,8 +12,15 @@
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": ["dist"],
-  "keywords": ["react", "video", "video player", "tinylight"],
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "react",
+    "video",
+    "video player",
+    "tinylight"
+  ],
   "scripts": {
     "build": "tsup src/index.tsx && cp src/styles.css dist/styles.css",
     "dev:all": "pnpm dev && pnpm dev:website",
@@ -36,6 +43,7 @@
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.2",
     "@radix-ui/react-slider": "^1.2.1",
+    "@radix-ui/react-slot": "^1.1.0",
     "react": "19.0.0-rc-5c56b873-20241107",
     "react-dom": "19.0.0-rc-5c56b873-20241107",
     "remeda": "^2.17.3"

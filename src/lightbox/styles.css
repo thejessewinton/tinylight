@@ -4,14 +4,14 @@
   display: flex;
   align-items: center;
 
-  &::after {
+  /* &::after {
     content: "";
     position: absolute;
     inset: 0;
 
     background-color: rgba(0, 0, 0, 0.35);
-    z-index: 1;
-  }
+    z-index: 0;
+  } */
 }
 
 [data-tinylight-title],
@@ -32,15 +32,7 @@
   flex-direction: column;
 }
 
-[data-tinylight-container] {
-  position: relative;
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-}
-
 [data-tinylight-items] {
-  z-index: 2;
   display: flex;
   align-items: center;
   gap: 3rem;
@@ -65,7 +57,6 @@
 
 [data-tinylight-item] {
   position: relative;
-  z-index: 1;
   flex: 0 0 100%;
   display: flex;
   scroll-snap-align: start;
@@ -79,7 +70,7 @@
     object-fit: contain;
   }
 
-  &:has([data-tinylight-active]) {
+  &:where([data-tinylight-active-item="true"]) {
     scroll-snap-align: center;
     scroll-snap-stop: always;
   }
@@ -88,7 +79,6 @@
 [data-tinylight-thumbs] {
   display: flex;
   flex-wrap: nowrap;
-  z-index: 10;
   flex: 1;
   gap: 0.5rem;
   margin: 0 auto;
@@ -150,14 +140,12 @@
   }
 }
 
-[data-tinylight-close-button] {
-  position: absolute;
-  z-index: 10;
+[data-tinylight-close-button],
+[data-tinylight-nav-button] {
   color: #fff;
   cursor: pointer;
-  right: 12px;
-  top: 12px;
 }
+
 
 [data-tinylight-prev-button] {
   left: 0px;
@@ -165,51 +153,4 @@
 
 [data-tinylight-next-button] {
   right: 0px;
-}
-
-[data-tinylight-nav-button] {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 100;
-  color: #fff;
-  cursor: pointer;
-}
-
-@keyframes blur-in {
-  from {
-    filter: blur(3px);
-  }
-  to {
-    filter: blur(0px);
-  }
-}
-
-@keyframes blur-out {
-  from {
-    filter: blur(0px);
-  }
-  to {
-    filter: blur(3px);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  [data-tinylight-overlay] {
-    &::after {
-      backdrop-filter: blur(2px);
-    }
-
-    &:where([data-state="closed"]) {
-      &::after {
-        animation: blur-out 400ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
-      }
-    }
-
-    &:where([data-state="open"])::after {
-      &::after {
-        animation: blur-in 400ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
-      }
-    }
-  }
 }
