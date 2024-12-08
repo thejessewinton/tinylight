@@ -1,11 +1,22 @@
----
-title: tinylight
-description: A beautifully designed, open source video component for React.
----
+export const metadata = {
+  title: 'tinylight',
+  description: 'A beautifully designed set of lightbox primitives for React.',
+}
 
-A beautifully designed, open source video component for React; work in progress, so check back soon for updates!
+import { Hero } from '../components/hero';
+import { Installation } from '../components/docs/installation';
+
+<Hero />
+<Installation />
+
+### Usage
+
+Import the primitives, and compose it in your app.
 
 ```tsx
+import * as Lightbox from 'tinylight/lightbox';
+import Image from 'next/image';
+
 <Lightbox.Root>
   <Lightbox.Trigger>
     <Image

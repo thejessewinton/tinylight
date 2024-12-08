@@ -26,6 +26,9 @@
         },
         "noAutofocus": {
           "level": "off"
+        },
+        "useKeyWithClickEvents": {
+          "level": "off"
         }
       },
       "style": {

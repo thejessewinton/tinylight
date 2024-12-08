@@ -1,7 +1,9 @@
-import { withContentCollections } from '@content-collections/next'
+import createMDX from '@next/mdx'
+
 import type { NextConfig } from 'next'
 
 const config: NextConfig = {
+  pageExtensions: ['md', 'mdx', 'ts', 'tsx'],
   images: {
     remotePatterns: [
       { hostname: 'picsum.photos' },
@@ -10,4 +12,6 @@ const config: NextConfig = {
   },
 }
 
-export default withContentCollections(config)
+const withMDX = createMDX({})
+
+export default withMDX(config)
