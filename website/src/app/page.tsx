@@ -19,16 +19,15 @@ export default function Index() {
         </h1>
 
         <Lightbox.Root>
-          <Lightbox.Triggers>
-            <Lightbox.Trigger>
-              <Image
-                src="https://placehold.co/800x400/png"
-                width={800}
-                height={400}
-                alt="Placeholder"
-              />
-            </Lightbox.Trigger>
-          </Lightbox.Triggers>
+          <Lightbox.Trigger>
+            <Image
+              src="https://placehold.co/800x400/png"
+              width={800}
+              height={400}
+              alt="Placeholder"
+            />
+          </Lightbox.Trigger>
+
           <Lightbox.Content title="Lightbox" description="Lightbox desc">
             <Lightbox.Close aria-label="Close" />
             <Lightbox.Items>
@@ -42,13 +41,17 @@ export default function Index() {
               </Lightbox.Image>
               <Lightbox.Image asChild>
                 <Image
-                  src="https://placehold.co/800x400/png"
-                  width={800}
-                  height={400}
+                  src="https://placehold.co/1200x670/png"
+                  width={1200}
+                  height={670}
                   alt="Placeholder"
                 />
               </Lightbox.Image>
-              <Lightbox.Video src="https://upload.wikimedia.org/wikipedia/commons/transcoded/c/c0/Big_Buck_Bunny_4K.webm/Big_Buck_Bunny_4K.webm.1080p.vp9.webm" />
+              <Lightbox.Video
+                poster="https://placehold.co/1920x1080/png"
+                controls
+                src="https://upload.wikimedia.org/wikipedia/commons/transcoded/c/c0/Big_Buck_Bunny_4K.webm/Big_Buck_Bunny_4K.webm.1080p.vp9.webm"
+              />
             </Lightbox.Items>
             <div className="flex justify-between">
               <Lightbox.Prev />

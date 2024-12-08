@@ -1,17 +1,20 @@
 [data-tinylight-overlay] {
+  --overlay-bg: rgba(0, 0, 0, 0.25);
+  --overlay-blur: 5px;
+
   position: fixed;
   inset: 0;
   display: flex;
   align-items: center;
 
-  /* &::after {
+  &::after {
     content: "";
     position: absolute;
     inset: 0;
-
-    background-color: rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(var(--overlay-blur));
+    background-color: var(--overlay-bg);
     z-index: 0;
-  } */
+  }
 }
 
 [data-tinylight-title],
@@ -30,6 +33,8 @@
 [data-tinylight-content] {
   display: flex;
   flex-direction: column;
+  position: relative;
+  z-index: 1000;
 }
 
 [data-tinylight-items] {
@@ -67,7 +72,6 @@
   & > * {
     max-width: 100%;
     height: auto;
-    object-fit: contain;
   }
 
   &:where([data-tinylight-active-item="true"]) {
@@ -146,11 +150,94 @@
   cursor: pointer;
 }
 
-
 [data-tinylight-prev-button] {
   left: 0px;
 }
 
 [data-tinylight-next-button] {
   right: 0px;
+}
+
+@property --overlay-blur {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+@property --overlay-brightness {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0;
+}
+
+@keyframes fui-blur-in {
+  from {
+    --overlay-blur: 0px;
+    --overlay-brightness: 1;
+  }
+  to {
+    --overlay-blur: 3px;
+    --overlay-brightness: 0.7;
+  }
+}
+
+@keyframes fui-blur-out {
+  from {
+    --overlay-blur: 3px;
+    --overlay-brightness: 0.7;
+  }
+  to {
+    --overlay-blur: 0px;
+    --overlay-brightness: 1;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes fui-dialog-content-show {
+    from {
+      opacity: 0;
+      filter: blur(10px);
+    }
+    to {
+      opacity: 1;
+      filter: blur(0px);
+    }
+  }
+
+  @keyframes fui-dialog-content-hide {
+    from {
+      opacity: 1;
+      filter: blur(0px);
+    }
+    to {
+      opacity: 0;
+      filter: blur(10px);
+    }
+  }
+
+  [data-tinylight-overlay] {
+    &::after {
+      backdrop-filter: blur(var(--overlay-blur))
+        brightness(var(--overlay-brightness));
+    }
+    /* Keep the overlay mounted until the children have animated */
+    &:where([data-state="closed"]) {
+      animation: fui-blur-out 400ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    &:where([data-state="open"])::after {
+      animation: fui-blur-in 400ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    &:where([data-state="closed"])::after {
+      animation: fui-blur-out 400ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+  }
+
+  [data-tinylight-content] {
+    &:where([data-state="open"]) {
+      animation: fui-dialog-content-show 400ms ease-in-out;
+    }
+    &:where([data-state="closed"]) {
+      animation: fui-dialog-content-hide 400ms ease-in-out;
+    }
+  }
 }

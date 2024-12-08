@@ -1,10 +1,13 @@
+'use client'
+
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { Slot } from '@radix-ui/react-slot'
 import React from 'react'
-import { getValidChildren, useIsomorphicLayoutEffect } from '../helpers'
-import { Close, NextArrow, PreviousArrow } from './icons'
+import { Close, NextArrow, PreviousArrow } from '../assets'
+import { getValidChildren } from '../helpers'
 
 import './styles.css'
+import { useIsomorphicLayoutEffect } from '../hooks'
 
 interface LightboxContextValue {
   items: React.ReactElement[]
@@ -88,41 +91,16 @@ const LightboxRoot = (props: LightboxRootProps) => {
   )
 }
 
-interface LightboxTriggersProps extends React.ComponentPropsWithRef<'button'> {}
-
-const LightboxTriggers = ({ children }: LightboxTriggersProps) => {
-  const validChildren = getValidChildren(children)
-  const { setActiveItemIndex } = useLightbox()
-
-  return (
-    <>
-      {validChildren.map((item, index) => {
-        return (
-          <button
-            key={item.key}
-            onClick={() => setActiveItemIndex(index)}
-            type="button"
-            data-tinylight-trigger=""
-          >
-            {React.cloneElement(item, {})}
-          </button>
-        )
-      })}
-    </>
-  )
-}
-
 type LightboxTriggerElement = React.ElementRef<typeof DialogPrimitive.Trigger>
 
-interface LightboxTriggerProps
-  extends Omit<DialogPrimitive.DialogTriggerProps, 'asChild'> {}
+interface LightboxTriggerProps extends DialogPrimitive.DialogTriggerProps {}
 
 const LightboxTrigger = React.forwardRef<
   LightboxTriggerElement,
   LightboxTriggerProps
 >(({ children, ...props }, forwardedRef) => {
   return (
-    <DialogPrimitive.Trigger ref={forwardedRef} asChild {...props}>
+    <DialogPrimitive.Trigger ref={forwardedRef} {...props}>
       {children}
     </DialogPrimitive.Trigger>
   )
@@ -223,7 +201,6 @@ const LightboxItems = ({ children, ...props }: LightboxItemsProps) => {
     }
   }, [activeItemIndex])
 
-  // Attach the scroll event listener
   React.useEffect(() => {
     const container = containerRef.current
     if (!container) return
@@ -237,7 +214,7 @@ const LightboxItems = ({ children, ...props }: LightboxItemsProps) => {
   }, [])
 
   return (
-    <div data-tinylight-items="" {...props}>
+    <div data-tinylight-items="" ref={containerRef} {...props}>
       {validChildren.map((child, i) => {
         return (
           <div
@@ -304,15 +281,22 @@ const LightboxThumbs = ({ className, ...props }: LightboxThumbsProps) => {
     <div data-tinylight-thumbs="" ref={containerRef} {...props}>
       {items.map((item, index) => {
         const isVideo = item.type === LightboxVideo
-        const imgSrc: string = isVideo ? item.props.poster : item.props.src
+        const isAsChild = item.props.asChild
+        const imgSrc: string = isVideo
+          ? item.props.poster
+          : isAsChild
+            ? item.props.children.props.src
+            : item.props.src
+
         return (
           <button
             onClick={() => setActiveItemIndex(index)}
             type="button"
             key={item.key}
             data-tinylight-thumb=""
+            data-tinylight-active-thumb={activeItemIndex === index}
           >
-            <img src={imgSrc} alt="" className="fui-LightboxThumbImage" />
+            <img src={imgSrc} alt="" data-tinylight-thumb="" />
           </button>
         )
       })}
@@ -405,7 +389,6 @@ export {
   LightboxRoot as Root,
   LightboxThumbs as Thumbs,
   LightboxTrigger as Trigger,
-  LightboxTriggers as Triggers,
   LightboxImage as Image,
   LightboxVideo as Video,
   LightboxClose as Close,
@@ -419,7 +402,6 @@ export type {
   LightboxRootProps as RootProps,
   LightboxThumbsProps as ThumbsProps,
   LightboxTriggerProps as TriggerProps,
-  LightboxTriggersProps as TriggersProps,
   LightboxImageProps as ImageProps,
   LightboxVideoProps as VideoProps,
   LightboxCloseProps as CloseProps,

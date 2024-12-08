@@ -1,3 +1,5 @@
+'use client'
+
 import './styles.css'
 
 import * as Slider from '@radix-ui/react-slider'
@@ -12,7 +14,7 @@ import {
 } from '../assets'
 
 import { scaleValue } from '../helpers'
-import { useIsomorphicEffect } from '../hooks'
+import { useIsomorphicLayoutEffect } from '../hooks'
 
 interface VideoState {
   ref: React.MutableRefObject<HTMLVideoElement | null>
@@ -148,7 +150,7 @@ const Controls = () => {
         data-tinylight-pause=""
         data-tinylight-button=""
       >
-        {isPlaying ? PauseIcon : PlayIcon}
+        {isPlaying ? <PauseIcon /> : <PlayIcon />}
       </button>
 
       <Slider.Root
@@ -184,7 +186,13 @@ const Controls = () => {
         data-tinylight-button=""
         data-tinylight-mute=""
       >
-        {isMuted ? MutedIcon : volume > 50 ? PartialVolumeIcon : FullVolumeIcon}
+        {isMuted ? (
+          <MutedIcon />
+        ) : volume > 50 ? (
+          <PartialVolumeIcon />
+        ) : (
+          <FullVolumeIcon />
+        )}
       </button>
     </div>
   )
@@ -195,7 +203,7 @@ interface PlayerProps extends React.VideoHTMLAttributes<HTMLVideoElement> {}
 const Player = ({ onClick, children, className, ...props }: PlayerProps) => {
   const { ref, togglePlay, setDuration, setCurrentTime } = useVideo()
 
-  useIsomorphicEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const video = ref.current
     if (!video) return
     setDuration(video.duration)
