@@ -12,6 +12,6 @@ const config: NextConfig = {
   },
 }
 
-const withMDX = createMDX({})
+const withMDX = createMDX()
 
 export default withMDX(config)

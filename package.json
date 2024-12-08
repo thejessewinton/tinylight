@@ -12,15 +12,8 @@
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": [
-    "dist"
-  ],
-  "keywords": [
-    "react",
-    "video",
-    "video player",
-    "tinylight"
-  ],
+  "files": ["dist"],
+  "keywords": ["react", "video", "video player", "tinylight"],
   "scripts": {
     "build": "tsup src/index.tsx && cp src/styles.css dist/styles.css",
     "dev:all": "pnpm dev && pnpm dev:website",
@@ -34,8 +27,8 @@
     "@biomejs/biome": "1.9.4",
     "@types/eslint": "^8.56.5",
     "@types/node": "^20.11.24",
-    "@types/react": "18.3.0",
-    "@types/react-dom": "18.3.1",
+    "@types/react": "19.0.1",
+    "@types/react-dom": "19.0.1",
     "tsup": "^8.3.5",
     "turbo": "^2.3.3",
     "typescript": "5.5.4"
@@ -45,13 +38,9 @@
     "@radix-ui/react-slider": "^1.2.1",
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-tooltip": "^1.1.4",
-    "react": "19.0.0-rc-5c56b873-20241107",
-    "react-dom": "19.0.0-rc-5c56b873-20241107",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
     "remeda": "^2.17.3"
-  },
-  "peerDependencies": {
-    "react": "^18.0.0 || ^19.0.0 || ^19.0.0-rc",
-    "react-dom": "^18.0.0 || ^19.0.0 || ^19.0.0-rc"
   },
   "packageManager": "pnpm@8.12.1"
 }

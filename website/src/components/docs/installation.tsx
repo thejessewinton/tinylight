@@ -26,7 +26,7 @@ export const Installation = () => {
       <h2>Installation</h2>
       <code
         onClick={onCopy}
-        className="flex w-full cursor-copy items-center justify-between rounded-md bg-neutral-950 px-3 py-2"
+        className="flex w-full cursor-copy items-center justify-between rounded-lg bg-neutral-950 px-3 py-2"
       >
         pnpm install tinylight
         <div aria-label="Copy code">
@@ -41,17 +41,13 @@ export const Installation = () => {
                   variants={variants}
                 >
                   <svg
-                    viewBox="0 0 24 24"
-                    width="14"
-                    height="14"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    fill="none"
-                    shapeRendering="geometricPrecision"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="32"
+                    height="32"
+                    fill="#000000"
+                    viewBox="0 0 256 256"
                   >
-                    <path d="M20 6L9 17l-5-5" />
+                    <path d="M216,32H88a8,8,0,0,0-8,8V80H40a8,8,0,0,0-8,8V216a8,8,0,0,0,8,8H168a8,8,0,0,0,8-8V176h40a8,8,0,0,0,8-8V40A8,8,0,0,0,216,32ZM160,208H48V96H160Zm48-48H176V88a8,8,0,0,0-8-8H96V48H208Z" />
                   </svg>
                 </motion.div>
               ) : (
@@ -63,17 +59,12 @@ export const Installation = () => {
                   variants={variants}
                 >
                   <svg
-                    viewBox="0 0 24 24"
-                    width="14"
-                    height="14"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    fill="none"
-                    shapeRendering="geometricPrecision"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="size-6"
+                    fill="currentColor"
+                    viewBox="0 0 256 256"
                   >
-                    <path d="M8 17.929H6c-1.105 0-2-.912-2-2.036V5.036C4 3.91 4.895 3 6 3h8c1.105 0 2 .911 2 2.036v1.866m-6 .17h8c1.105 0 2 .91 2 2.035v10.857C20 21.09 19.105 22 18 22h-8c-1.105 0-2-.911-2-2.036V9.107c0-1.124.895-2.036 2-2.036z" />
+                    <path d="M216,32H88a8,8,0,0,0-8,8V80H40a8,8,0,0,0-8,8V216a8,8,0,0,0,8,8H168a8,8,0,0,0,8-8V176h40a8,8,0,0,0,8-8V40A8,8,0,0,0,216,32ZM160,208H48V96H160Zm48-48H176V88a8,8,0,0,0-8-8H96V48H208Z" />
                   </svg>
                 </motion.div>
               )}
