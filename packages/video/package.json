@@ -14,8 +14,8 @@
   "files": ["dist"],
   "keywords": ["tinylight", "react", "video", "video player"],
   "scripts": {
-    "build": "tsup src/index.tsx",
-    "dev": "tsup src/index.tsx --watch",
+    "build": "tsup",
+    "dev": "tsup --watch",
     "lint": "tsc"
   },
   "devDependencies": {
