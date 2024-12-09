@@ -1,5 +1,11 @@
 :root {
   --ease-in-out-quad: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+
+  :focus-visible {
+    transition: none;
+    outline: 1px solid rgba(255, 255, 255, 1);
+    outline-offset: 2px;
+  }
 }
 
 [data-tinylight-overlay] {
@@ -130,21 +136,15 @@
   cursor: pointer;
   border-radius: 8px;
   overflow: hidden;
-  outline-color: transparent;
   will-change: transform box-shadow opacity;
   transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, opacity
     0.2s ease-in-out;
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 
+  &:hover,
   &:where([data-tinylight-active-thumb="true"]) {
-    outline: 1px solid white;
-    outline-offset: 2px;
     transform: scale(1.05);
     box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
-  }
-
-  &:hover {
-    opacity: 0.8;
   }
 
   & > * {
@@ -171,7 +171,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
+  border-radius: 8px;
   will-change: opacity;
   transition: opacity 0.2s ease-in-out;
 }

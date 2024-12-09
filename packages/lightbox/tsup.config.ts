@@ -8,4 +8,5 @@ export default defineConfig({
   dts: true,
   format: ['esm', 'cjs'],
   injectStyle: true,
+  outDir: 'dist',
 })

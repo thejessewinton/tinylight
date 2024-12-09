@@ -8,12 +8,13 @@
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "format": "biome check .",
-    "format:fix": "biome check . --write"
+    "format:fix": "biome check . --write",
+    "publish-packages": "turbo run build format lint && changeset version && changeset publish"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
     "@changesets/cli": "^2.27.10",
     "turbo": "^2.3.3"
   },
-  "packageManager": "pnpm@8.12.1"
+  "packageManager": "pnpm@9.15.0"
 }

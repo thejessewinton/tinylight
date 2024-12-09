@@ -1,51 +1,35 @@
 {
   "name": "@tinylight/lightbox",
   "version": "0.0.0",
-  "private": true,
+  "private": false,
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
-    },
-    "./dist/styles.css": "./dist/styles.css"
+    }
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": ["dist"],
-  "keywords": ["react", "video", "video player", "tinylight"],
+  "keywords": ["tinylight", "react", "lightbox", "image gallery"],
   "scripts": {
     "build": "tsup src/index.tsx",
-    "dev:all": "pnpm dev && pnpm dev:website",
     "dev": "tsup src/index.tsx --watch",
-    "dev:website": "turbo run dev --filter=website",
-    "lint": "tsc",
-    "format": "biome check .",
-    "format:fix": "biome check . --write"
+    "lint": "tsc"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.9.4",
-    "@changesets/cli": "^2.27.10",
     "@types/eslint": "^8.56.5",
     "@types/node": "^20.11.24",
     "@types/react": "19.0.0",
     "@types/react-dom": "19.0.0",
     "tsup": "^8.3.5",
-    "turbo": "^2.3.3",
     "typescript": "5.7.2"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.2",
-    "@radix-ui/react-slider": "^1.2.1",
     "@radix-ui/react-slot": "^1.1.0",
-    "@radix-ui/react-tooltip": "^1.1.4",
     "react": "19.0.0",
-    "react-dom": "19.0.0",
-    "remeda": "^2.17.3"
-  },
-  "peerDependencies": {
-    "react": "^18.0.0 || ^19.0.0 || ^19.0.0-rc",
-    "react-dom": "^18.0.0 || ^19.0.0 || ^19.0.0-rc"
-  },
-  "packageManager": "pnpm@8.12.1"
+    "react-dom": "19.0.0"
+  }
 }
