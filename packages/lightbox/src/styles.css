@@ -1,3 +1,7 @@
+:root {
+  --ease-in-out-quad: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+}
+
 [data-tinylight-overlay] {
   --overlay-bg: rgba(0, 0, 0, 0.25);
   --overlay-blur: 5px;
@@ -33,6 +37,8 @@
 [data-tinylight-content] {
   display: flex;
   flex-direction: column;
+  height: 100%;
+  flex: 0 0 100%;
   position: relative;
   z-index: 1000;
 }
@@ -45,8 +51,7 @@
   scroll-snap-type: x mandatory;
   overflow-x: scroll;
   overflow-y: hidden;
-  max-height: 80vh;
-  min-height: 80vh;
+  flex: 1;
   overscroll-behavior-x: contain;
   scrollbar-width: none;
   scroll-behavior: smooth;
@@ -73,6 +78,7 @@
   & > * {
     max-width: 100%;
     height: auto;
+    object-fit: contain;
   }
 
   &:where([data-tinylight-active-item="true"]) {
@@ -83,32 +89,34 @@
 
 [data-tinylight-thumbs] {
   display: flex;
+  align-items: center;
+  justify-items: center;
   flex-wrap: nowrap;
   flex: 1;
   gap: 0.75rem;
   margin: 0 auto;
   padding: 20px;
-  max-width: 90%;
+  width: 100%;
+  max-width: 50%;
+  position: relative;
   scroll-snap-type: x mandatory;
   overflow-x: scroll;
   overflow-y: auto;
   scroll-behavior: smooth;
   overscroll-behavior-x: contain;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
   scrollbar-width: none;
 
   @media screen and (max-width: 768px) {
-    max-width: 75%;
+    max-width: 90%;
   }
 }
 
 [data-tinylight-trigger] {
   height: auto;
   padding: 0;
+
   & > * {
-    object-fit: cover;
+    object-fit: contain;
     height: 100%;
     width: 100%;
   }
@@ -146,6 +154,13 @@
   }
 }
 
+[data-tinylight-close-button] {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 10;
+}
+
 [data-tinylight-close-button],
 [data-tinylight-nav-button] {
   color: #fff;
@@ -161,86 +176,62 @@
   transition: opacity 0.2s ease-in-out;
 }
 
-@property --overlay-blur {
-  syntax: "<length>";
-  inherits: false;
-  initial-value: 0px;
-}
-@property --overlay-brightness {
-  syntax: "<number>";
-  inherits: false;
-  initial-value: 0;
-}
-
-@keyframes blur-in {
+@keyframes fade {
   from {
-    --overlay-blur: 0px;
-    --overlay-brightness: 1;
+    opacity: 0;
   }
   to {
-    --overlay-blur: 3px;
-    --overlay-brightness: 0.7;
-  }
-}
-
-@keyframes blur-out {
-  from {
-    --overlay-blur: 3px;
-    --overlay-brightness: 0.7;
-  }
-  to {
-    --overlay-blur: 0px;
-    --overlay-brightness: 1;
+    opacity: 1;
   }
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  @keyframes dialog-content-show {
+  @keyframes tinylight-content-show {
     from {
       opacity: 0;
       filter: blur(10px);
+      transform: translateY(10px);
     }
     to {
       opacity: 1;
       filter: blur(0px);
+      transform: translateY(0);
     }
   }
 
-  @keyframes dialog-content-hide {
+  @keyframes tinylight-content-hide {
     from {
       opacity: 1;
       filter: blur(0px);
+      transform: translateY(0);
     }
     to {
       opacity: 0;
       filter: blur(10px);
+      transform: translateY(10px);
     }
   }
 
   [data-tinylight-overlay] {
-    &::after {
-      backdrop-filter: blur(var(--overlay-blur))
-        brightness(var(--overlay-brightness));
-    }
-
     &:where([data-state="closed"]) {
-      animation: blur-out 400ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation: fade 400ms var(--ease-in-out-quad) reverse;
     }
 
     &:where([data-state="open"])::after {
-      animation: blur-in 400ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation: fade 400ms var(--ease-in-out-quad) forwards;
     }
+
     &:where([data-state="closed"])::after {
-      animation: blur-out 400ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation: fade 400ms var(--ease-in-out-quad) reverse;
     }
   }
 
   [data-tinylight-content] {
     &:where([data-state="open"]) {
-      animation: dialog-content-show 400ms ease-in-out;
+      animation: tinylight-content-show 400ms var(--ease-in-out-quad);
     }
     &:where([data-state="closed"]) {
-      animation: dialog-content-hide 400ms ease-in-out;
+      animation: tinylight-content-hide 400ms var(--ease-in-out-quad);
     }
   }
 }

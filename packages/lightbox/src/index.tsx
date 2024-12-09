@@ -3,11 +3,11 @@
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { Slot } from '@radix-ui/react-slot'
 import React from 'react'
-import { Close, NextArrow, PreviousArrow } from '../assets'
-import { getValidChildren } from '../helpers'
+import { Close, NextArrow, PreviousArrow } from './assets'
+import { getValidChildren } from './helpers'
 
 import './styles.css'
-import { useIsomorphicLayoutEffect } from '../hooks'
+import { useIsomorphicLayoutEffect } from './hooks'
 
 interface LightboxItem extends React.ReactElement {
   props: {
@@ -337,12 +337,7 @@ interface LightboxCloseProps
   icon?: React.ReactNode
 }
 
-const LightboxClose = ({
-  className,
-  icon: Icon,
-  ref,
-  ...props
-}: LightboxCloseProps) => {
+const LightboxClose = ({ icon: Icon, ref, ...props }: LightboxCloseProps) => {
   return (
     <DialogPrimitive.Close data-tinylight-close-button="" ref={ref} {...props}>
       {Icon ?? <Close />}
@@ -357,7 +352,6 @@ interface LightboxPrevButtonProps
 }
 
 const LightboxPrevButton = ({
-  className,
   icon: Icon,
   ref,
   ...props
@@ -386,7 +380,6 @@ interface LightboxNextButtonProps
 }
 
 const LightboxNextButton = ({
-  className,
   icon: Icon,
   ref,
   ...props
@@ -408,17 +401,17 @@ const LightboxNextButton = ({
   )
 }
 
-export {
-  LightboxContent as Content,
-  LightboxItems as Items,
-  LightboxRoot as Root,
-  LightboxThumbs as Thumbs,
-  LightboxTrigger as Trigger,
-  LightboxImage as Image,
-  LightboxVideo as Video,
-  LightboxClose as Close,
-  LightboxPrevButton as Prev,
-  LightboxNextButton as Next,
+export const Lightbox = {
+  Root: LightboxRoot,
+  Trigger: LightboxTrigger,
+  Content: LightboxContent,
+  Items: LightboxItems,
+  Image: LightboxImage,
+  Video: LightboxVideo,
+  Thumbs: LightboxThumbs,
+  Close: LightboxClose,
+  PrevButton: LightboxPrevButton,
+  NextButton: LightboxNextButton,
 }
 
 export type {

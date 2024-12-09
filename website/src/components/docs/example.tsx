@@ -60,12 +60,13 @@ export const Example = () => {
               poster="https://placehold.co/1920x1080/png"
               controls
               src="https://www.w3schools.com/html/mov_bbb.mp4"
+              className="aspect-video"
             />
           </Lightbox.Items>
           <div className="flex items-center justify-between">
-            <Lightbox.Prev />
+            <Lightbox.PrevButton />
             <Lightbox.Thumbs />
-            <Lightbox.Next />
+            <Lightbox.NextButton />
           </div>
         </Lightbox.Content>
       </Lightbox.Root>

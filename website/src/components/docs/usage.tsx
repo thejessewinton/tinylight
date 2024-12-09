@@ -1,6 +1,6 @@
 export const Usage = async () => {
   const code = `
-import * as Lightbox from 'tinylight/lightbox';
+import { Lightbox } from '@tinylight/lightbox';
 import Image from 'next/image';
 
 <Lightbox.Root>
@@ -39,9 +39,9 @@ import Image from 'next/image';
       />
     </Lightbox.Items>
     <div className="flex justify-between">
-      <Lightbox.Prev />
+      <Lightbox.PrevButton />
       <Lightbox.Thumbs />
-      <Lightbox.Next />
+      <Lightbox.NextButton />
     </div>
   </Lightbox.Content>
 </Lightbox.Root>

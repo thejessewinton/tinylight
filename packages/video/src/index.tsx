@@ -11,13 +11,13 @@ import {
   PartialVolumeIcon,
   PauseIcon,
   PlayIcon,
-} from '../assets'
+} from './assets'
 
-import { scaleValue } from '../helpers'
-import { useIsomorphicLayoutEffect } from '../hooks'
+import { scaleValue } from './helpers'
+import { useIsomorphicLayoutEffect } from './hooks'
 
 interface VideoState {
-  ref: React.MutableRefObject<HTMLVideoElement | null>
+  ref: React.RefObject<HTMLVideoElement | null>
   isPlaying: boolean
   togglePlay: () => void
   duration: number
