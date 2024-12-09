@@ -1,19 +1,5 @@
-export const metadata = {
-  title: 'tinylight',
-  description: 'A beautifully designed set of lightbox primitives for React.',
-}
-
-import { Hero } from '../components/hero';
-import { Installation } from '../components/docs/installation';
-
-<Hero />
-<Installation />
-
-### Usage
-
-Import the primitives, and compose it in your app.
-
-```tsx
+export const Usage = async () => {
+  const code = `
 import * as Lightbox from 'tinylight/lightbox';
 import Image from 'next/image';
 
@@ -49,7 +35,7 @@ import Image from 'next/image';
       <Lightbox.Video
         poster="https://placehold.co/1920x1080/png"
         controls
-        src="https://upload.wikimedia.org/wikipedia/commons/transcoded/c/c0/Big_Buck_Bunny_4K.webm/Big_Buck_Bunny_4K.webm.1080p.vp9.webm"
+        src="https://www.w3schools.com/html/mov_bbb.mp4"
       />
     </Lightbox.Items>
     <div className="flex justify-between">
@@ -59,4 +45,18 @@ import Image from 'next/image';
     </div>
   </Lightbox.Content>
 </Lightbox.Root>
-```
+`
+
+  return (
+    <div className="space-y-2">
+      <h3>Usage</h3>
+      <p>
+        Import <span className="font-mono">tinylight</span>, and use the
+        primitives to compose a lightbox in your app.
+      </p>
+      <code className="block overflow-scroll rounded-lg bg-neutral-950 p-4 font-mono">
+        <pre>{code.trim()}</pre>
+      </code>
+    </div>
+  )
+}

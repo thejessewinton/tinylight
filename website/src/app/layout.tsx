@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Inter, Newsreader, Roboto_Mono } from 'next/font/google'
+import { Inter, JetBrains_Mono, Newsreader } from 'next/font/google'
 import type { ReactNode } from 'react'
 import { Footer } from '~/components/footer'
 
@@ -19,7 +19,7 @@ const serif = Newsreader({
   weight: ['300'],
 })
 
-const mono = Roboto_Mono({
+const mono = JetBrains_Mono({
   variable: '--font-mono',
   display: 'optional',
   subsets: ['latin'],
@@ -40,7 +40,7 @@ const RootLayout = async ({ children }: { children: ReactNode }) => {
       className={`${sans.variable} ${serif.variable} ${mono.variable} text-sm`}
     >
       <body className="flex min-h-screen flex-col items-center justify-center scroll-smooth leading-loose antialiased selection:bg-neutral-100 dark:bg-neutral-900 dark:text-neutral-200 dark:selection:bg-neutral-800">
-        <main className="mx-auto mt-32 w-full max-w-3xl px-8">{children}</main>
+        <main className="mx-auto my-32 w-full max-w-3xl px-8">{children}</main>
         <Footer />
       </body>
     </html>

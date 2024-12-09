@@ -1,5 +1,3 @@
-import createMDX from '@next/mdx'
-
 import type { NextConfig } from 'next'
 
 const config: NextConfig = {
@@ -12,6 +10,4 @@ const config: NextConfig = {
   },
 }
 
-const withMDX = createMDX()
-
-export default withMDX(config)
+export default config
