@@ -68,6 +68,8 @@
   max-height: 80vh;
   height: 100%;
   justify-content: center;
+  filter: blur(2px);
+  transition: filter 200ms ease-in-out;
 
   & > * {
     max-width: 100%;
@@ -77,6 +79,7 @@
   &:where([data-tinylight-active-item="true"]) {
     scroll-snap-align: center;
     scroll-snap-stop: always;
+    filter: blur(0px);
   }
 }
 

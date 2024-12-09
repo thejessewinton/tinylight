@@ -281,12 +281,14 @@ const LightboxThumbs = ({ className, ...props }: LightboxThumbsProps) => {
     <div data-tinylight-thumbs="" ref={containerRef} {...props}>
       {items.map((item, index) => {
         const isVideo = item.type === LightboxVideo
-        const isAsChild = item.props.asChild
-        const imgSrc: string = isVideo
-          ? item.props.poster
+        const isAsChild = (
+          item.props as LightboxImageProps | LightboxVideoProps
+        ).asChild
+        const imgSrc = isVideo
+          ? (item.props as LightboxVideoProps).poster
           : isAsChild
-            ? item.props.children.props.src
-            : item.props.src
+            ? ((item.props as LightboxImageProps).children.props.src as string)
+            : (item.props as LightboxImageProps).src
 
         return (
           <button
