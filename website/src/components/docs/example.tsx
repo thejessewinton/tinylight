@@ -3,18 +3,30 @@
 import Image from 'next/image'
 import { Lightbox } from 'tinylight'
 
-export default function Example() {
+export const Example = () => {
   return (
-    <div>
+    <div className="space-y-2">
+      <h3>Example</h3>
+
       <Lightbox.Root>
-        <Lightbox.Trigger>
-          <Image
-            src="https://placehold.co/800x400/png"
-            width={800}
-            height={400}
-            alt="Placeholder"
-          />
-        </Lightbox.Trigger>
+        <div className="flex justify-between gap-4">
+          <Lightbox.Trigger>
+            <Image
+              src="https://placehold.co/800x400/png"
+              width={800}
+              height={400}
+              alt="Placeholder"
+            />
+          </Lightbox.Trigger>
+          <Lightbox.Trigger>
+            <Image
+              src="https://placehold.co/800x400/png"
+              width={800}
+              height={400}
+              alt="Placeholder"
+            />
+          </Lightbox.Trigger>
+        </div>
 
         <Lightbox.Content title="Lightbox" description="Lightbox desc">
           <Lightbox.Close aria-label="Close" />

@@ -4,6 +4,7 @@ export const metadata: Metadata = {
 }
 
 import type { Metadata } from 'next'
+import { Example } from '~/components/docs/example'
 import { Usage } from '~/components/docs/usage'
 import { Installation } from '../components/docs/installation'
 import { Hero } from '../components/hero'
@@ -14,6 +15,7 @@ export default function Home() {
       <Hero />
       <Installation />
       <Usage />
+      <Example />
     </div>
   )
 }
