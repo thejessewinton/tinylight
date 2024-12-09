@@ -48,9 +48,7 @@
   max-height: 80vh;
   min-height: 80vh;
   overscroll-behavior-x: contain;
-  -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  -ms-overflow-style: none;
   scroll-behavior: smooth;
 
   @media screen and (max-width: 768px) {
@@ -68,6 +66,8 @@
   display: flex;
   scroll-snap-align: start;
   height: 100%;
+  max-height: 80vh;
+  padding: 0 20px;
   justify-content: center;
 
   & > * {
@@ -85,14 +85,9 @@
   display: flex;
   flex-wrap: nowrap;
   flex: 1;
-  gap: 0.5rem;
+  gap: 0.75rem;
   margin: 0 auto;
-  cursor: pointer;
-  position: relative;
-  bottom: 0;
-  width: 100%;
-  padding: 20px 0px;
-  flex: 0 0 100%;
+  padding: 20px;
   max-width: 90%;
   scroll-snap-type: x mandatory;
   overflow-x: scroll;
@@ -104,8 +99,8 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 
-  @media screen and (min-width: 768px) {
-    max-width: 50%;
+  @media screen and (max-width: 768px) {
+    max-width: 75%;
   }
 }
 
@@ -122,20 +117,26 @@
 [data-tinylight-thumb] {
   height: auto;
   flex: 0 0 100px;
-  aspect-ratio: 3 / 2;
+  aspect-ratio: 16 / 9;
   padding: 0;
   cursor: pointer;
-  transition: all ease-in-out 200ms;
   border-radius: 8px;
   overflow: hidden;
   outline-color: transparent;
-  will-change: transform;
+  will-change: transform box-shadow opacity;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, opacity
+    0.2s ease-in-out;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 
-  &:where(:has([data-tinylight-active-item])) {
-    margin: 0 10px;
+  &:where([data-tinylight-active-thumb="true"]) {
     outline: 1px solid white;
     outline-offset: 2px;
     transform: scale(1.05);
+    box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  }
+
+  &:hover {
+    opacity: 0.8;
   }
 
   & > * {
@@ -149,14 +150,15 @@
 [data-tinylight-nav-button] {
   color: #fff;
   cursor: pointer;
-}
-
-[data-tinylight-prev-button] {
-  left: 0px;
-}
-
-[data-tinylight-next-button] {
-  right: 0px;
+  padding: 12px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  will-change: opacity;
+  transition: opacity 0.2s ease-in-out;
 }
 
 @property --overlay-blur {
@@ -170,7 +172,7 @@
   initial-value: 0;
 }
 
-@keyframes fui-blur-in {
+@keyframes blur-in {
   from {
     --overlay-blur: 0px;
     --overlay-brightness: 1;
@@ -181,7 +183,7 @@
   }
 }
 
-@keyframes fui-blur-out {
+@keyframes blur-out {
   from {
     --overlay-blur: 3px;
     --overlay-brightness: 0.7;
@@ -193,7 +195,7 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  @keyframes fui-dialog-content-show {
+  @keyframes dialog-content-show {
     from {
       opacity: 0;
       filter: blur(10px);
@@ -204,7 +206,7 @@
     }
   }
 
-  @keyframes fui-dialog-content-hide {
+  @keyframes dialog-content-hide {
     from {
       opacity: 1;
       filter: blur(0px);
@@ -220,25 +222,25 @@
       backdrop-filter: blur(var(--overlay-blur))
         brightness(var(--overlay-brightness));
     }
-    /* Keep the overlay mounted until the children have animated */
+
     &:where([data-state="closed"]) {
-      animation: fui-blur-out 400ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation: blur-out 400ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
     &:where([data-state="open"])::after {
-      animation: fui-blur-in 400ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation: blur-in 400ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
     &:where([data-state="closed"])::after {
-      animation: fui-blur-out 400ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation: blur-out 400ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
   }
 
   [data-tinylight-content] {
     &:where([data-state="open"]) {
-      animation: fui-dialog-content-show 400ms ease-in-out;
+      animation: dialog-content-show 400ms ease-in-out;
     }
     &:where([data-state="closed"]) {
-      animation: fui-dialog-content-hide 400ms ease-in-out;
+      animation: dialog-content-hide 400ms ease-in-out;
     }
   }
 }

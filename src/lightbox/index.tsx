@@ -318,8 +318,9 @@ const LightboxThumbs = ({ className, ...props }: LightboxThumbsProps) => {
             key={item.key}
             data-tinylight-thumb=""
             data-tinylight-active-thumb={activeItemIndex === index}
+            style={{ animationDelay: `${index * 100}ms` }}
           >
-            <Comp {...props} src={imgSrc} alt="" data-tinylight-thumb="" />
+            <Comp {...props} src={imgSrc} alt="" />
           </button>
         )
       })}
@@ -343,7 +344,7 @@ const LightboxClose = ({
   ...props
 }: LightboxCloseProps) => {
   return (
-    <DialogPrimitive.Close ref={ref} {...props}>
+    <DialogPrimitive.Close data-tinylight-close-button="" ref={ref} {...props}>
       {Icon ?? <Close />}
     </DialogPrimitive.Close>
   )
