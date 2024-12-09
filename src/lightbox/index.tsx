@@ -259,9 +259,9 @@ const LightboxVideo = ({ asChild, ...props }: LightboxVideoProps) => {
   const Component = asChild ? Slot : 'video'
   const videoRef = React.useRef<HTMLVideoElement>(null)
 
-  console.log(videoRef.current?.parentElement.dataset)
-
-  if (videoRef.current?.parentElement.dataset.tinylightActiveItem === 'false') {
+  if (
+    !videoRef.current?.parentNode.querySelector('[data-tinylight-active-item]')
+  ) {
     videoRef.current?.pause()
   }
 
@@ -297,12 +297,15 @@ const LightboxThumbs = ({ className, ...props }: LightboxThumbsProps) => {
         ): props is LightboxVideoProps => {
           return 'poster' in props
         }
+
+        const { asChild, ...props } = item.props
+
         const isVideo = item.type === LightboxVideo
-        const isAsChild = item.props.asChild
+        const Comp = asChild ? Slot : 'img'
 
         const imgSrc = isVideo
           ? item.props.poster
-          : isAsChild && item.props.children
+          : asChild && item.props.children
             ? isLightboxVideoProps(item.props.children.props)
               ? item.props.children.props.poster
               : item.props.children.props.src
@@ -316,7 +319,7 @@ const LightboxThumbs = ({ className, ...props }: LightboxThumbsProps) => {
             data-tinylight-thumb=""
             data-tinylight-active-thumb={activeItemIndex === index}
           >
-            <img src={imgSrc} alt="" data-tinylight-thumb="" />
+            <Comp {...props} src={imgSrc} alt="" data-tinylight-thumb="" />
           </button>
         )
       })}

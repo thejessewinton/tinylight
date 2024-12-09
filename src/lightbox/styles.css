@@ -45,6 +45,8 @@
   scroll-snap-type: x mandatory;
   overflow-x: scroll;
   overflow-y: hidden;
+  max-height: 80vh;
+  min-height: 80vh;
   overscroll-behavior-x: contain;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
@@ -65,7 +67,6 @@
   flex: 0 0 100%;
   display: flex;
   scroll-snap-align: start;
-  max-height: 80vh;
   height: 100%;
   justify-content: center;
 
