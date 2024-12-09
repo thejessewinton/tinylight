@@ -1,7 +1,7 @@
 'use client'
 
+import { Lightbox } from '@tinylight/lightbox'
 import Image from 'next/image'
-import { Lightbox } from 'tinylight'
 
 export const Example = () => {
   return (
@@ -55,78 +55,7 @@ export const Example = () => {
                 alt="Placeholder"
               />
             </Lightbox.Image>
-            <Lightbox.Image asChild>
-              <Image
-                src="https://placehold.co/800x400/png"
-                width={800}
-                height={400}
-                alt="Placeholder"
-              />
-            </Lightbox.Image>
-            <Lightbox.Image asChild>
-              <Image
-                src="https://placehold.co/800x400/png"
-                width={800}
-                height={400}
-                alt="Placeholder"
-              />
-            </Lightbox.Image>
-            <Lightbox.Image asChild>
-              <Image
-                src="https://placehold.co/800x400/png"
-                width={800}
-                height={400}
-                alt="Placeholder"
-              />
-            </Lightbox.Image>
-            <Lightbox.Image asChild>
-              <Image
-                src="https://placehold.co/800x400/png"
-                width={800}
-                height={400}
-                alt="Placeholder"
-              />
-            </Lightbox.Image>
-            <Lightbox.Image asChild>
-              <Image
-                src="https://placehold.co/800x400/png"
-                width={800}
-                height={400}
-                alt="Placeholder"
-              />
-            </Lightbox.Image>
-            <Lightbox.Image asChild>
-              <Image
-                src="https://placehold.co/800x400/png"
-                width={800}
-                height={400}
-                alt="Placeholder"
-              />
-            </Lightbox.Image>
-            <Lightbox.Image asChild>
-              <Image
-                src="https://placehold.co/800x400/png"
-                width={800}
-                height={400}
-                alt="Placeholder"
-              />
-            </Lightbox.Image>
-            <Lightbox.Image asChild>
-              <Image
-                src="https://placehold.co/800x400/png"
-                width={800}
-                height={400}
-                alt="Placeholder"
-              />
-            </Lightbox.Image>
-            <Lightbox.Image asChild>
-              <Image
-                src="https://placehold.co/800x400/png"
-                width={800}
-                height={400}
-                alt="Placeholder"
-              />
-            </Lightbox.Image>
+
             <Lightbox.Video
               poster="https://placehold.co/1920x1080/png"
               controls
