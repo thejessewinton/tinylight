@@ -5,7 +5,7 @@ import Image from 'next/image'
 
 export const Example = () => {
   return (
-    <div className="space-y-2">
+    <div className="space-y-2" id="example">
       <h3>Example</h3>
 
       <Lightbox.Root>

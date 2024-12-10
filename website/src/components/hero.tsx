@@ -10,7 +10,7 @@ export const Hero = () => {
 
       <div className="mt-8 flex justify-center gap-4">
         <Button
-          href="/example"
+          href="#example"
           className="!bg-neutral-100 w-1/2 text-neutral-900"
         >
           Example
