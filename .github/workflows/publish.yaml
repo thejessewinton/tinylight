@@ -1,9 +1,12 @@
 name: Publish
 on:
-  workflow_run:
-    workflows: [CI]
-    branches: [main]
-    types: [completed]
+  deployment_status:
+  push:
+    branches:
+      - main
+    paths:
+      - 'packages/lightbox/**'
+      - 'packages/video/**'
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
@@ -13,7 +16,7 @@ permissions:
 
 jobs:
   publish:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: github.event_name == 'deployment_status' && github.event.deployment_status.state == 'success'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
