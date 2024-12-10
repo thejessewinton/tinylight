@@ -81,9 +81,10 @@ export const Example = () => {
             </Lightbox.Image>
 
             <Lightbox.Video
-              poster="https://placehold.co/1920x1080/png"
+              poster="https://placehold.co/960x540/png"
               controls
-              src="https://www.w3schools.com/html/mov_bbb.mp4"
+              preload="auto"
+              src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm"
             />
           </Lightbox.Items>
           <div className="flex items-center justify-between">
