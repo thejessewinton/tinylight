@@ -1,12 +1,11 @@
 'use client'
+import './styles.css'
 
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { Slot } from '@radix-ui/react-slot'
 import React from 'react'
 import { Close, NextArrow, PreviousArrow } from './assets'
 import { getValidChildren } from './helpers'
-
-import './styles.css'
 import { useIsomorphicLayoutEffect } from './hooks'
 
 interface LightboxItem extends React.ReactElement {
@@ -265,7 +264,11 @@ const LightboxVideo = ({ asChild, ...props }: LightboxVideoProps) => {
     videoRef.current?.pause()
   }
 
-  return <Component {...props} ref={videoRef} />
+  return (
+    <div data-tinylight-video="">
+      <Component {...props} ref={videoRef} />
+    </div>
+  )
 }
 
 interface LightboxThumbsProps
