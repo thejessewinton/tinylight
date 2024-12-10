@@ -30,9 +30,9 @@ export const Button = forwardRef(
       return (
         <button
           className={cn(
-            'relative flex min-h-12 w-fit cursor-pointer items-center justify-center gap-3 overflow-hidden rounded-md px-3 no-underline outline-hidden transition-colors focus:ring-1 focus:ring-sky-600/75 disabled:cursor-not-allowed disabled:opacity-70',
+            'relative flex min-h-12 w-fit cursor-pointer items-center justify-center gap-3 overflow-hidden rounded-md px-3 no-underline outline-hidden outline-offset-2 transition-colors focus:ring-1 focus:ring-sky-600/75 disabled:cursor-not-allowed disabled:opacity-70',
             'bg-neutral-100',
-            'from-neutral-900 to-neutral-800 dark:bg-gradient-to-br',
+            'hover:bg-neutral-950 dark:bg-neutral-800',
             className,
           )}
           disabled={disabled}

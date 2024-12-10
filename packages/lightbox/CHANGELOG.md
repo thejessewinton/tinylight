@@ -1,5 +1,11 @@
 # @tinylight-ui/lightbox
 
+## 0.2.0
+
+### Minor Changes
+
+- Decrease the onScroll timeout duration.
+
 ## 0.1.0
 
 ### Minor Changes

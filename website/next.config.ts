@@ -4,8 +4,8 @@ const config: NextConfig = {
   pageExtensions: ['md', 'mdx', 'ts', 'tsx'],
   images: {
     remotePatterns: [
-      { hostname: 'picsum.photos' },
       { hostname: 'placehold.co' },
+      { hostname: 'images.unsplash.com' },
     ],
   },
 }

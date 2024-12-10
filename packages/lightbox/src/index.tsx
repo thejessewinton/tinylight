@@ -187,7 +187,7 @@ const LightboxItems = ({ children, ...props }: LightboxItemsProps) => {
 
     scrollTimeoutRef.current = setTimeout(() => {
       setActiveItemIndex(newIndex)
-    }, 100)
+    }, 50)
   }, [setActiveItemIndex])
 
   React.useEffect(() => {
