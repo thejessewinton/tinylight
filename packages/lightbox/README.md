@@ -1,19 +1,19 @@
-# @tinylight/lightbox
+# @tinylight-ui/lightbox
 
 ---
 
 ## Installation
 
-First, install `@tinylight/lightbox`.
+First, install `@tinylight-ui/lightbox`.
 
 ```bash
-pnpm install @tinylight/lightbox
+pnpm install @tinylight-ui/lightbox
 ```
 
 Then, import it into your app:
 
 ```tsx
-import { Lightbox } from "@tinylight/lightbox";
+import { Lightbox } from "@tinylight-ui/lightbox";
 ```
 
 ## Usage
@@ -21,7 +21,7 @@ import { Lightbox } from "@tinylight/lightbox";
 Below is an example in Next.js with the `next/image` component:
 
 ```tsx title="LightboxComponent.tsx"
-import { Lightbox } from '@tinylight/lightbox'
+import { Lightbox } from '@tinylight-ui/lightbox'
 import Image from 'next/image'
 
 export const LightboxComponent = () => {

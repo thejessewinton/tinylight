@@ -16,8 +16,8 @@
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "tailwind-merge": "^2.5.5",
-    "@tinylight/lightbox": "workspace:*",
-    "@tinylight/video": "workspace:*"
+    "@tinylight-ui/lightbox": "workspace:*",
+    "@tinylight-ui/video": "workspace:*"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "4.0.0-beta.2",

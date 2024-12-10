@@ -1,6 +1,6 @@
 export const Usage = async () => {
   const code = `
-import { Lightbox } from '@tinylight/lightbox';
+import { Lightbox } from '@tinylight-ui/lightbox';
 import Image from 'next/image';
 
 <Lightbox.Root>

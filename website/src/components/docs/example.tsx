@@ -1,6 +1,6 @@
 'use client'
 
-import { Lightbox } from '@tinylight/lightbox'
+import { Lightbox } from '@tinylight-ui/lightbox'
 import Image from 'next/image'
 
 export const Example = () => {
