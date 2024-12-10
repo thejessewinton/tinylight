@@ -1,4 +1,4 @@
-export const Usage = async () => {
+export const Usage = () => {
   const code = `
 import { Lightbox } from '@tinylight-ui/lightbox';
 import Image from 'next/image';
@@ -48,13 +48,28 @@ import Image from 'next/image';
 `
 
   return (
-    <div className="space-y-2">
-      <h3>Usage</h3>
-      <p>
-        Import <span className="font-mono">tinylight</span>, and use the
-        primitives to compose a lightbox in your app.
-      </p>
-      <code className="block overflow-scroll rounded-lg bg-neutral-950 p-4 font-mono">
+    <div className="space-y-8">
+      <div className="space-y-2">
+        <h3 className="font-bold">Composition</h3>
+        <p>
+          tinylight supports image and video slides with{' '}
+          <span className="font-mono">{`<Lightbox.Image />`}</span> and{' '}
+          <span className="font-mono">{`<Lightbox.Video />`}</span> . These each
+          accept an optional <span className="font-mono">asChild</span> prop
+          which will pass the props down and render the child component as the
+          slide.
+        </p>
+      </div>
+      <div className="space-y-2">
+        <h3 className="font-bold">Usage</h3>
+        <p>
+          Import <span className="font-mono">@tinylight-ui/lightbox</span>, and
+          compose a lightbox in your app. Below is a basic example within
+          Next.js, using the <span className="font-mono">next/image</span>{' '}
+          component.
+        </p>
+      </div>
+      <code className="mt-4 block overflow-scroll rounded-lg bg-neutral-950 p-4 font-mono">
         <pre>{code.trim()}</pre>
       </code>
     </div>

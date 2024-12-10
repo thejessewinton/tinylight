@@ -9,8 +9,8 @@ export const Example = () => {
       <h3>Example</h3>
 
       <Lightbox.Root>
-        <div className="flex justify-between gap-4">
-          <Lightbox.Trigger>
+        <div className="flex justify-between gap-4 overflow-x-scroll [scrollbar-width:none]">
+          <Lightbox.Trigger className="[flex:0_0_50%]">
             <Image
               src="https://placehold.co/1400x2200/png"
               width={1400}
@@ -18,11 +18,27 @@ export const Example = () => {
               alt="Placeholder"
             />
           </Lightbox.Trigger>
-          <Lightbox.Trigger>
+          <Lightbox.Trigger className="[flex:0_0_50%]">
             <Image
               src="https://placehold.co/800x400/png"
               width={800}
               height={400}
+              alt="Placeholder"
+            />
+          </Lightbox.Trigger>
+          <Lightbox.Trigger className="[flex:0_0_50%]">
+            <Image
+              src="https://placehold.co/960x650/png"
+              width={960}
+              height={650}
+              alt="Placeholder"
+            />
+          </Lightbox.Trigger>
+          <Lightbox.Trigger className="[flex:0_0_50%]">
+            <Image
+              src="https://placehold.co/1300x500/png"
+              width={1300}
+              height={500}
               alt="Placeholder"
             />
           </Lightbox.Trigger>
@@ -49,9 +65,17 @@ export const Example = () => {
             </Lightbox.Image>
             <Lightbox.Image asChild>
               <Image
-                src="https://placehold.co/800x400/png"
-                width={800}
-                height={400}
+                src="https://placehold.co/960x650/png"
+                width={960}
+                height={650}
+                alt="Placeholder"
+              />
+            </Lightbox.Image>
+            <Lightbox.Image asChild>
+              <Image
+                src="https://placehold.co/1300x500/png"
+                width={1300}
+                height={500}
                 alt="Placeholder"
               />
             </Lightbox.Image>
@@ -62,24 +86,15 @@ export const Example = () => {
                 height={400}
                 alt="Placeholder"
               />
-            </Lightbox.Image>
+            </Lightbox.Image>{' '}
             <Lightbox.Image asChild>
               <Image
-                src="https://placehold.co/800x400/png"
-                width={800}
-                height={400}
+                src="https://placehold.co/960x650/png"
+                width={960}
+                height={650}
                 alt="Placeholder"
               />
             </Lightbox.Image>
-            <Lightbox.Image asChild>
-              <Image
-                src="https://placehold.co/800x400/png"
-                width={800}
-                height={400}
-                alt="Placeholder"
-              />
-            </Lightbox.Image>
-
             <Lightbox.Video
               poster="https://placehold.co/960x540/png"
               controls

@@ -23,7 +23,7 @@ export const Installation = () => {
 
   return (
     <div className="w-full space-y-2">
-      <h2>Installation</h2>
+      <h2 className="font-bold">Installation</h2>
       <code
         onClick={onCopy}
         className="flex w-full cursor-copy items-center justify-between rounded-lg bg-neutral-950 px-3 py-2"
