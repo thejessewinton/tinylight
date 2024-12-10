@@ -31,8 +31,7 @@ export const Button = forwardRef(
         <button
           className={cn(
             'relative flex min-h-12 w-fit cursor-pointer items-center justify-center gap-3 overflow-hidden rounded-md px-3 no-underline outline-hidden outline-offset-2 transition-colors focus:ring-1 focus:ring-sky-600/75 disabled:cursor-not-allowed disabled:opacity-70',
-            'bg-neutral-100',
-            'hover:bg-neutral-950 dark:bg-neutral-800',
+            'bg-neutral-800 hover:bg-neutral-950',
             className,
           )}
           disabled={disabled}
@@ -49,8 +48,7 @@ export const Button = forwardRef(
       <Link
         className={cn(
           'relative flex min-h-12 w-fit cursor-pointer items-center justify-center gap-3 overflow-hidden rounded-md px-3 no-underline outline-hidden outline-offset-2 transition-colors focus:ring-1 focus:ring-sky-600/75 disabled:cursor-not-allowed disabled:opacity-70',
-          'bg-neutral-100',
-          'hover:bg-neutral-950 dark:bg-neutral-800',
+          'bg-neutral-800 hover:bg-neutral-950',
           className,
         )}
         ref={ref as Ref<HTMLAnchorElement>}

@@ -39,7 +39,7 @@ const RootLayout = async ({ children }: { children: ReactNode }) => {
       lang="en"
       className={`${sans.variable} ${serif.variable} ${mono.variable} text-sm`}
     >
-      <body className="flex min-h-screen flex-col items-center justify-center scroll-smooth leading-loose antialiased selection:bg-neutral-100 dark:bg-neutral-900 dark:text-neutral-200 dark:selection:bg-neutral-800">
+      <body className="flex min-h-screen flex-col items-center justify-center scroll-smooth bg-neutral-900 text-neutral-200 leading-loose antialiased selection:bg-neutral-800">
         <main className="mx-auto my-32 w-full max-w-4xl px-8">{children}</main>
         <Footer />
       </body>
