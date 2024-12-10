@@ -1,6 +1,6 @@
 {
   "name": "@tinylight-ui/video",
-  "version": "0.0.0",
+  "version": "0.0.2",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -10,8 +10,15 @@
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": ["dist"],
-  "keywords": ["tinylight", "react", "video", "video player"],
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "tinylight",
+    "react",
+    "video",
+    "video player"
+  ],
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",

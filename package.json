@@ -8,7 +8,7 @@
     "lint": "turbo run lint",
     "format": "biome check .",
     "format:fix": "biome check . --write",
-    "publish-packages": "turbo run build && changeset version && changeset publish"
+    "release": "turbo run build && changeset version && changeset publish"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
