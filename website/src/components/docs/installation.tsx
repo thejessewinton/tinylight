@@ -28,7 +28,7 @@ export const Installation = () => {
         onClick={onCopy}
         className="flex w-full cursor-copy items-center justify-between rounded-lg bg-neutral-950 px-3 py-2"
       >
-        pnpm install tinylight
+        pnpm install @tinylight-ui/lightbox
         <div aria-label="Copy code">
           <MotionConfig transition={{ duration: 0.15 }}>
             <AnimatePresence initial={false} mode="wait">
