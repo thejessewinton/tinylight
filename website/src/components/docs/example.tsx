@@ -12,9 +12,9 @@ export const Example = () => {
         <div className="flex justify-between gap-4">
           <Lightbox.Trigger>
             <Image
-              src="https://placehold.co/800x400/png"
-              width={800}
-              height={400}
+              src="https://placehold.co/1400x2200/png"
+              width={1400}
+              height={2200}
               alt="Placeholder"
             />
           </Lightbox.Trigger>
@@ -31,6 +31,30 @@ export const Example = () => {
         <Lightbox.Content title="Lightbox" description="Lightbox desc">
           <Lightbox.Close aria-label="Close" />
           <Lightbox.Items>
+            <Lightbox.Image asChild>
+              <Image
+                src="https://placehold.co/1400x2200/png"
+                width={1400}
+                height={2200}
+                alt="Placeholder"
+              />
+            </Lightbox.Image>
+            <Lightbox.Image asChild>
+              <Image
+                src="https://placehold.co/800x400/png"
+                width={800}
+                height={400}
+                alt="Placeholder"
+              />
+            </Lightbox.Image>
+            <Lightbox.Image asChild>
+              <Image
+                src="https://placehold.co/800x400/png"
+                width={800}
+                height={400}
+                alt="Placeholder"
+              />
+            </Lightbox.Image>
             <Lightbox.Image asChild>
               <Image
                 src="https://placehold.co/800x400/png"
@@ -60,7 +84,6 @@ export const Example = () => {
               poster="https://placehold.co/1920x1080/png"
               controls
               src="https://www.w3schools.com/html/mov_bbb.mp4"
-              className="aspect-video"
             />
           </Lightbox.Items>
           <div className="flex items-center justify-between">
