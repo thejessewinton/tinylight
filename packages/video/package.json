@@ -1,7 +1,6 @@
 {
-  "name": "@tinylight/video",
+  "name": "@tinylight-ui/video",
   "version": "0.0.0",
-  "private": false,
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",

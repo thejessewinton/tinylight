@@ -1,7 +1,6 @@
 {
   "name": "tinylight",
   "version": "0.0.0",
-  "private": true,
   "keywords": ["react", "video", "video player", "tinylight"],
   "scripts": {
     "build": "turbo run build",
@@ -9,7 +8,7 @@
     "lint": "turbo run lint",
     "format": "biome check .",
     "format:fix": "biome check . --write",
-    "publish-packages": "turbo run build format lint && changeset version && changeset publish"
+    "publish-packages": "turbo run build && changeset version && changeset publish"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
