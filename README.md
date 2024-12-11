@@ -2,7 +2,7 @@
 
 ---
 
-tinylight is a set of beautifully designed, accessible components for building lightboxes in React. Built on top of Radix primitives, tinylight is a collection of beautiully designed, accessible components: `Lightbox` is released, and a `Video` component is in the works.
+tinylight is a set of beautifully designed, accessible components for building lightboxes in React. Built on top of Radix primitives, tinylight is a collection of beautiully designed, accessible components: `Lightbox` is in beta, and a `Video` component is in the works.
 
 View the docs [here](https://tinylight.jessewinton.works).
 
