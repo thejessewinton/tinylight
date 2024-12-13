@@ -16,7 +16,7 @@ import {
 import { scaleValue } from './helpers'
 import { useIsomorphicLayoutEffect } from './hooks'
 
-interface VideoState {
+interface MediaState {
   ref: React.RefObject<HTMLVideoElement | null>
   isPlaying: boolean
   togglePlay: () => void
@@ -28,21 +28,20 @@ interface VideoState {
   setVolume: (newVolume: number) => void
   isMuted: boolean
   toggleMuted: () => void
-  skip: (props: SeekProps) => void
   seekTo: (e: React.MouseEvent<HTMLDivElement>) => void
 }
 
-const VideoContext = React.createContext<VideoState | null>(null)
+const MediaContext = React.createContext<MediaState | null>(null)
 
-export const useVideo = () => {
-  const context = React.useContext(VideoContext)
+export const useMedia = () => {
+  const context = React.useContext(MediaContext)
   if (!context) {
-    throw new Error('useVideo must be used within a VideoProvider')
+    throw new Error('useMedia must be used within a VideoProvider')
   }
   return context
 }
 
-const VideoProvider = ({ children }: { children: React.ReactNode }) => {
+const MediaProvider = ({ children }: { children: React.ReactNode }) => {
   const ref = React.useRef<HTMLVideoElement | null>(null)
   const [isPlaying, setIsPlaying] = React.useState(false)
   const [duration, setDuration] = React.useState(0)
@@ -75,12 +74,6 @@ const VideoProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [])
 
-  const skip = React.useCallback(({ type, seconds }: SeekProps) => {
-    if (!ref) return
-    const value = type === 'skip' ? seconds : -seconds
-    ref.current!.currentTime = ref.current!.currentTime + value
-  }, [])
-
   const seekTo = React.useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     if (!ref) return
     const seekTargetOffset = e.currentTarget.getBoundingClientRect()
@@ -106,7 +99,6 @@ const VideoProvider = ({ children }: { children: React.ReactNode }) => {
       setVolume,
       isMuted,
       toggleMuted,
-      skip,
       seekTo,
     }),
     [
@@ -117,17 +109,11 @@ const VideoProvider = ({ children }: { children: React.ReactNode }) => {
       volume,
       isMuted,
       toggleMuted,
-      skip,
       seekTo,
     ],
   )
 
-  return <VideoContext.Provider value={value}>{children}</VideoContext.Provider>
-}
-
-interface SeekProps {
-  type: 'skip' | 'rewind'
-  seconds: number
+  return <MediaContext.Provider value={value}>{children}</MediaContext.Provider>
 }
 
 const Controls = () => {
@@ -140,7 +126,7 @@ const Controls = () => {
     setVolume,
     duration,
     currentTime,
-  } = useVideo()
+  } = useMedia()
 
   return (
     <div data-tinylight-controls="">
@@ -201,7 +187,7 @@ const Controls = () => {
 interface PlayerProps extends React.VideoHTMLAttributes<HTMLVideoElement> {}
 
 const Player = ({ onClick, children, className, ...props }: PlayerProps) => {
-  const { ref, togglePlay, setDuration, setCurrentTime } = useVideo()
+  const { ref, togglePlay, setDuration, setCurrentTime } = useMedia()
 
   useIsomorphicLayoutEffect(() => {
     const video = ref.current
@@ -225,12 +211,12 @@ const Player = ({ onClick, children, className, ...props }: PlayerProps) => {
   )
 }
 
-interface TinylightProps extends PlayerProps {}
+interface MediaPlayerProps extends PlayerProps {}
 
-export const Video = ({ ...props }: TinylightProps) => {
+export const MediaPlayer = ({ ...props }: MediaPlayerProps) => {
   return (
-    <VideoProvider>
+    <MediaProvider>
       <Player {...props} />
-    </VideoProvider>
+    </MediaProvider>
   )
 }

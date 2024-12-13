@@ -1,5 +1,5 @@
 {
-  "name": "@tinylight-ui/video",
+  "name": "@tinylight-ui/media-player",
   "version": "0.0.2",
   "exports": {
     ".": {
@@ -11,7 +11,7 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": ["dist"],
-  "keywords": ["tinylight", "react", "video", "video player"],
+  "keywords": ["tinylight", "react", "video", "media player"],
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
@@ -36,6 +36,6 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/thejessewinton/tinylight-ui",
-    "directory": "packages/video"
+    "directory": "packages/media-player"
   }
 }
