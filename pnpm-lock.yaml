@@ -52,7 +52,7 @@ importers:
         specifier: 5.7.2
         version: 5.7.2
 
-  packages/video:
+  packages/media-player:
     dependencies:
       '@radix-ui/react-slider':
         specifier: ^1.2.1
@@ -100,9 +100,9 @@ importers:
       '@tinylight-ui/lightbox':
         specifier: workspace:*
         version: link:../packages/lightbox
-      '@tinylight-ui/video':
+      '@tinylight-ui/media-player':
         specifier: workspace:*
-        version: link:../packages/video
+        version: link:../packages/media-player
       clsx:
         specifier: ^2.1.1
         version: 2.1.1

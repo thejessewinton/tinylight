@@ -1,20 +1,11 @@
 'use client'
 
 import './styles.css'
-
-import * as Slider from '@radix-ui/react-slider'
 import React from 'react'
 
-import {
-  FullVolumeIcon,
-  MutedIcon,
-  PartialVolumeIcon,
-  PauseIcon,
-  PlayIcon,
-} from './assets'
+import { PauseIcon, PlayIcon } from './assets'
 
-import { scaleValue } from './helpers'
-import { useIsomorphicLayoutEffect } from './hooks'
+import { formatTime, scaleValue } from './helpers'
 
 interface MediaState {
   ref: React.RefObject<HTMLVideoElement | null>
@@ -33,15 +24,15 @@ interface MediaState {
 
 const MediaContext = React.createContext<MediaState | null>(null)
 
-export const useMedia = () => {
+export const useMediaPlayerPlayer = () => {
   const context = React.useContext(MediaContext)
   if (!context) {
-    throw new Error('useMedia must be used within a VideoProvider')
+    throw new Error('useMediaPlayer must be used within a MediaProvider')
   }
   return context
 }
 
-const MediaProvider = ({ children }: { children: React.ReactNode }) => {
+const Root = ({ children }: { children: React.ReactNode }) => {
   const ref = React.useRef<HTMLVideoElement | null>(null)
   const [isPlaying, setIsPlaying] = React.useState(false)
   const [duration, setDuration] = React.useState(0)
@@ -116,84 +107,51 @@ const MediaProvider = ({ children }: { children: React.ReactNode }) => {
   return <MediaContext.Provider value={value}>{children}</MediaContext.Provider>
 }
 
-const Controls = () => {
-  const {
-    isPlaying,
-    togglePlay,
-    isMuted,
-    toggleMuted,
-    volume,
-    setVolume,
-    duration,
-    currentTime,
-  } = useMedia()
+type PlaybackControlProps = {} & React.ComponentPropsWithRef<'button'>
+
+const PlaybackControl = ({ onClick, ...props }: PlaybackControlProps) => {
+  const { isPlaying, togglePlay, ref, setDuration } = useMediaPlayerPlayer()
+
+  const handlePlay = () => {
+    if (!ref.current) return
+    setDuration(ref.current.duration)
+    togglePlay()
+  }
 
   return (
-    <div data-tinylight-controls="">
-      <button
-        onClick={togglePlay}
-        type="button"
-        data-tinylight-pause=""
-        data-tinylight-button=""
-      >
-        {isPlaying ? <PauseIcon /> : <PlayIcon />}
-      </button>
+    <button
+      onClick={(e) => {
+        onClick?.(e)
+        handlePlay()
+      }}
+      {...props}
+      data-tinylight-pause=""
+      data-tinylight-button=""
+    >
+      {isPlaying ? <PauseIcon /> : <PlayIcon />}
+    </button>
+  )
+}
 
-      <Slider.Root
-        className="relative flex h-5 w-[200px] touch-none select-none items-center"
-        defaultValue={[volume]}
-        max={100}
-        step={1}
-        onValueChange={([value]) => {
-          setVolume(value ?? 0 / 100)
-        }}
-      >
-        <Slider.Track className="relative h-[3px] grow rounded-full">
-          <Slider.Range className="absolute h-full rounded-full bg-white" />
-        </Slider.Track>
-        <Slider.Thumb
-          className="block size-5 rounded-[10px] bg-white shadow-[0_2px_10px] shadow-blackA4 hover:bg-violet3 focus:shadow-[0_0_0_5px] focus:shadow-blackA5 focus:outline-none"
-          aria-label="Volume"
-        />
-      </Slider.Root>
+const Elapsed = () => {
+  const { currentTime } = useMediaPlayerPlayer()
+  return <div data-tinylight-elapsed="">{currentTime.toFixed()}</div>
+}
 
-      <div data-tinylight-duration="">
-        <div
-          data-tinylight-duration-track=""
-          style={{
-            transform: `scaleX(${currentTime / duration})`,
-          }}
-        />
-      </div>
+const Remaining = () => {
+  const { currentTime, duration } = useMediaPlayerPlayer()
 
-      <button
-        onClick={toggleMuted}
-        type="button"
-        data-tinylight-button=""
-        data-tinylight-mute=""
-      >
-        {isMuted ? (
-          <MutedIcon />
-        ) : volume > 50 ? (
-          <PartialVolumeIcon />
-        ) : (
-          <FullVolumeIcon />
-        )}
-      </button>
+  return (
+    <div data-tinylight-remaining="">
+      {formatTime(Number(duration - currentTime))}
     </div>
   )
 }
 
-interface PlayerProps extends React.VideoHTMLAttributes<HTMLVideoElement> {}
+interface VideoProps extends React.VideoHTMLAttributes<HTMLVideoElement> {}
 
-const Player = ({ onClick, children, className, ...props }: PlayerProps) => {
-  const { ref, togglePlay, setDuration, setCurrentTime } = useMedia()
-
-  useIsomorphicLayoutEffect(() => {
-    const video = ref.current
-    if (!video) return
-    setDuration(video.duration)
-  }, [])
+const Video = ({ onClick, children, className, ...props }: VideoProps) => {
+  const { ref, togglePlay, setCurrentTime } = useMediaPlayerPlayer()
 
   return (
     <div data-tinylight-player="" className={className}>
@@ -206,17 +164,14 @@ const Player = ({ onClick, children, className, ...props }: PlayerProps) => {
         ref={ref}
         {...props}
       />
-      <Controls />
     </div>
   )
 }
 
-interface MediaPlayerProps extends PlayerProps {}
-
-export const MediaPlayer = ({ ...props }: MediaPlayerProps) => {
-  return (
-    <MediaProvider>
-      <Player {...props} />
-    </MediaProvider>
-  )
+export const MediaPlayer = {
+  Root,
+  Video,
+  PlaybackControl,
+  Elapsed,
+  Remaining,
 }
