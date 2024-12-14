@@ -32,6 +32,7 @@ export const metadata: Metadata = {
     default: 'Jesse Winton',
     template: '%s — Jesse Winton',
   },
+  metadataBase: new URL('https://tinylight.jessewinton.works'),
 }
 
 const RootLayout = async ({ children }: { children: ReactNode }) => {
