@@ -3,7 +3,7 @@ import { Button } from './button'
 export const Hero = () => {
   return (
     <div className="mx-auto mb-20 w-full text-center">
-      <h1 className="group relative inline-block w-full text-center font-medium text-3xl">
+      <h1 className="group relative inline-block w-full text-center font-medium font-serif text-3xl italic">
         tinylight
       </h1>
       <span>A beautifully designed lightbox primitive for React.</span>
