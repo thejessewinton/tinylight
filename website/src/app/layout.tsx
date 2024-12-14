@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     default: 'tinylight',
     template: '%s — tinylight',
   },
-  description: 'A beautifully designed set of lightbox primitives for React.',
+  description: 'A set of beautifully designed, composable lightbox primitives.',
   metadataBase: new URL(BASE_URL),
 }
 
