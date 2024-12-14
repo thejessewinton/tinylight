@@ -1,3 +1,4 @@
+import { Analytics } from '@vercel/analytics/react'
 import type { Metadata } from 'next'
 import { Inter, JetBrains_Mono, Newsreader } from 'next/font/google'
 import type { ReactNode } from 'react'
@@ -42,6 +43,7 @@ const RootLayout = async ({ children }: { children: ReactNode }) => {
       <body className="flex min-h-screen flex-col items-center justify-center scroll-smooth bg-neutral-900 text-neutral-200 leading-loose antialiased selection:bg-neutral-800">
         <main className="mx-auto my-32 w-full max-w-4xl px-8">{children}</main>
         <Footer />
+        <Analytics />
       </body>
     </html>
   )

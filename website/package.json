@@ -9,15 +9,16 @@
   "private": true,
   "dependencies": {
     "@radix-ui/react-slider": "^1.2.1",
+    "@tinylight-ui/lightbox": "workspace:*",
+    "@tinylight-ui/video": "workspace:*",
+    "@vercel/analytics": "^1.4.1",
     "clsx": "^2.1.1",
     "copy-to-clipboard": "^3.3.3",
     "framer-motion": "^11.13.1",
     "next": "15.0.4",
     "react": "19.0.0",
     "react-dom": "19.0.0",
-    "tailwind-merge": "^2.5.5",
-    "@tinylight-ui/lightbox": "workspace:*",
-    "@tinylight-ui/video": "workspace:*"
+    "tailwind-merge": "^2.5.5"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "4.0.0-beta.2",

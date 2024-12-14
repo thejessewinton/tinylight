@@ -147,6 +147,23 @@
   scroll-behavior: smooth;
   overscroll-behavior-x: contain;
   scrollbar-width: none;
+
+  [data-tinylight-scrim] {
+    position: fixed;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    z-index: 10;
+    pointer-events: none;
+    filter: blur(6px);
+    background-image: linear-gradient(
+      to right,
+      rgba(0, 0, 0, 1) 0,
+      transparent 10%,
+      transparent 90%,
+      rgba(0, 0, 0, 1) 100%
+    );
+  }
 }
 
 [data-tinylight-trigger] {

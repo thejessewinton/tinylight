@@ -346,6 +346,7 @@ const LightboxThumbs = ({ className, ...props }: LightboxThumbsProps) => {
 
   return (
     <div data-tinylight-thumbs="" ref={containerRef} {...props}>
+      <div data-tinylight-scrim="" />
       {items.map((item, index) => {
         const isLightboxVideoProps = (
           props: LightboxVideoProps | LightboxImageProps,
