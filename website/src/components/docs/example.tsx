@@ -29,17 +29,49 @@ export const Example = () => {
             </Lightbox.Image>
             <Lightbox.Image asChild>
               <Image
-                src="https://placehold.co/800x400/png"
-                width={800}
-                height={400}
+                src="https://placehold.co/1300x500/png"
+                width={1300}
+                height={500}
                 alt="Placeholder"
               />
             </Lightbox.Image>
             <Lightbox.Image asChild>
               <Image
-                src="https://placehold.co/960x650/png"
-                width={960}
-                height={650}
+                src="https://placehold.co/1300x500/png"
+                width={1300}
+                height={500}
+                alt="Placeholder"
+              />
+            </Lightbox.Image>
+            <Lightbox.Image asChild>
+              <Image
+                src="https://placehold.co/1300x500/png"
+                width={1300}
+                height={500}
+                alt="Placeholder"
+              />
+            </Lightbox.Image>
+            <Lightbox.Image asChild>
+              <Image
+                src="https://placehold.co/1300x500/png"
+                width={1300}
+                height={500}
+                alt="Placeholder"
+              />
+            </Lightbox.Image>
+            <Lightbox.Image asChild>
+              <Image
+                src="https://placehold.co/1300x500/png"
+                width={1300}
+                height={500}
+                alt="Placeholder"
+              />
+            </Lightbox.Image>
+            <Lightbox.Image asChild>
+              <Image
+                src="https://placehold.co/1300x500/png"
+                width={1300}
+                height={500}
                 alt="Placeholder"
               />
             </Lightbox.Image>
@@ -69,65 +101,9 @@ export const Example = () => {
             </Lightbox.Image>
             <Lightbox.Image asChild>
               <Image
-                src="https://placehold.co/960x650/png"
-                width={960}
-                height={650}
-                alt="Placeholder"
-              />
-            </Lightbox.Image>
-            <Lightbox.Image asChild>
-              <Image
-                src="https://placehold.co/960x650/png"
-                width={960}
-                height={650}
-                alt="Placeholder"
-              />
-            </Lightbox.Image>
-            <Lightbox.Image asChild>
-              <Image
-                src="https://placehold.co/960x650/png"
-                width={960}
-                height={650}
-                alt="Placeholder"
-              />
-            </Lightbox.Image>
-            <Lightbox.Image asChild>
-              <Image
-                src="https://placehold.co/960x650/png"
-                width={960}
-                height={650}
-                alt="Placeholder"
-              />
-            </Lightbox.Image>
-            <Lightbox.Image asChild>
-              <Image
-                src="https://placehold.co/960x650/png"
-                width={960}
-                height={650}
-                alt="Placeholder"
-              />
-            </Lightbox.Image>
-            <Lightbox.Image asChild>
-              <Image
-                src="https://placehold.co/960x650/png"
-                width={960}
-                height={650}
-                alt="Placeholder"
-              />
-            </Lightbox.Image>
-            <Lightbox.Image asChild>
-              <Image
-                src="https://placehold.co/960x650/png"
-                width={960}
-                height={650}
-                alt="Placeholder"
-              />
-            </Lightbox.Image>
-            <Lightbox.Image asChild>
-              <Image
-                src="https://placehold.co/960x650/png"
-                width={960}
-                height={650}
+                src="https://placehold.co/1300x500/png"
+                width={1300}
+                height={500}
                 alt="Placeholder"
               />
             </Lightbox.Image>
@@ -136,6 +112,14 @@ export const Example = () => {
               controls
               preload="auto"
               src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm"
+              fallback={
+                <Image
+                  src="https://placehold.co/960x540/png"
+                  width={960}
+                  height={540}
+                  alt="Placeholder"
+                />
+              }
             />
           </Lightbox.Items>
           <Lightbox.Controls>
