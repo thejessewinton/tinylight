@@ -1,3 +1,5 @@
+import { CodeBlock } from './code-block'
+
 export const Usage = () => {
   const code = `
 import { Lightbox } from '@tinylight-ui/lightbox';
@@ -69,9 +71,10 @@ import Image from 'next/image';
           component.
         </p>
       </div>
-      <code className="mt-4 block overflow-scroll rounded-lg bg-neutral-950 p-4 font-mono">
-        <pre>{code.trim()}</pre>
-      </code>
+
+      <CodeBlock filename="Lightbox.tsx" lang="typescript">
+        {code}
+      </CodeBlock>
     </div>
   )
 }

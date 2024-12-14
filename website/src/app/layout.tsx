@@ -1,5 +1,6 @@
 import { Analytics } from '@vercel/analytics/react'
 import type { Metadata } from 'next'
+import { ThemeProvider } from 'next-themes'
 import { Inter, JetBrains_Mono, Newsreader } from 'next/font/google'
 import type { ReactNode } from 'react'
 import { Footer } from '~/components/footer'
@@ -39,11 +40,16 @@ const RootLayout = async ({ children }: { children: ReactNode }) => {
     <html
       lang="en"
       className={`${sans.variable} ${serif.variable} ${mono.variable} text-sm`}
+      suppressHydrationWarning
     >
       <body className="flex min-h-screen flex-col items-center justify-center scroll-smooth bg-neutral-900 text-neutral-200 leading-loose antialiased selection:bg-neutral-800">
-        <main className="mx-auto my-32 w-full max-w-4xl px-8">{children}</main>
-        <Footer />
-        <Analytics />
+        <ThemeProvider attribute="class" disableTransitionOnChange>
+          <main className="mx-auto my-32 w-full max-w-4xl px-8">
+            {children}
+          </main>
+          <Footer />
+          <Analytics />
+        </ThemeProvider>
       </body>
     </html>
   )
