@@ -44,6 +44,11 @@
   }
 }
 
+[data-tinylight-trigger] {
+  height: auto;
+  padding: 0;
+}
+
 [data-tinylight-title],
 [data-tinylight-description] {
   position: absolute;
@@ -148,11 +153,6 @@
   scroll-behavior: smooth;
   overscroll-behavior-x: contain;
   scrollbar-width: none;
-}
-
-[data-tinylight-trigger] {
-  height: auto;
-  padding: 0;
 }
 
 [data-tinylight-thumb] {

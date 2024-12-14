@@ -330,6 +330,32 @@ const LightboxThumbs = ({ className, ...props }: LightboxThumbsProps) => {
     useLightbox()
   const containerRef = React.useRef<HTMLDivElement>(null)
 
+  const centerActiveThumb = React.useCallback(() => {
+    if (containerRef.current && items.length > 0) {
+      const container = containerRef.current
+      const activeChild = container.children[activeItemIndex] as HTMLElement
+      const containerCenter = container.offsetWidth / 2
+      const childCenter = activeChild.offsetLeft + activeChild.offsetWidth / 2
+
+      container.scrollTo({
+        left: childCenter - containerCenter,
+        behavior: 'smooth',
+      })
+    }
+  }, [activeItemIndex, items.length])
+
+  React.useEffect(() => {
+    const resizeObserver = new ResizeObserver(centerActiveThumb)
+
+    if (containerRef.current) {
+      resizeObserver.observe(containerRef.current)
+    }
+
+    return () => {
+      resizeObserver.disconnect()
+    }
+  }, [centerActiveThumb])
+
   React.useEffect(() => {
     if (containerRef.current && items.length > 0) {
       const container = containerRef.current
