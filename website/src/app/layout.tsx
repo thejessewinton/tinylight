@@ -6,6 +6,8 @@ import { Footer } from '~/components/footer'
 
 import '~/styles/globals.css'
 
+const BASE_URL = 'https://tinylight.jessewinton.works'
+
 const sans = Inter({
   variable: '--font-sans',
   display: 'optional',
@@ -29,13 +31,14 @@ const mono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Jesse Winton',
-    template: '%s — Jesse Winton',
+    default: 'tinylight',
+    template: '%s — tinylight',
   },
-  metadataBase: new URL('https://tinylight.jessewinton.works'),
+  description: 'A beautifully designed set of lightbox primitives for React.',
+  metadataBase: new URL(BASE_URL),
 }
 
-const RootLayout = async ({ children }: { children: ReactNode }) => {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="en"
@@ -49,5 +52,3 @@ const RootLayout = async ({ children }: { children: ReactNode }) => {
     </html>
   )
 }
-
-export default RootLayout
