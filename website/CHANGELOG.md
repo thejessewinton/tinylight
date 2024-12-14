@@ -1,5 +1,13 @@
 # website
 
+## 0.2.4
+
+### Patch Changes
+
+- Updated dependencies [771f642]
+- Updated dependencies [79a07c5]
+  - @tinylight-ui/lightbox@1.0.0
+
 ## 0.2.3
 
 ### Patch Changes

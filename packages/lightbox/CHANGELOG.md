@@ -1,5 +1,11 @@
 # @tinylight-ui/lightbox
 
+## 1.0.0
+
+### Major Changes
+
+- 79a07c5: Initial release
+
 ## 0.2.0
 
 ### Minor Changes
