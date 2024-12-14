@@ -127,20 +127,19 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  min-height: 120px;
 }
 
 [data-tinylight-thumbs] {
   display: flex;
-  align-items: end;
+  align-items: center;
   justify-items: center;
   flex-wrap: nowrap;
   flex: 1;
-  gap: 1.25rem;
+  gap: 1rem;
   margin: 0 auto;
   padding: 20px;
   width: 100%;
-  min-height: 120px;
-  max-width: 50%;
   position: relative;
   scroll-snap-type: x mandatory;
   overflow-x: scroll;
@@ -148,10 +147,6 @@
   scroll-behavior: smooth;
   overscroll-behavior-x: contain;
   scrollbar-width: none;
-
-  @media screen and (max-width: 768px) {
-    max-width: 90%;
-  }
 }
 
 [data-tinylight-trigger] {
@@ -217,18 +212,19 @@
   transition-property: background-color, opacity;
   border: 1px solid rgba(255, 255, 255, 0.2);
 
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
   &:hover {
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(4px);
   }
 }
 
-[data-tinylight-prev-button] {
-  margin-left: 16px;
-}
-
-[data-tinylight-next-button] {
-  margin-right: 16px;
+[data-tinylight-nav-button] {
+  margin: 0 16px;
 }
 
 @keyframes fade {

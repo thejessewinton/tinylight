@@ -58,7 +58,71 @@ export const Example = () => {
                 height={400}
                 alt="Placeholder"
               />
-            </Lightbox.Image>{' '}
+            </Lightbox.Image>
+            <Lightbox.Image asChild>
+              <Image
+                src="https://placehold.co/960x650/png"
+                width={960}
+                height={650}
+                alt="Placeholder"
+              />
+            </Lightbox.Image>
+            <Lightbox.Image asChild>
+              <Image
+                src="https://placehold.co/960x650/png"
+                width={960}
+                height={650}
+                alt="Placeholder"
+              />
+            </Lightbox.Image>
+            <Lightbox.Image asChild>
+              <Image
+                src="https://placehold.co/960x650/png"
+                width={960}
+                height={650}
+                alt="Placeholder"
+              />
+            </Lightbox.Image>
+            <Lightbox.Image asChild>
+              <Image
+                src="https://placehold.co/960x650/png"
+                width={960}
+                height={650}
+                alt="Placeholder"
+              />
+            </Lightbox.Image>
+            <Lightbox.Image asChild>
+              <Image
+                src="https://placehold.co/960x650/png"
+                width={960}
+                height={650}
+                alt="Placeholder"
+              />
+            </Lightbox.Image>
+            <Lightbox.Image asChild>
+              <Image
+                src="https://placehold.co/960x650/png"
+                width={960}
+                height={650}
+                alt="Placeholder"
+              />
+            </Lightbox.Image>
+            <Lightbox.Image asChild>
+              <Image
+                src="https://placehold.co/960x650/png"
+                width={960}
+                height={650}
+                alt="Placeholder"
+              />
+            </Lightbox.Image>
+            <Lightbox.Image asChild>
+              <Image
+                src="https://placehold.co/960x650/png"
+                width={960}
+                height={650}
+                alt="Placeholder"
+              />
+            </Lightbox.Image>
             <Lightbox.Image asChild>
               <Image
                 src="https://placehold.co/960x650/png"

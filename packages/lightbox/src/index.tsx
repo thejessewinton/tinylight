@@ -27,6 +27,7 @@ interface LightboxContextValue {
   setActiveItemIndex: (index: number) => void
   toPrev: () => void
   toNext: () => void
+  thumbnailRefs: React.RefObject<React.RefObject<HTMLButtonElement>[]>
 }
 
 const LightboxContext = React.createContext<LightboxContextValue | null>(null)
@@ -51,6 +52,16 @@ const LightboxRoot = ({
   const [items, setItems] = React.useState<LightboxContextValue['items']>([])
   const [activeItemIndex, setActiveItemIndex] = React.useState(0)
 
+  const thumbnailRefs = React.useRef<
+    (React.RefObject<HTMLButtonElement> | null)[]
+  >([])
+
+  React.useEffect(() => {
+    thumbnailRefs.current = items.map(
+      (_, index) => thumbnailRefs.current[index] || React.createRef(),
+    )
+  }, [items])
+
   const toPrev = React.useCallback(() => {
     setActiveItemIndex((current) => {
       const prevIndex = current - 1
@@ -71,22 +82,33 @@ const LightboxRoot = ({
     })
   }, [items.length])
 
-  // Handle keyboard navigation
   React.useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      switch (event.key) {
-        case 'ArrowLeft':
-          toPrev()
-          break
-        case 'ArrowRight':
+      if (!open) return
+
+      if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+        event.preventDefault()
+
+        let newIndex = activeItemIndex
+        if (event.key === 'ArrowRight') {
+          newIndex = Math.min(activeItemIndex + 1, items.length - 1)
           toNext()
-          break
+        } else if (event.key === 'ArrowLeft') {
+          newIndex = Math.max(activeItemIndex - 1, 0)
+          toPrev()
+        }
+
+        // Focus the corresponding thumbnail
+        const newRef = thumbnailRefs.current[newIndex]
+        if (newRef?.current) {
+          newRef.current.focus()
+        }
       }
     }
 
     document.addEventListener('keydown', handleKeyDown)
     return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [toPrev, toNext])
+  }, [toPrev, toNext, open, activeItemIndex, items.length])
 
   const contextValue = React.useMemo(
     () => ({
@@ -96,6 +118,7 @@ const LightboxRoot = ({
       setActiveItemIndex,
       toPrev,
       toNext,
+      thumbnailRefs,
     }),
     [items, activeItemIndex, toPrev, toNext],
   )
@@ -107,13 +130,9 @@ const LightboxRoot = ({
         onOpenChange={(e) => {
           if (externalOpen === undefined) {
             setOpen(e)
-            setTimeout(() => {
-              setActiveItemIndex(0)
-            }, 400)
-            return
+          } else {
+            externalOpenChange(e)
           }
-
-          externalOpenChange(e)
           setTimeout(() => {
             setActiveItemIndex(0)
           }, 400)
@@ -307,7 +326,8 @@ interface LightboxThumbsProps
   extends Omit<React.ComponentPropsWithRef<'div'>, 'children'> {}
 
 const LightboxThumbs = ({ className, ...props }: LightboxThumbsProps) => {
-  const { items, activeItemIndex, setActiveItemIndex } = useLightbox()
+  const { items, activeItemIndex, setActiveItemIndex, thumbnailRefs } =
+    useLightbox()
   const containerRef = React.useRef<HTMLDivElement>(null)
 
   React.useEffect(() => {
@@ -351,6 +371,8 @@ const LightboxThumbs = ({ className, ...props }: LightboxThumbsProps) => {
             onClick={() => setActiveItemIndex(index)}
             type="button"
             key={item.key}
+            tabIndex={0}
+            ref={thumbnailRefs.current[index]}
             data-tinylight-thumb=""
             data-tinylight-active-thumb={activeItemIndex === index}
             style={{ '--stagger': `${index * 50}ms` } as React.CSSProperties}
