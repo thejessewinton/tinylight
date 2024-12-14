@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
 }
 
-const RootLayout = async ({ children }: { children: ReactNode }) => {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="en"
@@ -52,5 +52,3 @@ const RootLayout = async ({ children }: { children: ReactNode }) => {
     </html>
   )
 }
-
-export default RootLayout
