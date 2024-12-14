@@ -28,12 +28,9 @@ export const LightboxComponent = () => {
   return (
     <Lightbox.Root>
       <Lightbox.Trigger>
-        <Image
-          src="https://placehold.co/800x400/png"
-          width={800}
-          height={400}
-          alt="Placeholder"
-        />
+        <button>
+            Open Lightbox
+          </button>
       </Lightbox.Trigger>
 
       <Lightbox.Content title="Lightbox" description="Lightbox desc">
@@ -61,11 +58,11 @@ export const LightboxComponent = () => {
             src="https://www.w3schools.com/html/mov_bbb.mp4"
           />
         </Lightbox.Items>
-        <div className="flex justify-between">
+        <Lightbox.Controls>
           <Lightbox.PrevButton />
           <Lightbox.Thumbs />
           <Lightbox.NextButton />
-        </div>
+        </Lightbox.Controls>
       </Lightbox.Content>
     </Lightbox.Root>
   )

@@ -112,14 +112,6 @@ export const Example = () => {
               controls
               preload="auto"
               src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm"
-              fallback={
-                <Image
-                  src="https://placehold.co/960x540/png"
-                  width={960}
-                  height={540}
-                  alt="Placeholder"
-                />
-              }
             />
           </Lightbox.Items>
           <Lightbox.Controls>

@@ -38,11 +38,11 @@ import Image from 'next/image';
         src="https://www.w3schools.com/html/mov_bbb.mp4"
       />
     </Lightbox.Items>
-    <div className="flex justify-between">
+    <Lightbox.Controls>
       <Lightbox.PrevButton />
       <Lightbox.Thumbs />
       <Lightbox.NextButton />
-    </div>
+    </Lightbox.Controls>
   </Lightbox.Content>
 </Lightbox.Root>
 `

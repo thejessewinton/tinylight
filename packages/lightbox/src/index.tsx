@@ -302,26 +302,12 @@ const LightboxImage = ({ asChild, ...props }: LightboxImageProps) => {
 }
 
 interface LightboxVideoProps extends React.ComponentPropsWithoutRef<'video'> {
-  fallback?: React.ReactNode
   asChild?: boolean
 }
 
-const LightboxVideo = ({ asChild, fallback, ...props }: LightboxVideoProps) => {
+const LightboxVideo = ({ asChild, ...props }: LightboxVideoProps) => {
   const Component = asChild ? Slot : 'video'
   const videoRef = React.useRef<HTMLVideoElement>(null)
-  const [isLoaded, setIsLoaded] = React.useState(false)
-
-  React.useEffect(() => {
-    const handleMetadataLoaded = () => {
-      setIsLoaded(true)
-    }
-
-    document.addEventListener('loadedmetadata', handleMetadataLoaded)
-
-    return () => {
-      document.removeEventListener('loadedmetadata', handleMetadataLoaded)
-    }
-  }, [])
 
   if (
     !videoRef.current?.parentNode.querySelector('[data-tinylight-active-item]')
@@ -331,11 +317,7 @@ const LightboxVideo = ({ asChild, fallback, ...props }: LightboxVideoProps) => {
 
   return (
     <div data-tinylight-video="">
-      {!isLoaded && fallback ? (
-        fallback
-      ) : (
-        <Component {...props} ref={videoRef} />
-      )}
+      <Component {...props} ref={videoRef} />
     </div>
   )
 }
