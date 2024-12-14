@@ -2,50 +2,39 @@
   position: relative;
   width: 100%;
 
-  [data-tinylight-controls] {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    position: absolute;
-    bottom: 0;
+  --transition-speed: 0.25s;
+  --ease-out-quad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+  &:hover {
+    [data-tinylight-scrim] {
+      opacity: 1;
+    }
+
+    [data-tinylight-controls] {
+      opacity: 1;
+    }
+  }
+
+  [data-tinylight-video] {
+    position: relative;
     width: 100%;
-    padding: 1rem;
+    height: auto;
+    z-index: -2;
+  }
+
+  [data-tinylight-scrim] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    z-index: -1;
+    transition: opacity var(--transition-speed) var(--ease-out-quad);
+    will-change: opacity;
+    background-color: rgba(0, 0, 0, 0.3);
     background-image: linear-gradient(
-      to top,
-      rgba(0, 0, 0, 0.15) 0%,
-      rgba(0, 0, 0, 0)
+      0deg,
+      rgba(0, 0, 0, 0.3) 0,
+      transparent 120px
     );
-    animation: fade 300ms ease-in-out;
-
-    [data-tinylight-button] {
-      height: 1rem;
-      width: 1rem;
-      & svg {
-        fill: white;
-        stroke: white;
-      }
-    }
-
-    [data-tinylight-duration] {
-      background-color: red;
-      height: 2px;
-      flex: 1;
-      display: block;
-
-      [data-tinylight-duration-track] {
-        height: 100%;
-        width: 100%;
-        display: block;
-        transform-origin: left;
-        background-color: blue;
-        transition: transform 200ms ease-in-out;
-      }
-    }
-
-    [data-tinylight-mute] {
-      flex-shrink: 0;
-    }
   }
 }
 

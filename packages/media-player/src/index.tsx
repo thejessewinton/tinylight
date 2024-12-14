@@ -2,19 +2,18 @@
 
 import './styles.css'
 import React from 'react'
-
 import { PauseIcon, PlayIcon } from './assets'
-
-import { formatTime, scaleValue } from './helpers'
+import { getTime } from './helpers'
 
 interface MediaState {
   ref: React.RefObject<HTMLVideoElement | null>
   isPlaying: boolean
   togglePlay: () => void
+  isLoading: boolean
+  setIsLoading: (isLoading: boolean) => void
   duration: number
-  setDuration: (duration: number) => void
+  setDuration: (newDuration: number) => void
   currentTime: number
-  setCurrentTime: (currentTime: number) => void
   volume: number
   setVolume: (newVolume: number) => void
   isMuted: boolean
@@ -24,7 +23,7 @@ interface MediaState {
 
 const MediaContext = React.createContext<MediaState | null>(null)
 
-export const useMediaPlayerPlayer = () => {
+export const useMediaPlayer = () => {
   const context = React.useContext(MediaContext)
   if (!context) {
     throw new Error('useMediaPlayer must be used within a MediaProvider')
@@ -32,15 +31,37 @@ export const useMediaPlayerPlayer = () => {
   return context
 }
 
-const Root = ({ children }: { children: React.ReactNode }) => {
+interface MediaPlayerRootProps extends React.ComponentPropsWithRef<'div'> {}
+
+const Root = ({ children, ...props }: MediaPlayerRootProps) => {
   const ref = React.useRef<HTMLVideoElement | null>(null)
   const [isPlaying, setIsPlaying] = React.useState(false)
   const [duration, setDuration] = React.useState(0)
   const [currentTime, setCurrentTime] = React.useState(0)
   const [volume, setVolume] = React.useState(1)
   const [isMuted, setIsMuted] = React.useState(false)
+  const [isLoading, setIsLoading] = React.useState(true)
 
-  const currentVolume = React.useRef(volume)
+  React.useEffect(() => {
+    if (!ref.current) return
+    const video = ref.current
+
+    const updateTime = () => setCurrentTime(video.currentTime)
+    const updateDuration = () => setDuration(video.duration)
+
+    // Update duration immediately in case metadata is already loaded
+    if (video.readyState >= 1) {
+      setDuration(video.duration)
+    }
+
+    video.addEventListener('timeupdate', updateTime)
+    video.addEventListener('loadedmetadata', updateDuration)
+
+    return () => {
+      video.removeEventListener('timeupdate', updateTime)
+      video.removeEventListener('loadedmetadata', updateDuration)
+    }
+  }, [])
 
   const togglePlay = React.useCallback(() => {
     if (!ref.current) return
@@ -49,32 +70,21 @@ const Root = ({ children }: { children: React.ReactNode }) => {
     } else {
       ref.current.play()
     }
-    setIsPlaying((prev) => !prev)
+    setIsPlaying(!isPlaying)
   }, [isPlaying])
 
   const toggleMuted = React.useCallback(() => {
     if (!ref.current) return
-
-    ref.current.muted = !ref.current.muted
-    setIsMuted((prev) => !prev)
-
-    if (ref.current.muted) {
-      ref.current.volume = 0
-    } else {
-      ref.current.volume = currentVolume.current
-    }
-  }, [])
+    ref.current.muted = !isMuted
+    setIsMuted(!isMuted)
+  }, [isMuted])
 
   const seekTo = React.useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    if (!ref) return
-    const seekTargetOffset = e.currentTarget.getBoundingClientRect()
-    const getSeekTime = scaleValue(
-      seekTargetOffset.left,
-      seekTargetOffset.right,
-      0,
-      ref.current!.duration,
-    )
-    ref.current!.currentTime = getSeekTime(e.clientX)
+    if (!ref.current) return
+    const rect = e.currentTarget.getBoundingClientRect()
+    const clickPosition = e.clientX - rect.left
+    const percentage = clickPosition / rect.width
+    ref.current.currentTime = percentage * ref.current.duration
   }, [])
 
   const value = React.useMemo(
@@ -82,10 +92,11 @@ const Root = ({ children }: { children: React.ReactNode }) => {
       ref,
       isPlaying,
       togglePlay,
+      isLoading,
+      setIsLoading,
       duration,
       setDuration,
       currentTime,
-      setCurrentTime,
       volume,
       setVolume,
       isMuted,
@@ -94,77 +105,65 @@ const Root = ({ children }: { children: React.ReactNode }) => {
     }),
     [
       isPlaying,
-      togglePlay,
       duration,
       currentTime,
       volume,
       isMuted,
-      toggleMuted,
+      isLoading,
       seekTo,
+      toggleMuted,
+      togglePlay,
     ],
   )
 
-  return <MediaContext.Provider value={value}>{children}</MediaContext.Provider>
+  return (
+    <div data-tinylight-player="" {...props}>
+      <MediaContext.Provider value={value}>{children}</MediaContext.Provider>
+      <div data-tinylight-scrim="" />
+    </div>
+  )
 }
 
-type PlaybackControlProps = {} & React.ComponentPropsWithRef<'button'>
-
-const PlaybackControl = ({ onClick, ...props }: PlaybackControlProps) => {
-  const { isPlaying, togglePlay, ref, setDuration } = useMediaPlayerPlayer()
-
-  const handlePlay = () => {
-    if (!ref.current) return
-    setDuration(ref.current.duration)
-    togglePlay()
-  }
+const PlaybackControl = (props: React.ComponentPropsWithRef<'button'>) => {
+  const { isPlaying, togglePlay } = useMediaPlayer()
 
   return (
-    <button
-      onClick={(e) => {
-        onClick?.(e)
-        handlePlay()
-      }}
-      {...props}
-      data-tinylight-pause=""
-      data-tinylight-button=""
-    >
+    <button onClick={togglePlay} {...props} data-tinylight-button="">
       {isPlaying ? <PauseIcon /> : <PlayIcon />}
     </button>
   )
 }
 
 const Elapsed = () => {
-  const { currentTime } = useMediaPlayerPlayer()
-  return <div data-tinylight-elapsed="">{currentTime.toFixed()}</div>
-}
-
-const Remaining = () => {
-  const { currentTime, duration } = useMediaPlayerPlayer()
+  const { currentTime } = useMediaPlayer()
+  const { string, epoch } = getTime(currentTime)
 
   return (
-    <div data-tinylight-remaining="">
-      {formatTime(Number(duration - currentTime))}
-    </div>
+    <time dateTime={epoch} data-tinylight-elapsed="">
+      {string}
+    </time>
   )
 }
 
-interface VideoProps extends React.VideoHTMLAttributes<HTMLVideoElement> {}
+const Remaining = () => {
+  const { currentTime, duration } = useMediaPlayer()
+  const { string } = getTime(duration - currentTime)
 
-const Video = ({ onClick, children, className, ...props }: VideoProps) => {
-  const { ref, togglePlay, setCurrentTime } = useMediaPlayerPlayer()
+  return <div data-tinylight-remaining="">-{string}</div>
+}
+
+const Video = ({ ...props }: React.VideoHTMLAttributes<HTMLVideoElement>) => {
+  const { ref, togglePlay } = useMediaPlayer()
 
   return (
-    <div data-tinylight-player="" className={className}>
-      <video
-        onClick={(e) => {
-          onClick?.(e)
-          togglePlay()
-        }}
-        onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
-        ref={ref}
-        {...props}
-      />
-    </div>
+    <video
+      onClick={() => {
+        togglePlay()
+      }}
+      ref={ref}
+      data-tinylight-video=""
+      {...props}
+    />
   )
 }
 

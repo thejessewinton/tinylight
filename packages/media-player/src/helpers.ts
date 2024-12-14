@@ -18,11 +18,28 @@ export const getValidChildren = (children: React.ReactNode) => {
   ) as React.ReactElement[]
 }
 
-export const formatTime = (duration: number) => {
-  const minutes = Math.floor(duration / 60)
-  const seconds = Math.floor(duration % 60)
+export const getTime = (time) => {
+  const formattedTime = Math.max(0, time)
 
-  return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`
+  const hours = Math.floor(formattedTime / 3600)
+  const minutes = Math.floor((formattedTime % 3600) / 60)
+  const seconds = Math.floor(formattedTime % 60)
+
+  const epochParts = []
+  if (hours > 0) epochParts.push(`H${hours}`)
+  if (minutes > 0) epochParts.push(`M${minutes}`)
+  if (seconds > 0 || epochParts.length === 0) epochParts.push(`S${seconds}`)
+
+  return {
+    epoch: `PT${epochParts.join('')}`,
+    string: [
+      hours.toString().padStart(2, '0'),
+      minutes.toString().padStart(2, '0'),
+      seconds.toString().padStart(2, '0'),
+    ]
+      .filter((unit) => unit !== null)
+      .join(':'),
+  }
 }
 
 export const scaleValue = (
