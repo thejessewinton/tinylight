@@ -42,7 +42,12 @@ const useLightbox = () => {
 interface LightboxRootProps
   extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Root> {}
 
-const LightboxRoot = (props: LightboxRootProps) => {
+const LightboxRoot = ({
+  open: externalOpen,
+  onOpenChange: externalOpenChange,
+  ...props
+}: LightboxRootProps) => {
+  const [open, setOpen] = React.useState(false)
   const [items, setItems] = React.useState<LightboxContextValue['items']>([])
   const [activeItemIndex, setActiveItemIndex] = React.useState(0)
 
@@ -97,12 +102,29 @@ const LightboxRoot = (props: LightboxRootProps) => {
 
   return (
     <LightboxContext.Provider value={contextValue}>
-      <DialogPrimitive.Root {...props} />
+      <DialogPrimitive.Root
+        open={externalOpen ?? open}
+        onOpenChange={(e) => {
+          if (externalOpen === undefined) {
+            setOpen(e)
+            setTimeout(() => {
+              setActiveItemIndex(0)
+            }, 400)
+            return
+          }
+
+          externalOpenChange(e)
+          setTimeout(() => {
+            setActiveItemIndex(0)
+          }, 400)
+        }}
+        {...props}
+      />
     </LightboxContext.Provider>
   )
 }
 
-type LightboxTriggerElement = React.ElementRef<typeof DialogPrimitive.Trigger>
+type LightboxTriggerElement = React.ComponentRef<typeof DialogPrimitive.Trigger>
 
 interface LightboxTriggerProps extends DialogPrimitive.DialogTriggerProps {}
 
@@ -119,7 +141,7 @@ const LightboxTrigger = React.forwardRef<
 
 LightboxTrigger.displayName = 'LightboxTrigger'
 
-type LightboxContentElement = React.ElementRef<typeof DialogPrimitive.Content>
+type LightboxContentElement = React.ComponentRef<typeof DialogPrimitive.Content>
 
 interface LightboxContentProps
   extends Omit<
@@ -163,6 +185,16 @@ const LightboxContent = React.forwardRef<
 )
 
 LightboxContent.displayName = 'LightboxContent'
+
+interface LightboxControlsProps extends React.HTMLAttributes<HTMLDivElement> {}
+
+const LightboxControls = ({ children, ...props }: LightboxControlsProps) => {
+  return (
+    <div data-tinylight-controls="" {...props}>
+      {children}
+    </div>
+  )
+}
 
 interface LightboxItemsProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -321,7 +353,7 @@ const LightboxThumbs = ({ className, ...props }: LightboxThumbsProps) => {
             key={item.key}
             data-tinylight-thumb=""
             data-tinylight-active-thumb={activeItemIndex === index}
-            style={{ animationDelay: `${index * 100}ms` }}
+            style={{ '--stagger': `${index * 50}ms` } as React.CSSProperties}
           >
             <Comp {...props} src={imgSrc} alt="" />
           </button>
@@ -408,6 +440,7 @@ export const Lightbox = {
   Root: LightboxRoot,
   Trigger: LightboxTrigger,
   Content: LightboxContent,
+  Controls: LightboxControls,
   Items: LightboxItems,
   Image: LightboxImage,
   Video: LightboxVideo,

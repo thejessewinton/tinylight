@@ -74,11 +74,11 @@ export const Example = () => {
               src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm"
             />
           </Lightbox.Items>
-          <div className="flex items-center justify-between">
+          <Lightbox.Controls>
             <Lightbox.PrevButton />
             <Lightbox.Thumbs />
             <Lightbox.NextButton />
-          </div>
+          </Lightbox.Controls>
         </Lightbox.Content>
       </Lightbox.Root>
     </div>

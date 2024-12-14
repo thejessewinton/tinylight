@@ -30,6 +30,18 @@
     );
     z-index: 0;
   }
+
+  &:where([data-state="closed"]) {
+    animation: fade 400ms var(--ease-in-out-quad) reverse;
+  }
+
+  &:where([data-state="open"])::after {
+    animation: fade 400ms var(--ease-in-out-quad) forwards;
+  }
+
+  &:where([data-state="closed"])::after {
+    animation: fade 400ms var(--ease-in-out-quad) reverse;
+  }
 }
 
 [data-tinylight-title],
@@ -52,6 +64,13 @@
   flex: 0 0 100%;
   position: relative;
   z-index: 1000;
+
+  &:where([data-state="open"]) {
+    animation: tinylight-content-show 400ms var(--ease-in-out-quad);
+  }
+  &:where([data-state="closed"]) {
+    animation: tinylight-content-hide 400ms var(--ease-in-out-quad);
+  }
 }
 
 [data-tinylight-items] {
@@ -104,6 +123,12 @@
   }
 }
 
+[data-tinylight-controls] {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 [data-tinylight-thumbs] {
   display: flex;
   align-items: end;
@@ -153,6 +178,9 @@
   transition-property: flex, box-shadow, opacity;
   transform-origin: bottom left;
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  animation: tinylight-thumb-show 750ms var(--ease-in-out-quad) forwards;
+  animation-delay: var(--stagger);
+  opacity: 0;
 
   &:where([data-tinylight-active-thumb="true"]) {
     flex: 0 0 120px;
@@ -183,9 +211,24 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
-  will-change: opacity;
-  transition: opacity 0.2s ease-in-out;
+  border-radius: 100%;
+  will-change: opacity, color;
+  transition: 0.2s var(--ease-in-out-quad);
+  transition-property: background-color, opacity;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(4px);
+  }
+}
+
+[data-tinylight-prev-button] {
+  margin-left: 16px;
+}
+
+[data-tinylight-next-button] {
+  margin-right: 16px;
 }
 
 @keyframes fade {
@@ -224,26 +267,16 @@
     }
   }
 
-  [data-tinylight-overlay] {
-    &:where([data-state="closed"]) {
-      animation: fade 400ms var(--ease-in-out-quad) reverse;
+  @keyframes tinylight-thumb-show {
+    from {
+      opacity: 0;
+      filter: blur(10px);
+      transform: translateY(20px);
     }
-
-    &:where([data-state="open"])::after {
-      animation: fade 400ms var(--ease-in-out-quad) forwards;
-    }
-
-    &:where([data-state="closed"])::after {
-      animation: fade 400ms var(--ease-in-out-quad) reverse;
-    }
-  }
-
-  [data-tinylight-content] {
-    &:where([data-state="open"]) {
-      animation: tinylight-content-show 400ms var(--ease-in-out-quad);
-    }
-    &:where([data-state="closed"]) {
-      animation: tinylight-content-hide 400ms var(--ease-in-out-quad);
+    to {
+      opacity: 1;
+      filter: blur(0px);
+      transform: translateY(0);
     }
   }
 }
