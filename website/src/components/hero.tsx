@@ -1,4 +1,5 @@
 import { Button } from './button'
+import { Example } from './docs/example'
 
 export const Hero = () => {
   return (
@@ -9,12 +10,7 @@ export const Hero = () => {
       <span>A beautifully designed lightbox primitive for React.</span>
 
       <div className="mt-8 flex justify-center gap-4">
-        <Button
-          href="#example"
-          className="!bg-neutral-100 w-1/2 text-neutral-900"
-        >
-          Example
-        </Button>
+        <Example />
         <Button
           href="https://github.com/thejessewinton/tinylight"
           className="w-1/2"
