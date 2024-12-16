@@ -168,40 +168,26 @@ interface LightboxContentProps
     'asChild'
   > {
   container?: React.ComponentProps<typeof DialogPrimitive.Portal>['container']
-  title: string
-  description: string
 }
 
 const LightboxContent = React.forwardRef<
   LightboxContentElement,
   LightboxContentProps
->(
-  (
-    { title, description, children, className, container, ...props },
-    forwardedRef,
-  ) => {
-    return (
-      <DialogPrimitive.Portal container={container}>
-        <DialogPrimitive.Title data-tinylight-title="">
-          {title}
-        </DialogPrimitive.Title>
-        <DialogPrimitive.Description data-tinylight-description="">
-          {description}
-        </DialogPrimitive.Description>
-
-        <DialogPrimitive.Overlay data-tinylight-overlay="">
-          <DialogPrimitive.Content
-            data-tinylight-content=""
-            ref={forwardedRef}
-            {...props}
-          >
-            {children}
-          </DialogPrimitive.Content>
-        </DialogPrimitive.Overlay>
-      </DialogPrimitive.Portal>
-    )
-  },
-)
+>(({ children, className, container, ...props }, forwardedRef) => {
+  return (
+    <DialogPrimitive.Portal container={container}>
+      <DialogPrimitive.Overlay data-tinylight-overlay="">
+        <DialogPrimitive.Content
+          data-tinylight-content=""
+          ref={forwardedRef}
+          {...props}
+        >
+          {children}
+        </DialogPrimitive.Content>
+      </DialogPrimitive.Overlay>
+    </DialogPrimitive.Portal>
+  )
+})
 
 LightboxContent.displayName = 'LightboxContent'
 
@@ -489,6 +475,8 @@ export const Lightbox = {
   Trigger: LightboxTrigger,
   Content: LightboxContent,
   Controls: LightboxControls,
+  Title: DialogPrimitive.Title,
+  Description: DialogPrimitive.Description,
   Items: LightboxItems,
   Image: LightboxImage,
   Video: LightboxVideo,

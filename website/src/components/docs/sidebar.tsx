@@ -16,11 +16,13 @@ export const Sidebar = () => {
 
   return (
     <nav className="sticky top-0 flex h-screen flex-col gap-8 border-neutral-200 border-r border-dashed bg-accent/20 px-4 py-8 dark:border-neutral-700/40">
-      <h2 className="font-serif text-3xl italic">tinylight</h2>
+      <Link href="/">
+        <h2 className="font-serif text-3xl italic">tinylight</h2>
+      </Link>
       {Object.entries(groupedDocs).map(([group, docs]) => {
         return (
           <div key={group} className="space-y-1">
-            <h3 className="mb-3 px-2 font-medium text-neutral-600 text-sm">
+            <h3 className="mb-3 px-2 font-semibold text-secondary text-sm">
               {group}
             </h3>
             {docs?.map((doc) => {

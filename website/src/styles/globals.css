@@ -80,7 +80,7 @@
     border-color: var(--color-gray-200, currentColor);
   }
 
-  :root, 
+  :root,
   .light {
     --main: var(--color-neutral-100);
     --accent: var(--color-neutral-300);
@@ -94,16 +94,14 @@
     --accent: var(--color-neutral-950);
     --primary: var(--color-neutral-100);
     --secondary: var(--color-neutral-300);
-    --tertiary: var(--color-neutral-700);
+
+    .shiki,
+    .shiki span {
+      color: var(--shiki-dark) !important;
+      background-color: var(--color-neutral-900) !important;
+      font-style: var(--shiki-dark-font-style) !important;
+      font-weight: var(--shiki-dark-font-weight) !important;
+      text-decoration: var(--shiki-dark-text-decoration) !important;
+    }
   }
-
-  html.dark .shiki,
-html.dark .shiki span {
-  color: var(--shiki-dark) !important;
-  background-color: var(--color-neutral-900) !important;
-  font-style: var(--shiki-dark-font-style) !important;
-  font-weight: var(--shiki-dark-font-weight) !important;
-  text-decoration: var(--shiki-dark-text-decoration) !important;
 }
-}
-

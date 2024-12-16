@@ -1,4 +1,4 @@
-import { Example } from '~/components/example'
+import { LightboxComponent } from '~/components/docs/examples/basic'
 import { Button } from '~/components/shared/button'
 
 export default function Home() {
@@ -11,9 +11,9 @@ export default function Home() {
         <span>A beautifully designed lightbox primitive for React.</span>
 
         <div className="mt-8 flex justify-center gap-4">
-          <Example />
+          <LightboxComponent />
           <Button href="/getting-started" className="w-1/2">
-            GitHub
+            Documentation
           </Button>
         </div>
       </div>

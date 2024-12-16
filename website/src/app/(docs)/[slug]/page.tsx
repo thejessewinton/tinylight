@@ -42,7 +42,9 @@ export default async function DocsPage({ params }: DocsPageParams) {
 
         <div className="space-y-8">
           <p className="text-lg text-secondary">{content.description}</p>
-          <MDXContent code={content.mdx} components={components} />
+          <div className="mt-16 space-y-8">
+            <MDXContent code={content.mdx} components={components} />
+          </div>
         </div>
       </div>
       <TableOfContents headings={content.tableOfContents} />
