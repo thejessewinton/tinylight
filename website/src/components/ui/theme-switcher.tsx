@@ -35,8 +35,8 @@ export const ThemeSwitcher = () => {
   }
 
   return (
-    <fieldset className="mt-auto mb-0 flex w-fit items-center gap-1 rounded-lg border border-neutral-200 px-1 py-0.5 dark:border-neutral-700/40">
-      <legend className="sr-only">Select a display theme:</legend>
+    <div className="mt-auto mb-0 flex w-fit items-center gap-1 rounded-lg border border-neutral-200 px-1 py-0.5 dark:border-neutral-700/40">
+      <span className="sr-only">Select a display theme:</span>
       {themes.map(({ name, icon: Icon }) => (
         <button
           type="button"
@@ -53,6 +53,6 @@ export const ThemeSwitcher = () => {
           <Icon className="size-4" />
         </button>
       ))}
-    </fieldset>
+    </div>
   )
 }

@@ -5,6 +5,7 @@ import { jsx, jsxs } from 'react/jsx-runtime'
 import { type BundledLanguage, codeToHast } from 'shiki'
 import { cn } from '~/utils/cn'
 import { getCodeFromFile } from '~/utils/code'
+import { CopyButton } from './copy-button'
 
 export type CodeRendererProps = {
   title: string
@@ -30,17 +31,17 @@ export const CodeRenderer = async ({
 
   return (
     <div className="flex flex-col overflow-hidden rounded-lg border border-neutral-200 dark:border-neutral-700/40">
-      <button
-        type="button"
-        className="flex cursor-pointer items-center gap-2 bg-neutral-800/40 p-4"
-      >
-        {lang === 'bash' ? (
-          <CommandLineIcon className="size-4 text-secondary" />
-        ) : (
-          <DocumentIcon className="size-4 text-secondary" />
-        )}
-        <span className="font-medium text-sm">{title}</span>
-      </button>
+      <div className="flex items-center justify-between gap-2 border-neutral-200 border-b bg-neutral-100 p-4 dark:border-neutral-700/40 dark:bg-neutral-800/40">
+        <div className="flex items-center gap-2">
+          {lang === 'bash' ? (
+            <CommandLineIcon className="size-4 text-tertiary" />
+          ) : (
+            <DocumentIcon className="size-4 text-tertiary" />
+          )}
+          <span className="font-medium text-sm text-tertiary">{title}</span>
+        </div>
+        <CopyButton content={children ?? getCodeFromFile(filepath)} />
+      </div>
 
       {toJsxRuntime(out, {
         Fragment,

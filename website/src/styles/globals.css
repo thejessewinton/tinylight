@@ -60,6 +60,7 @@
   --color-secondary: var(--secondary);
   --color-main: var(--main);
   --color-accent: var(--accent);
+  --color-tertiary: var(--tertiary);
 }
 
 /*
@@ -85,6 +86,7 @@
     --accent: var(--color-neutral-300);
     --primary: var(--color-neutral-900);
     --secondary: var(--color-neutral-950);
+    --tertiary: var(--color-neutral-500);
   }
 
   .dark {
@@ -92,6 +94,7 @@
     --accent: var(--color-neutral-950);
     --primary: var(--color-neutral-100);
     --secondary: var(--color-neutral-300);
+    --tertiary: var(--color-neutral-700);
   }
 
   html.dark .shiki,

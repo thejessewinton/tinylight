@@ -1,6 +1,7 @@
 'use client'
 
 import { useHash } from '~/hooks/use-hash'
+import { cn } from '~/utils/cn'
 
 type TableOfContentsProps = {
   headings: Array<{ value: string; id: string }>
@@ -32,7 +33,15 @@ export const TableOfContents = ({ headings }: TableOfContentsProps) => {
       </div>
       <ul className="mt-8 h-fit space-y-2 border-neutral-200 border-l border-dashed pl-6 dark:border-neutral-700/40">
         {headings.map((heading) => (
-          <li key={heading.value}>
+          <li
+            key={heading.value}
+            className={cn(
+              'before:-translate-y-1/2 before:-left-[calc(var(--spacing)_*_6_+_1px)] relative before:absolute before:top-1/2 before:block before:h-5 before:w-px before:bg-neutral-700 before:opacity-0 before:transition-opacity',
+              {
+                'before:opacity-100': hash === heading.id,
+              },
+            )}
+          >
             <a href={`#${heading.id}`}>{heading.value}</a>
           </li>
         ))}
