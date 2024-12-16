@@ -14,7 +14,7 @@ export const Installation = () => {
   const [copying, setCopying] = useState(0)
 
   const onCopy = useCallback(() => {
-    copy('npm install sonner')
+    copy('pnpm install @tinylight-ui/lightbox')
     setCopying((c) => c + 1)
     setTimeout(() => {
       setCopying((c) => c - 1)
