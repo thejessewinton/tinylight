@@ -2,9 +2,9 @@
 
 import { Lightbox } from '@tinylight-ui/lightbox'
 import Image from 'next/image'
-import { Button } from '../button'
+import { Button } from './shared/button'
 
-export const Example = () => {
+export const LightboxComponent = () => {
   return (
     <Lightbox.Root>
       <Lightbox.Trigger asChild>

@@ -1,8 +1,7 @@
 import { CodeBlock } from './code-block'
 
 export const Usage = () => {
-  const code = `
-import { Lightbox } from '@tinylight-ui/lightbox';
+  const code = `import { Lightbox } from '@tinylight-ui/lightbox';
 import Image from 'next/image';
 
 <Lightbox.Root>

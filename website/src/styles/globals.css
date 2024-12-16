@@ -1,15 +1,5 @@
 @import "tailwindcss";
-
-:root {
-  --sh-class: #7aa2f7;
-  --sh-sign: #89ddff;
-  --sh-string: #9ece6a;
-  --sh-keyword: #bb9af7;
-  --sh-comment: #565f89;
-  --sh-jsxliterals: #7aa2f7;
-  --sh-property: #73daca;
-  --sh-entity: #e0af68;
-}
+@variant dark (&:where(.dark, .dark *));
 
 @plugin '@tailwindcss/typography';
 
@@ -65,6 +55,11 @@
       opacity: 1;
     }
   }
+
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-main: var(--main);
+  --color-accent: var(--accent);
 }
 
 /*
@@ -84,10 +79,28 @@
     border-color: var(--color-gray-200, currentColor);
   }
 
-  .prose :where(code):not(:where([class~="not-prose"] *))::before {
-    content: "" !important;
+  :root, 
+  .light {
+    --main: var(--color-neutral-100);
+    --accent: var(--color-neutral-300);
+    --primary: var(--color-neutral-900);
+    --secondary: var(--color-neutral-950);
   }
-  .prose :where(code):not(:where([class~="not-prose"] *))::after {
-    content: "" !important;
+
+  .dark {
+    --main: var(--color-neutral-900);
+    --accent: var(--color-neutral-950);
+    --primary: var(--color-neutral-100);
+    --secondary: var(--color-neutral-300);
   }
+
+  html.dark .shiki,
+html.dark .shiki span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--color-neutral-900) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+  text-decoration: var(--shiki-dark-text-decoration) !important;
 }
+}
+
