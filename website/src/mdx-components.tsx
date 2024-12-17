@@ -24,7 +24,6 @@ export const components: MDXComponents = {
     className,
     ...props
   }: ComponentPropsWithoutRef<'code'>) => {
-    console.log('children:', children, props)
     return (
       <code
         className={cn(

@@ -36,7 +36,7 @@ export const CopyButton = ({
       onClick={onCopy}
     >
       <div aria-label="Copy code">
-        <MotionConfig transition={{ duration: 0.25 }}>
+        <MotionConfig>
           <AnimatePresence initial={false} mode="wait">
             {copying ? (
               <motion.div
