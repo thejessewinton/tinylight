@@ -36,12 +36,14 @@ export const CodeBlock = async ({
           },
         })
         .use(rehypeStringify)
-        .process(code.trim()),
+        .process(code),
     )
   }
 
+  console.log(await highlightCode(children ?? getCodeFromFile(filePath).trim()))
+
   const highlightedCode = await highlightCode(
-    children ?? getCodeFromFile(filePath),
+    children ?? getCodeFromFile(filePath).trim(),
   )
 
   return (
