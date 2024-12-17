@@ -5,6 +5,8 @@ export const LightboxComponent = () => {
     <Lightbox.Root>
       <Lightbox.Trigger />
       <Lightbox.Content>
+        <Lightbox.Title />
+        <Lightbox.Description />
         <Lightbox.Close />
         <Lightbox.Items>
           <Lightbox.Image />

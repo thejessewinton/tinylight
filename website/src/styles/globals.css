@@ -95,13 +95,18 @@
     --primary: var(--color-neutral-100);
     --secondary: var(--color-neutral-300);
 
-    .shiki,
-    .shiki span {
-      color: var(--shiki-dark) !important;
-      background-color: var(--color-neutral-900) !important;
-      font-style: var(--shiki-dark-font-style) !important;
-      font-weight: var(--shiki-dark-font-weight) !important;
-      text-decoration: var(--shiki-dark-text-decoration) !important;
+    code[data-theme*=" "],
+    code[data-theme*=" "] span {
+      color: var(--shiki-light);
+      background-color: var(--shiki-light-bg);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      code[data-theme*=" "],
+      code[data-theme*=" "] span {
+        color: var(--shiki-dark);
+        background-color: var(--shiki-dark-bg);
+      }
     }
   }
 }

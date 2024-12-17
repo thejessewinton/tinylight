@@ -1,6 +1,7 @@
 import { MDXContent } from '@content-collections/mdx/react'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import { Footer } from '~/components/docs/footer'
 import { TableOfContents } from '~/components/docs/table-of-contents'
 import { allDocs } from '~/content-collections'
 import { components } from '~/mdx-components'
@@ -46,6 +47,12 @@ export default async function DocsPage({ params }: DocsPageParams) {
             <MDXContent code={content.mdx} components={components} />
           </div>
         </div>
+        <Footer
+        // prev={{
+        //   slug: content.prev?._meta.fileName.replace('.mdx', '') ?? '',
+        //   title: content.prev?.title ?? '',
+        // }}
+        />
       </div>
       <TableOfContents headings={content.tableOfContents} />
     </>

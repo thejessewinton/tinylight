@@ -1,5 +1,6 @@
 import { defineCollection, defineConfig } from '@content-collections/core'
 import { compileMDX } from '@content-collections/mdx'
+import rehypeSlug from 'rehype-slug'
 import { capitalize } from 'remeda'
 
 const docs = defineCollection({
@@ -12,9 +13,9 @@ const docs = defineCollection({
     order: z.number(),
   }),
   transform: async (doc, ctx) => {
-    const docs = await ctx.collection.documents()
-    const idx = docs.findIndex((d) => doc._meta.filePath === d._meta.filePath)
-    const mdx = await compileMDX(ctx, doc)
+    const mdx = await compileMDX(ctx, doc, {
+      rehypePlugins: [rehypeSlug],
+    })
 
     const getTableOfContents = (markdown: string) => {
       const headings = markdown.match(/#+\s.+/g) || []
@@ -30,8 +31,6 @@ const docs = defineCollection({
       slug: doc.title.toLowerCase().replace(/ /g, '-'),
       group: capitalize(doc._meta.directory),
       tableOfContents: getTableOfContents(doc.content),
-      prev: idx > 0 ? docs[idx - 1] : null,
-      next: idx < docs.length - 1 ? docs[idx + 1] : null,
     }
   },
 })

@@ -2,16 +2,11 @@
 
 import { Lightbox } from '@tinylight-ui/lightbox'
 import Image from 'next/image'
-import { Button } from '~/components/shared/button'
 
 export const LightboxComponent = () => {
   return (
     <Lightbox.Root>
-      <Lightbox.Trigger asChild>
-        <Button className="w-1/2 bg-neutral-100! text-neutral-900">
-          Example
-        </Button>
-      </Lightbox.Trigger>
+      <Lightbox.Trigger>Example</Lightbox.Trigger>
 
       <Lightbox.Content>
         <Lightbox.Title>Lightbox Example</Lightbox.Title>
