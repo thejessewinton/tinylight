@@ -18,7 +18,7 @@ export const CodeBlock = async ({ source, title, lang }: CodeRendererProps) => {
     return String(
       await unified()
         .use(remarkParse)
-        .use(remarkRehype)
+        .use(remarkRehype, { allowDangerousHtml: true })
         .use(rehypePrettyCode, {
           defaultLang: 'tsx',
           keepBackground: false,
@@ -34,7 +34,7 @@ export const CodeBlock = async ({ source, title, lang }: CodeRendererProps) => {
 
   const highlightedCode = await highlightCode(source)
 
-  console.log(highlightedCode)
+  console.log({ title, highlightedCode })
 
   return (
     <div className="flex flex-col overflow-hidden rounded-lg border border-neutral-200 dark:border-neutral-700/40">

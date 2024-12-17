@@ -80,34 +80,34 @@
   ::file-selector-button {
     border-color: var(--color-gray-200, currentColor);
   }
+}
 
-  :root,
-  .light {
-    --main: var(--color-neutral-100);
-    --accent: var(--color-neutral-300);
-    --primary: var(--color-neutral-900);
-    --secondary: var(--color-neutral-950);
-    --tertiary: var(--color-neutral-500);
+:root,
+.light {
+  --main: var(--color-neutral-100);
+  --accent: var(--color-neutral-300);
+  --primary: var(--color-neutral-900);
+  --secondary: var(--color-neutral-950);
+  --tertiary: var(--color-neutral-500);
+}
+
+.dark {
+  --main: var(--color-neutral-900);
+  --accent: var(--color-neutral-950);
+  --primary: var(--color-neutral-100);
+  --secondary: var(--color-neutral-300);
+
+  code[data-theme*=" "],
+  code[data-theme*=" "] span {
+    color: var(--shiki-light);
+    background-color: var(--shiki-light-bg);
   }
 
-  .dark {
-    --main: var(--color-neutral-900);
-    --accent: var(--color-neutral-950);
-    --primary: var(--color-neutral-100);
-    --secondary: var(--color-neutral-300);
-
-    code[data-theme*=""],
-    code[data-theme*=""] span {
-      color: var(--shiki-light);
-      background-color: var(--shiki-light-bg);
-    }
-
-    @media (prefers-color-scheme: dark) {
-      code[data-theme*=""],
-      code[data-theme*=""] span {
-        color: var(--shiki-dark);
-        background-color: var(--shiki-dark-bg);
-      }
+  @media (prefers-color-scheme: dark) {
+    code[data-theme*=" "],
+    code[data-theme*=" "] span {
+      color: var(--shiki-dark);
+      background-color: var(--shiki-dark-bg);
     }
   }
 }
