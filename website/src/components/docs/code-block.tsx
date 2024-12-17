@@ -5,20 +5,28 @@ import remarkParse from 'remark-parse'
 import remarkRehype from 'remark-rehype'
 import type { BundledLanguage } from 'shiki'
 import { unified } from 'unified'
+import { getCodeFromFile } from '~/utils/code'
 import { CopyButton } from './copy-button'
 
 export type CodeRendererProps = {
   title?: string
   lang: BundledLanguage
-  source: string
-}
+} & (
+  | { children: string; filePath?: never }
+  | { filePath: string; children?: never }
+)
 
-export const CodeBlock = async ({ source, title, lang }: CodeRendererProps) => {
+export const CodeBlock = async ({
+  filePath,
+  children,
+  title,
+  lang,
+}: CodeRendererProps) => {
   const highlightCode = async (code: string) => {
     return String(
       await unified()
         .use(remarkParse)
-        .use(remarkRehype, { allowDangerousHtml: true })
+        .use(remarkRehype)
         .use(rehypePrettyCode, {
           defaultLang: 'tsx',
           keepBackground: false,
@@ -28,13 +36,13 @@ export const CodeBlock = async ({ source, title, lang }: CodeRendererProps) => {
           },
         })
         .use(rehypeStringify)
-        .process(code),
+        .process(code.trim()),
     )
   }
 
-  const highlightedCode = await highlightCode(source)
-
-  console.log({ title, highlightedCode })
+  const highlightedCode = await highlightCode(
+    children ?? getCodeFromFile(filePath),
+  )
 
   return (
     <div className="flex flex-col overflow-hidden rounded-lg border border-neutral-200 dark:border-neutral-700/40">
@@ -48,7 +56,7 @@ export const CodeBlock = async ({ source, title, lang }: CodeRendererProps) => {
             )}
             <span className="font-medium text-sm text-tertiary">{title}</span>
           </div>
-          <CopyButton content={source} />
+          <CopyButton content={children ?? getCodeFromFile(filePath)} />
         </div>
       )}
 
