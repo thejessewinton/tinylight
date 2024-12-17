@@ -40,8 +40,6 @@ export const CodeBlock = async ({
     )
   }
 
-  console.log(await highlightCode(children ?? getCodeFromFile(filePath).trim()))
-
   const highlightedCode = await highlightCode(
     children ?? getCodeFromFile(filePath).trim(),
   )
@@ -63,6 +61,7 @@ export const CodeBlock = async ({
       )}
 
       <section
+        className="overflow-auto p-4"
         dangerouslySetInnerHTML={{
           __html: highlightedCode,
         }}
