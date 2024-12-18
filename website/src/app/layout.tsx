@@ -1,7 +1,8 @@
 import { Analytics } from '@vercel/analytics/react'
 import type { Metadata } from 'next'
 import { ThemeProvider } from 'next-themes'
-import { Inter, JetBrains_Mono, Newsreader } from 'next/font/google'
+import { Inter, Newsreader } from 'next/font/google'
+import localFont from 'next/font/local'
 import type { ReactNode } from 'react'
 
 import '~/styles/globals.css'
@@ -22,11 +23,10 @@ const serif = Newsreader({
   weight: ['300'],
 })
 
-const mono = JetBrains_Mono({
+const mono = localFont({
+  src: '../fonts/commit-mono.woff2',
   variable: '--font-mono',
   display: 'optional',
-  subsets: ['latin'],
-  weight: ['300'],
 })
 
 export const metadata: Metadata = {
