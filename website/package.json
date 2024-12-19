@@ -50,6 +50,7 @@
     "shiki": "^1.24.2",
     "tailwindcss": "4.0.0-beta.2",
     "typescript": "5.7.2",
+    "unist": "^0.0.1",
     "unist-util-visit": "^5.0.0"
   }
 }

@@ -37,6 +37,7 @@ const docs = defineCollection({
             if (node.tagName === 'code' && node.data && node.data.meta) {
               const meta = node.data.meta as string
               const filenameMatch = meta.match(/filename="([^"]+)"/)
+
               if (filenameMatch && parent?.tagName === 'pre') {
                 if (!parent.properties) {
                   parent.properties = {}
