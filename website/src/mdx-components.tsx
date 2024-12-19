@@ -2,7 +2,7 @@ import type { MDXComponents } from 'mdx/types'
 import type { ComponentPropsWithoutRef } from 'react'
 import { CodeBlock } from '~/components/docs/code-block'
 import { Table } from '~/components/shared/table'
-import { cn } from './utils/cn'
+import { CopyButton } from './components/docs/copy-button'
 
 export const components: MDXComponents = {
   h1: ({ children, ...props }: ComponentPropsWithoutRef<'h1'>) => {
@@ -19,21 +19,23 @@ export const components: MDXComponents = {
       </h2>
     )
   },
-  code: ({
-    children,
-    className,
-    ...props
-  }: ComponentPropsWithoutRef<'code'>) => {
+  pre: ({ children, title }: ComponentPropsWithoutRef<'pre'>) => {
     return (
-      <code
-        className={cn(
-          'rounded-lg border border-neutral-200 px-1 py-0.75 font-mono dark:border-neutral-700/40',
-          className,
-        )}
-        {...props}
-      >
-        {children}
-      </code>
+      <div className="flex flex-col overflow-hidden rounded-lg border border-neutral-200 dark:border-neutral-700/40">
+        <div className="flex items-center justify-between gap-2 border-neutral-200 border-b bg-neutral-100 p-4 dark:border-neutral-700/40 dark:bg-neutral-800/40">
+          <div className="flex items-center gap-2">
+            {/* {lang === 'bash' ? (
+                <CommandLineIcon className="size-4 text-tertiary" />
+              ) : (
+                <DocumentIcon className="size-4 text-tertiary" />
+              )} */}
+            <span className="font-medium text-sm text-tertiary">{title}</span>
+          </div>
+          <CopyButton content={children!.toString()} />
+        </div>
+
+        <pre className="overflow-auto p-4">{children}</pre>
+      </div>
     )
   },
   CodeBlock,

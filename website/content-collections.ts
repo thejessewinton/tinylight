@@ -1,5 +1,6 @@
 import { defineCollection, defineConfig } from '@content-collections/core'
 import { compileMDX } from '@content-collections/mdx'
+import rehypePrettyCode from 'rehype-pretty-code'
 import rehypeSlug from 'rehype-slug'
 import { capitalize } from 'remeda'
 
@@ -14,7 +15,20 @@ const docs = defineCollection({
   }),
   transform: async (doc, ctx) => {
     const mdx = await compileMDX(ctx, doc, {
-      rehypePlugins: [rehypeSlug],
+      rehypePlugins: [
+        rehypeSlug,
+        [
+          rehypePrettyCode,
+          {
+            defaultLang: 'tsx',
+            keepBackground: false,
+            theme: {
+              dark: 'github-dark',
+              light: 'github-light',
+            },
+          },
+        ],
+      ],
     })
 
     const getTableOfContents = (markdown: string) => {
