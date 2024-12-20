@@ -6,7 +6,7 @@ import Image from 'next/image'
 export const LightboxComponent = () => {
   return (
     <Lightbox.Root>
-      <Lightbox.Trigger>Example</Lightbox.Trigger>
+      <Lightbox.Trigger className="w-1/2">Example</Lightbox.Trigger>
 
       <Lightbox.Content>
         <Lightbox.Title>Lightbox Example</Lightbox.Title>
