@@ -24,7 +24,11 @@ export const components: MDXComponents = {
   pre: ({
     children,
     filename,
-  }: ComponentPropsWithoutRef<'pre'> & { filename?: string }) => {
+    raw,
+  }: ComponentPropsWithoutRef<'pre'> & {
+    raw: string
+    filename?: string
+  }) => {
     return (
       <div className="flex flex-col overflow-hidden rounded-lg border border-neutral-200 dark:border-neutral-700/40">
         <div className="flex items-center justify-between gap-2 border-neutral-200 border-b bg-neutral-100 p-4 dark:border-neutral-700/40 dark:bg-neutral-800/40">
@@ -38,7 +42,7 @@ export const components: MDXComponents = {
               {filename}
             </span>
           </div>
-          <CopyButton content={children!.toString()} />
+          <CopyButton content={raw} />
         </div>
 
         <pre className="overflow-auto p-4">{children}</pre>

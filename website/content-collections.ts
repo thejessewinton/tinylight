@@ -12,10 +12,6 @@ const options: Options = {
     dark: 'github-dark',
     light: 'github-light',
   },
-  filterMetaString: (string) => {
-    console.log({ string: string.replace(/filename="[^"]*"/, '') })
-    return string.replace(/filename="[^"]*"/, '')
-  },
 }
 
 const docs = defineCollection({
