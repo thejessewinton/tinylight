@@ -26,6 +26,17 @@ const docs = defineCollection({
   transform: async (doc, ctx) => {
     const mdx = await compileMDX(ctx, doc, {
       rehypePlugins: [
+        () => (tree) => {
+          visit(tree, (node) => {
+            if (node?.type === 'element' && node?.tagName === 'pre') {
+              const [codeEl] = node.children
+
+              if (codeEl.tagName !== 'code') return
+
+              node.source = codeEl.children?.[0].value
+            }
+          })
+        },
         rehypeSlug,
         [rehypePrettyCode, options],
         () => (tree) => {
@@ -39,6 +50,17 @@ const docs = defineCollection({
                   parent.properties = {}
                 }
                 parent.properties.filename = filenameMatch[1]
+              }
+            }
+          })
+        },
+        () => (tree) => {
+          visit(tree, (node) => {
+            if (node?.type === 'element' && node?.tagName === 'figure') {
+              for (const child of node.children) {
+                if (child.tagName === 'pre') {
+                  child.properties.source = node.source
+                }
               }
             }
           })

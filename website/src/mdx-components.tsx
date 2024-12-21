@@ -24,9 +24,9 @@ export const components: MDXComponents = {
   pre: ({
     children,
     filename,
-    raw,
+    source,
   }: ComponentPropsWithoutRef<'pre'> & {
-    raw: string
+    source: string
     filename?: string
   }) => {
     return (
@@ -42,9 +42,8 @@ export const components: MDXComponents = {
               {filename}
             </span>
           </div>
-          <CopyButton content={raw} />
+          <CopyButton content={source} />
         </div>
-
         <pre className="overflow-auto p-4">{children}</pre>
       </div>
     )
