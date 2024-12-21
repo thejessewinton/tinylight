@@ -6,7 +6,7 @@ type TableOfContentsProps = {
 
 export const TableOfContents = ({ headings }: TableOfContentsProps) => {
   return (
-    <div className="sticky top-16 h-fit w-xs pb-2">
+    <div className="sticky top-16 hidden h-fit w-xs pb-2 md:block">
       {headings?.length ? (
         <>
           <div className="flex items-center gap-2 font-medium text-secondary text-sm">

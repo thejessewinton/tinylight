@@ -18,7 +18,7 @@ export const Sidebar = () => {
   const pathname = usePathname()
 
   return (
-    <nav className="sticky top-0 flex h-screen flex-col gap-8 border-neutral-200 border-r border-dashed bg-accent/20 px-4 py-8 dark:border-neutral-700/40">
+    <nav className="sticky top-0 hidden h-screen flex-col gap-8 border-neutral-200 border-r border-dashed bg-accent/20 px-4 py-8 md:flex dark:border-neutral-700/40">
       <Link href="/">
         <h2 className="font-serif text-3xl italic">tinylight</h2>
       </Link>
