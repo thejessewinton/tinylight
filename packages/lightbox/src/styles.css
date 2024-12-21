@@ -205,7 +205,7 @@
   will-change: opacity, color;
   transition: 0.2s var(--ease-in-out-quad);
   transition-property: background-color, opacity;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.5);
 
   &:disabled {
     opacity: 0.5;

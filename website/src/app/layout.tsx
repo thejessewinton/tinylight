@@ -1,8 +1,9 @@
 import { Analytics } from '@vercel/analytics/react'
 import type { Metadata } from 'next'
-import { Inter, JetBrains_Mono, Newsreader } from 'next/font/google'
+import { ThemeProvider } from 'next-themes'
+import { Inter, Newsreader } from 'next/font/google'
+import localFont from 'next/font/local'
 import type { ReactNode } from 'react'
-import { Footer } from '~/components/footer'
 
 import '~/styles/globals.css'
 
@@ -22,11 +23,10 @@ const serif = Newsreader({
   weight: ['300'],
 })
 
-const mono = JetBrains_Mono({
+const mono = localFont({
+  src: '../fonts/commit-mono.woff2',
   variable: '--font-mono',
   display: 'optional',
-  subsets: ['latin'],
-  weight: ['300'],
 })
 
 export const metadata: Metadata = {
@@ -42,12 +42,14 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="en"
-      className={`${sans.variable} ${serif.variable} ${mono.variable} text-sm`}
+      className={`${sans.variable} ${serif.variable} ${mono.variable} scroll-smooth text-sm`}
+      suppressHydrationWarning
     >
-      <body className="flex min-h-screen flex-col items-center justify-center scroll-smooth bg-neutral-900 text-neutral-200 leading-loose antialiased selection:bg-neutral-800">
-        <main className="mx-auto my-32 w-full max-w-4xl px-8">{children}</main>
-        <Footer />
-        <Analytics />
+      <body className="flex min-h-screen flex-col items-center justify-center bg-main text-primary leading-loose antialiased selection:bg-slate-700 selection:text-white">
+        <ThemeProvider attribute="class" disableTransitionOnChange>
+          <main>{children}</main>
+          <Analytics />
+        </ThemeProvider>
       </body>
     </html>
   )

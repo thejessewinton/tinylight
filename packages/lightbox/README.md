@@ -33,7 +33,9 @@ export const LightboxComponent = () => {
           </button>
       </Lightbox.Trigger>
 
-      <Lightbox.Content title="Lightbox" description="Lightbox desc">
+      <Lightbox.Content>
+      <Lightbox.Title>Lightbox title</Lightbox.Title>
+      <Lightbox.Description>Lightbox description</Lightbox.Description>
         <Lightbox.Close aria-label="Close" />
         <Lightbox.Items>
           <Lightbox.Image asChild>

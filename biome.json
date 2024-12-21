@@ -61,6 +61,11 @@
         "noDangerouslySetInnerHtml": {
           "level": "off"
         }
+      },
+      "suspicious": {
+        "noArrayIndexKey": {
+          "level": "off"
+        }
       }
     }
   },
