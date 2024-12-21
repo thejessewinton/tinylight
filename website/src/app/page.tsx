@@ -1,3 +1,4 @@
+import { ChevronRightIcon } from '@heroicons/react/24/solid'
 import { LightboxComponent } from '~/components/docs/examples/basic'
 import { Button } from '~/components/shared/button'
 
@@ -27,6 +28,15 @@ export default function Home() {
               Documentation
             </Button>
           </div>
+          <a
+            href="https://github.com/thejessewinton/tinylight-ui"
+            className="mt-4 flex items-center justify-center gap-1"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Github
+            <ChevronRightIcon className="size-3" />
+          </a>
         </div>
       </div>
     </>

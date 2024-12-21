@@ -88,6 +88,12 @@
     --primary: var(--color-neutral-900);
     --secondary: var(--color-neutral-950);
     --tertiary: var(--color-neutral-500);
+
+    code[data-theme],
+    code[data-theme] span {
+      color: var(--shiki-light);
+      background-color: var(--shiki-light-bg);
+    }
   }
 
   .dark {
@@ -95,12 +101,6 @@
     --accent: var(--color-neutral-950);
     --primary: var(--color-neutral-100);
     --secondary: var(--color-neutral-300);
-
-    code[data-theme],
-    code[data-theme] span {
-      color: var(--shiki-light);
-      background-color: var(--shiki-light-bg);
-    }
 
     @media (prefers-color-scheme: dark) {
       code[data-theme],

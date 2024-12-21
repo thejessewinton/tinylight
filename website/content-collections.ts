@@ -12,6 +12,7 @@ const options: Options = {
     dark: 'github-dark',
     light: 'github-light',
   },
+  bypassInlineCode: true,
 }
 
 const docs = defineCollection({
@@ -22,6 +23,7 @@ const docs = defineCollection({
     title: z.string(),
     description: z.string(),
     order: z.number(),
+    published: z.boolean().optional().default(true),
   }),
   transform: async (doc, ctx) => {
     const mdx = await compileMDX(ctx, doc, {

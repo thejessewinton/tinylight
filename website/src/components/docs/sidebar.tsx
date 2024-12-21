@@ -9,7 +9,10 @@ import { ThemeSwitcher } from '../ui/theme-switcher'
 
 export const Sidebar = () => {
   const groupedDocs = groupBy(
-    sortBy(allDocs, [(doc) => doc.order, 'asc']),
+    sortBy(
+      allDocs.filter((doc) => doc.published),
+      [(doc) => doc.order, 'asc'],
+    ),
     (doc) => doc.group,
   )
   const pathname = usePathname()

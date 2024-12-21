@@ -6,7 +6,7 @@ type TableOfContentsProps = {
 
 export const TableOfContents = ({ headings }: TableOfContentsProps) => {
   return (
-    <div className="sticky top-16 h-fit w-2xs pb-2">
+    <div className="sticky top-16 h-fit w-xs pb-2">
       {headings?.length ? (
         <>
           <div className="flex items-center gap-2 font-medium text-secondary text-sm">
@@ -27,7 +27,7 @@ export const TableOfContents = ({ headings }: TableOfContentsProps) => {
             </svg>
             Table of contents
           </div>
-          <ul className="mt-8 h-fit space-y-2 border-neutral-200 border-l border-dashed pl-6 dark:border-neutral-700/40">
+          <ul className="mt-4 h-fit space-y-2 border-neutral-200 border-l border-dashed pl-6 dark:border-neutral-700/40">
             {headings.map((heading) => (
               <li key={heading.value}>
                 <a href={`#${heading.id}`}>{heading.value}</a>
