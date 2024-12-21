@@ -1,5 +1,11 @@
 # @tinylight-ui/lightbox
 
+## 1.0.1
+
+### Patch Changes
+
+- 9e9bba2: Expose title and description.
+
 ## 1.0.0
 
 ### Major Changes
