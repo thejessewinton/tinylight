@@ -35,7 +35,7 @@ export const ThemeSwitcher = () => {
   }
 
   return (
-    <div className="mt-auto mb-0 flex w-fit items-center gap-1 rounded-lg border border-neutral-200 px-1 py-0.5 dark:border-neutral-700/40">
+    <div className="flex w-fit items-center gap-1 rounded-lg border border-neutral-200 px-1 py-0.5 dark:border-neutral-700/40">
       <span className="sr-only">Select a display theme:</span>
       {themes.map(({ name, icon: Icon }) => (
         <button
@@ -43,7 +43,7 @@ export const ThemeSwitcher = () => {
           key={name}
           onClick={() => setTheme(name)}
           className={cn(
-            'grid cursor-pointer grid-cols-1 place-items-center rounded-lg p-1 hover:bg-neutral-300/60 hover:dark:bg-neutral-800',
+            'grid shrink-0 cursor-pointer grid-cols-1 place-items-center rounded-lg p-1 hover:bg-neutral-300/60 hover:dark:bg-neutral-800',
             {
               'bg-neutral-300/60 dark:bg-neutral-800': name === theme,
             },

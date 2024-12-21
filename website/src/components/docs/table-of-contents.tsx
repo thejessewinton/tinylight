@@ -27,7 +27,7 @@ export const TableOfContents = ({ headings }: TableOfContentsProps) => {
             </svg>
             Table of contents
           </div>
-          <ul className="mt-4 h-fit space-y-2 border-neutral-200 border-l border-dashed pl-6 dark:border-neutral-700/40">
+          <ul className="mt-4 h-fit space-y-2 border-neutral-200 border-l pl-6 dark:border-neutral-700/40">
             {headings.map((heading) => (
               <li key={heading.value}>
                 <a href={`#${heading.id}`}>{heading.value}</a>

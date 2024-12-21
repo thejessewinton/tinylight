@@ -53,7 +53,7 @@ export const components: MDXComponents = {
             <CopyButton content={source} />
           </div>
         )}
-        <pre className="overflow-auto p-4 max-sm:text-wrap">{children}</pre>
+        <pre className="overflow-auto p-4">{children}</pre>
       </div>
     )
   },
