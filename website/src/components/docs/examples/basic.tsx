@@ -8,7 +8,7 @@ export const LightboxComponent = () => {
   return (
     <Lightbox.Root>
       <Lightbox.Trigger className="w-1/2" asChild>
-        <Button>Example</Button>
+        <Button variant="light">Example</Button>
       </Lightbox.Trigger>
 
       <Lightbox.Content>
